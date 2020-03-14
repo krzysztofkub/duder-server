@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.example</groupId>
-	<artifactId>websocket-demo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<groupId>org.duder</groupId>
+	<artifactId>duder-chat</artifactId>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<name>websocket-demo</name>
-	<description>Spring Boot WebSocket Chat Demo</description>
+	<name>duder-chat</name>
+	<description>Spring Boot WebSocket Duder Chat</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -35,6 +35,12 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-reactor-netty</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>28.2-jre</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -43,7 +49,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.example.websocketdemo.WebsocketDemoApplication</mainClass>
+					<mainClass>org.duder.chat.WebsocketDemoApplication</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>

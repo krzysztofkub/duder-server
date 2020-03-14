@@ -30,14 +30,11 @@ function connect(event) {
     }
 
     var client = new HttpClient();
-    client.get('http://localhost:8080/getChatState', function(response) {
+    client.get('/getChatState', function(response) {
             var messages = JSON.parse(response)
             messages.forEach(function(message) {
                 onMessageReceivedJson(message)
             });
-//            for (let i = 0; i < messages.length; i++) {
-//                onMessageReceivedJson(response[i])
-//            }
     });
 
     event.preventDefault();
