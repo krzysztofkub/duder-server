@@ -29,9 +29,7 @@ public class ChatController {
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/public")
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
-        if (chatMessage.getType() == ChatMessage.MessageType.CHAT) {
-            messageCache.messages.add(chatMessage);
-        }
+        messageCache.messages.add(chatMessage);
         return chatMessage;
     }
 
