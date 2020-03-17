@@ -5,8 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 @Component
@@ -21,26 +22,28 @@ public class MessageConsumer {
         this.messageRepository = messageRepository;
         this.messageCache = messageCache;
 
-        ExecutorService executorService = Executors.newSingleThreadExecutor(r -> {
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1, r -> {
             Thread thread = Executors.defaultThreadFactory().newThread(r);
             thread.setDaemon(true);
             return thread;
         });
-        executorService.execute(this::persistingTask);
+        executorService.scheduleAtFixedRate(this::persistingTask, 0, 50, TimeUnit.MILLISECONDS);
     }
 
     private void persistingTask() {
-        ChatMessage message = messageCache.take();
-        log.info("Received message " + message);
-        log.info("There is" + messageCache.count() + "messages in queue");
+        ChatMessage message;
+        while ((message = messageCache.take()) != null) {
+            log.info("Received message " + message);
+            log.info("There are " + messageCache.count() + " messages in queue");
 
-        MessageEntity messageEntity = MessageEntity
-                .builder()
-                .messageType(message.getType())
-                .content(message.getContent())
-                .author(message.getSender())
-                .build();
-        messageRepository.save(messageEntity);
+            MessageEntity messageEntity = MessageEntity
+                    .builder()
+                    .messageType(message.getType())
+                    .content(message.getContent())
+                    .author(message.getSender())
+                    .build();
+            messageRepository.save(messageEntity);
+        }
     }
 
 }

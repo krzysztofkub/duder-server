@@ -1,7 +1,6 @@
 package org.duder.chat.scheduler;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.duder.chat.model.MessageType;
 
 import javax.persistence.*;
@@ -10,6 +9,8 @@ import java.sql.Timestamp;
 @Entity(name = "Message")
 @Table(name = "Message")
 @Data
+@RequiredArgsConstructor
+@AllArgsConstructor
 @Builder
 public class MessageEntity {
     @Id
