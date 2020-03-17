@@ -31,9 +31,6 @@ public class MessageConsumer {
 
     private void persistingTask() {
         ChatMessage message = messageCache.take();
-        if (message == null) {
-            return;
-        }
         log.info("Received message " + message);
         log.info("There is" + messageCache.count() + "messages in queue");
 
