@@ -21,12 +21,7 @@ public class MessageCache {
     }
 
     public ChatMessage take() {
-        try {
-            return messages.take();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return messages.poll();
     }
 
     public int count() {
