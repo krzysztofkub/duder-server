@@ -1,6 +1,8 @@
 package org.duder.chat.controller;
 
 import org.duder.chat.model.ChatMessage;
+import org.duder.chat.model.MessageType;
+import org.duder.chat.scheduler.MessageCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,13 @@ public class WebSocketEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
 
-    @Autowired
-    private SimpMessageSendingOperations messagingTemplate;
-    @Autowired
-    private MessageCache messageCache;
+    private final SimpMessageSendingOperations messagingTemplate;
+    private final MessageCache messageCache;
+
+    public WebSocketEventListener(SimpMessageSendingOperations messagingTemplate, MessageCache messageCache) {
+        this.messagingTemplate = messagingTemplate;
+        this.messageCache = messageCache;
+    }
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
@@ -33,9 +38,11 @@ public class WebSocketEventListener {
         if(username != null) {
             logger.info("User Disconnected : " + username);
 
-            ChatMessage chatMessage = new ChatMessage();
-            chatMessage.setType(ChatMessage.MessageType.LEAVE);
-            chatMessage.setSender(username);
+            ChatMessage chatMessage = ChatMessage
+                    .builder()
+                    .type(MessageType.LEAVE)
+                    .sender(username)
+                    .build();
 
             messagingTemplate.convertAndSend("/topic/public", chatMessage);
         }

@@ -1,27 +1,30 @@
 package org.duder.chat.controller;
 
 import org.duder.chat.model.ChatMessage;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.duder.chat.scheduler.MessageCache;
+import org.duder.chat.scheduler.MessageConsumer;
+import org.duder.chat.scheduler.MessageRepository;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 public class ChatController {
 
-    @Autowired
-    private MessageCache messageCache;
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    private final MessageCache messageCache;
+
+    private final MessageRepository messageRepository;
+
+    public ChatController(MessageCache messageCache, MessageRepository messageRepository, MessageConsumer messageConsumer) {
+        this.messageCache = messageCache;
+        this.messageRepository = messageRepository;
+    }
 
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/public")
@@ -32,20 +35,22 @@ public class ChatController {
 
     @MessageMapping("/chat.addUser")
     @SendTo("/topic/public")
-    public ChatMessage addUser(@Payload ChatMessage chatMessage,
-                               SimpMessageHeaderAccessor headerAccessor) {
-        // Add username in web socket session
-        headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-
-        messageCache.getMessages().forEach(m -> {
-            messagingTemplate.convertAndSendToUser(chatMessage.getSender(), "/topic/user", m);
-        });
+    public ChatMessage addUser(@Payload ChatMessage chatMessage) {
         return chatMessage;
     }
 
     @GetMapping("/getChatState")
     @ResponseBody
     public List<ChatMessage> getChatState() {
-        return new ArrayList<>(messageCache.getMessages());
+        return messageRepository
+                .findAll()
+                .stream()
+                .map(m -> ChatMessage
+                        .builder()
+                        .content(m.getContent())
+                        .type(m.getMessageType())
+                        .sender(m.getAuthor())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
