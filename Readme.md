@@ -1,1 +1,1 @@
-## Spring Boot WebSocket Chat Appplication
+## Spring Boot WebSocket Chat Application
