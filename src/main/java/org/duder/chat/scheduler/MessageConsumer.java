@@ -22,7 +22,7 @@ public class MessageConsumer {
         this.messageRepository = messageRepository;
         this.messageCache = messageCache;
 
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1, r -> {
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread thread = Executors.defaultThreadFactory().newThread(r);
             thread.setDaemon(true);
             return thread;
