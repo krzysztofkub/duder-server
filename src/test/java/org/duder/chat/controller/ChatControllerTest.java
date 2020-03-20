@@ -22,7 +22,6 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -39,13 +38,13 @@ public class ChatControllerTest {
     private MessageRepository messageRepository;
 
     @ClassRule
-    public static GenericContainer mysql = new GenericContainer(new ImageFromDockerfile("mysql-petclinic")
+    public static GenericContainer mysql = new GenericContainer(new ImageFromDockerfile("mysql-test")
             .withDockerfileFromBuilder(dockerfileBuilder -> {
-                dockerfileBuilder.from("mysql:5.7.8")
-                        .env("MYSQL_ROOT_PASSWORD", "root_password")
-                        .env("MYSQL_DATABASE", "petclinic")
-                        .env("MYSQL_USER", "petclinic")
-                        .env("MYSQL_PASSWORD", "petclinic")
+                dockerfileBuilder.from("mysql:5.7.22")
+                        .env("MYSQL_ROOT_PASSWORD", "test")
+                        .env("MYSQL_DATABASE", "test")
+                        .env("MYSQL_USER", "test")
+                        .env("MYSQL_PASSWORD", "test")
                         .add("a_schema.sql", "/docker-entrypoint-initdb.d")
                         .add("b_data.sql", "/docker-entrypoint-initdb.d");
             })
@@ -61,6 +60,10 @@ public class ChatControllerTest {
                     }
             )
             .waitingFor(Wait.forListeningPort());
+
+    public ChatControllerTest(MessageRepository messageRepository) {
+        this.messageRepository = messageRepository;
+    }
 
     @Test
     @Transactional
