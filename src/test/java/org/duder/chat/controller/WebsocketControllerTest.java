@@ -31,12 +31,9 @@ public class WebsocketControllerTest {
     @Value("${local.server.port}")
     private int port;
     private String URL;
-
     private static final String SEND_MESSAGE_ENDPOINT = "/app/sendMessage";
     private static final String SUBSCRIBE_CHAT_ENDPOINT = "/topic/public";
-
     private CompletableFuture<ChatMessage> completableFuture;
-
 
     @ClassRule
     public static GenericContainer mysqlContainer = MySQLContainerProvider.getInstance();
@@ -51,7 +48,7 @@ public class WebsocketControllerTest {
 
     @Test
     public void testCreateGameEndpoint() throws InterruptedException, ExecutionException, TimeoutException, JsonProcessingException {
-        WebsocketClient websocketClient = new WebsocketClient(URL, SUBSCRIBE_CHAT_ENDPOINT, SEND_MESSAGE_ENDPOINT, port);
+        WebsocketClient websocketClient = new WebsocketClient(URL, SUBSCRIBE_CHAT_ENDPOINT, SEND_MESSAGE_ENDPOINT);
         websocketClient.subscribeForOneMessage(completableFuture, ChatMessage.class);
         ChatMessage chatMessage = ChatMessage.builder()
                 .sender("ASD")
@@ -60,5 +57,7 @@ public class WebsocketControllerTest {
 
         ChatMessage websocketMessage = completableFuture.get(10, TimeUnit.SECONDS);
         assertNotNull(websocketMessage);
+        //Wait till scheduler persists new message to db
+        Thread.sleep(2000);
     }
 }

@@ -30,29 +30,24 @@ public class WebsocketClient {
     private final String url;
     private final String topic;
     private final String sendEndpoint;
-    private final Object port;
 
-    public WebsocketClient(String url, String topic, String sendEndpoint, Object port) {
+    public WebsocketClient(String url, String topic, String sendEndpoint) {
         this.url = url;
         this.topic = topic;
         this.sendEndpoint = sendEndpoint;
-        this.port = port;
         connect();
     }
 
     private void connect() {
-
         Transport webSocketTransport = new WebSocketTransport(new StandardWebSocketClient());
         List<Transport> transports = Collections.singletonList(webSocketTransport);
-
         SockJsClient sockJsClient = new SockJsClient(transports);
         sockJsClient.setMessageCodec(new Jackson2SockJsMessageCodec());
-
         WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
 
         try {
             stompSession = stompClient.connect(url, headers, new StompSessionHandlerAdapter() {
-            }, "localhost", port).get();
+            }).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
