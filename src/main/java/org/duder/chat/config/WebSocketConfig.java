@@ -15,9 +15,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker("/topic");
         registry.setApplicationDestinationPrefixes("/app");
 //        registry.enableStompBrokerRelay("/topic", "/queue", "/exchange"); // Uncomment for external message broker (ActiveMQ, RabbitMQ)
-        registry.enableSimpleBroker("/topic");
-        registry.setUserDestinationPrefix("/user");
+
     }
 }
