@@ -61,10 +61,6 @@ public class ChatControllerTest {
             )
             .waitingFor(Wait.forListeningPort());
 
-    public ChatControllerTest(MessageRepository messageRepository) {
-        this.messageRepository = messageRepository;
-    }
-
     @Test
     @Transactional
     public void getChatState() {
