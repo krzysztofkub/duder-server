@@ -27,14 +27,7 @@ jobs:
       run: mvn -B package --file pom.xml failsafe:integration-test
 
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-    - uses: "marvinpinto/action-automatic-releases@<VERSION>"
-    with:
-      repo_token: "${{ secrets.GITHUB_TOKEN }}"
-      prerelease: false
-      files: |
-        LICENSE.txt
-        *.jar
+      run: mvn -B release:prepare deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
 
