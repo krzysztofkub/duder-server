@@ -35,4 +35,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
-        bump_version_scheme: minor
+        bump_version_scheme: patch
