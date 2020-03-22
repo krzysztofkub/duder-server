@@ -106,7 +106,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>org.duder.chat.WebsocketDemoApplication</mainClass>
+                    <mainClass>org.duder.chat.WebsocketApplication</mainClass>
                 </configuration>
             </plugin>
             <plugin>
