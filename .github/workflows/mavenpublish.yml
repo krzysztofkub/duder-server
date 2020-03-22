@@ -28,11 +28,14 @@ jobs:
 
     - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+    - uses: "marvinpinto/action-automatic-releases@<VERSION>"
+    with:
+      repo_token: "${{ secrets.GITHUB_TOKEN }}"
+      prerelease: false
+      files: |
+        LICENSE.txt
+        *.jar
       env:
         GITHUB_TOKEN: ${{ github.token }}
-    - name: Tag/Release on Push Action
-      uses: rymndhng/release-on-push-action@v0.10.0
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        bump_version_scheme: patch
+
+
