@@ -25,22 +25,22 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml failsafe:integration-test -Pfailsafe
 
-    - name: Setup GIT
-      run: |
-        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-        git config user.name "$GITHUB_ACTOR"
-
-    - name: Update Version & Push
-      env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      run: |
-        mvn -B release:prepare
-        git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY"
-
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+#    - name: Setup GIT
+#      run: |
+#        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+#        git config user.name "$GITHUB_ACTOR"
+#
+#    - name: Update Version & Push
+#      env:
+#        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+#      run: |
+#        mvn -B release:prepare
+#        git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY"
+#
+#    - name: Publish to GitHub Packages Apache Maven
+#      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+#      env:
+#        GITHUB_TOKEN: ${{ github.token }}
 
     - name: Tag/Release on Push Action
       uses: rymndhng/release-on-push-action@v0.10.0
