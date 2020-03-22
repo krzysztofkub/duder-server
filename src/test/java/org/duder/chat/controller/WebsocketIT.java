@@ -80,10 +80,8 @@ public class WebsocketIT {
         //then
         ChatMessage websocketMessage = completableFuture.get(10, TimeUnit.SECONDS);
 
-        while (messageCache.count() != 0) {
-            //wait for scheduler
-            Thread.sleep(1000);
-        }
+        //wait for scheduler
+        Thread.sleep(2000);
 
         List<MessageEntity> messagesFromDb = messageRepository.findAll();
         MessageEntity messageEntity = messagesFromDb.get(0);
