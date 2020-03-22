@@ -1,0 +1,1 @@
+insert into Message (id, message_type, content, author) values (1, 'CHAT', 'message', 'author');

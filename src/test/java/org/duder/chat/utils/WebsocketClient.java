@@ -2,7 +2,6 @@ package org.duder.chat.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.duder.chat.model.ChatMessage;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -53,9 +52,8 @@ public class WebsocketClient {
         }
     }
 
-    public <T> void  subscribeForOneMessage(CompletableFuture completableFuture, Class<T> tClass) {
+    public <T> void subscribeForOneMessage(CompletableFuture completableFuture, Class<T> tClass) {
         stompSession.subscribe(topic, new StompFrameHandler() {
-
             public Type getPayloadType(StompHeaders stompHeaders) {
                 return byte[].class;
             }

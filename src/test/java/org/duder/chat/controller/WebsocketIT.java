@@ -2,6 +2,10 @@ package org.duder.chat.controller;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.duder.chat.model.MessageType;
+import org.duder.chat.scheduler.MessageCache;
+import org.duder.chat.scheduler.MessageEntity;
+import org.duder.chat.scheduler.MessageRepository;
 import org.duder.chat.utils.MySQLContainerProvider;
 import org.duder.chat.model.ChatMessage;
 import org.duder.chat.utils.WebsocketClient;
@@ -9,31 +13,41 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testcontainers.containers.GenericContainer;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class WebsocketControllerTest {
-    @Value("${local.server.port}")
+public class WebsocketIT {
+
+    @Autowired
+    private MessageCache messageCache;
+    @Autowired
+    private MessageRepository messageRepository;
+
+    @LocalServerPort
     private int port;
-    private String URL;
+    private String url;
+    private CompletableFuture<ChatMessage> completableFuture;
+
     private static final String SEND_MESSAGE_ENDPOINT = "/app/sendMessage";
     private static final String SUBSCRIBE_CHAT_ENDPOINT = "/topic/public";
-    private CompletableFuture<ChatMessage> completableFuture;
 
     @ClassRule
     public static GenericContainer mysqlContainer = MySQLContainerProvider.getInstance();
@@ -41,23 +55,43 @@ public class WebsocketControllerTest {
     @Before
     public void setup() {
         completableFuture = new CompletableFuture<>();
-        URL = "ws://localhost:" + port + "/ws";
+        url = "ws://localhost:" + port + "/ws";
+        messageRepository.deleteAll();
     }
 
-
-
     @Test
-    public void testCreateGameEndpoint() throws InterruptedException, ExecutionException, TimeoutException, JsonProcessingException {
-        WebsocketClient websocketClient = new WebsocketClient(URL, SUBSCRIBE_CHAT_ENDPOINT, SEND_MESSAGE_ENDPOINT);
+    public void sendMessage_sendsMessagesToSubscibersAndPersistsMessageToDb() throws InterruptedException, ExecutionException, TimeoutException, JsonProcessingException {
+        //given
+        final String sender = "Sender";
+        final String content = "Content";
+        final MessageType messageType = MessageType.CHAT;
+
+        WebsocketClient websocketClient = new WebsocketClient(url, SUBSCRIBE_CHAT_ENDPOINT, SEND_MESSAGE_ENDPOINT);
         websocketClient.subscribeForOneMessage(completableFuture, ChatMessage.class);
         ChatMessage chatMessage = ChatMessage.builder()
-                .sender("ASD")
+                .sender(sender)
+                .content(content)
+                .type(messageType)
                 .build();
+
+        //when
         websocketClient.sendMessage(chatMessage);
 
+        //then
         ChatMessage websocketMessage = completableFuture.get(10, TimeUnit.SECONDS);
+
+        while (messageCache.count() != 0) {
+            //wait for scheduler
+            Thread.sleep(1000);
+        }
+
+        List<MessageEntity> messagesFromDb = messageRepository.findAll();
+        MessageEntity messageEntity = messagesFromDb.get(0);
+
         assertNotNull(websocketMessage);
-        //Wait till scheduler persists new message to db
-        Thread.sleep(2000);
+        assertNotNull(messageEntity);
+        assertEquals(sender, messageEntity.getAuthor());
+        assertEquals(content, messageEntity.getContent());
+        assertEquals(messageType, messageEntity.getMessageType());
     }
 }
