@@ -31,6 +31,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
     - name: Release
-        run: mvn -B -s $GITHUB_WORKSPACE/settings.xml release:prepare release:perform
+        run: mvn -B release:prepare release:perform
         env:
           GITHUB_TOKEN: ${{ github.token }}
