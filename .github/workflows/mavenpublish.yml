@@ -42,6 +42,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
 
+    - name: Tag/Release on Push Action
+        uses: rymndhng/release-on-push-action@v0.10.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          bump_version_scheme: patch
+
 
 
 
