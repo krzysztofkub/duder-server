@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.duder</groupId>
     <artifactId>duder-chat</artifactId>
-    <version>0.0.7-SNAPSHOT</version>
+    <version>0.0.7</version>
     <packaging>jar</packaging>
 
     <name>duder-chat</name>
@@ -15,7 +14,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.1.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
@@ -98,7 +97,7 @@
 
     <scm>
         <connection>scm:git:https://github.com/krzysztofkubieniec/duder-chat.git</connection>
-        <tag>HEAD</tag>
+        <tag>duder-chat-0.0.7</tag>
     </scm>
 
     <profiles>
