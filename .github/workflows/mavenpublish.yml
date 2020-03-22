@@ -24,13 +24,20 @@ jobs:
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml failsafe:integration-test -Pfailsafe
+    - uses: "marvinpinto/action-automatic-releases@<VERSION>"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            LICENSE.txt
+            *.jar
 
     - name: Setup GIT
       run: |
         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git config user.name "$GITHUB_ACTOR"
 
-    - name: Update & Push
+    - name: Update Version & Push
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       run: |
@@ -41,5 +48,7 @@ jobs:
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
+
+
 
 
