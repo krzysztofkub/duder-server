@@ -4,7 +4,7 @@
 
     <groupId>org.duder</groupId>
     <artifactId>duder-chat</artifactId>
-    <version>0.0.8-SNAPSHOT</version>
+    <version>0.0.8</version>
     <packaging>jar</packaging>
 
     <name>duder-chat</name>
@@ -97,7 +97,7 @@
 
     <scm>
         <connection>scm:git:https://github.com/krzysztofkubieniec/duder-chat.git</connection>
-        <tag>HEAD</tag>
+        <tag>duder-chat-0.0.8</tag>
     </scm>
 
     <profiles>
