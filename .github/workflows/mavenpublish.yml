@@ -25,12 +25,12 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml failsafe:integration-test -Pfailsafe
       uses: marvinpinto/action-automatic-releases@<VERSION>
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          files: |
-            LICENSE.txt
-            *.jar
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: false
+        files: |
+          LICENSE.txt
+          *.jar
 
     - name: Setup GIT
       run: |
