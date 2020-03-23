@@ -68,7 +68,11 @@ public class WebsocketClient {
         });
     }
 
-    public void sendMessage(Object message) throws JsonProcessingException {
-        stompSession.send(sendEndpoint, mapper.writeValueAsBytes(message));
+    public void sendMessage(Object message) {
+        try {
+            stompSession.send(sendEndpoint, mapper.writeValueAsBytes(message));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }

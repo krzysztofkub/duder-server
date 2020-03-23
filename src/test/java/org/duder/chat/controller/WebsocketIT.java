@@ -1,13 +1,12 @@
 package org.duder.chat.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.duder.chat.model.ChatMessage;
 import org.duder.chat.model.MessageType;
 import org.duder.chat.scheduler.MessageCache;
 import org.duder.chat.scheduler.MessageEntity;
 import org.duder.chat.scheduler.MessageRepository;
 import org.duder.chat.utils.MySQLContainerProvider;
-import org.duder.chat.model.ChatMessage;
 import org.duder.chat.utils.WebsocketClient;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -27,8 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -44,52 +42,80 @@ public class WebsocketIT {
     @LocalServerPort
     private int port;
     private String url;
-    private CompletableFuture<ChatMessage> completableFuture;
 
     private static final String SEND_MESSAGE_ENDPOINT = "/app/sendMessage";
     private static final String SUBSCRIBE_CHAT_ENDPOINT = "/topic/public";
+
+    private final String SENDER = "Sender";
+    private final String CONTENT = "Content";
+    private final MessageType MESSAGE_TYPE = MessageType.CHAT;
 
     @ClassRule
     public static GenericContainer mysqlContainer = MySQLContainerProvider.getInstance();
 
     @Before
     public void setup() {
-        completableFuture = new CompletableFuture<>();
         url = "ws://localhost:" + port + "/ws";
-        messageRepository.deleteAll();
     }
 
     @Test
-    public void sendMessage_sendsMessagesToSubscibersAndPersistsMessageToDb() throws InterruptedException, ExecutionException, TimeoutException, JsonProcessingException {
+    public void sendMessage_sendsMessagesToSubscibersAndPersistsMessageToDb() throws InterruptedException, ExecutionException, TimeoutException {
         //given
-        final String sender = "Sender";
-        final String content = "Content";
-        final MessageType messageType = MessageType.CHAT;
-
+        CompletableFuture<ChatMessage> completableFuture = new CompletableFuture<>();
         WebsocketClient websocketClient = new WebsocketClient(url, SUBSCRIBE_CHAT_ENDPOINT, SEND_MESSAGE_ENDPOINT);
         websocketClient.subscribeForOneMessage(completableFuture, ChatMessage.class);
         ChatMessage chatMessage = ChatMessage.builder()
-                .sender(sender)
-                .content(content)
-                .type(messageType)
+                .sender(SENDER)
+                .content(CONTENT)
+                .type(MESSAGE_TYPE)
                 .build();
 
         //when
         websocketClient.sendMessage(chatMessage);
-
-        //then
         ChatMessage websocketMessage = completableFuture.get(10, TimeUnit.SECONDS);
-
         //wait for scheduler
         Thread.sleep(2000);
-
         List<MessageEntity> messagesFromDb = messageRepository.findAll();
         MessageEntity messageEntity = messagesFromDb.get(0);
 
+        //then
         assertNotNull(websocketMessage);
         assertNotNull(messageEntity);
-        assertEquals(sender, messageEntity.getAuthor());
-        assertEquals(content, messageEntity.getContent());
-        assertEquals(messageType, messageEntity.getMessageType());
+        assertEquals(SENDER, messageEntity.getAuthor());
+        assertEquals(CONTENT, messageEntity.getContent());
+        assertEquals(MESSAGE_TYPE, messageEntity.getMessageType());
+    }
+
+    @Test
+    public void sendMessage_channel() throws InterruptedException, ExecutionException, TimeoutException {
+        //given
+        int channelId = 1;
+        int dummyChannelId = 2;
+
+        CompletableFuture<ChatMessage> completableFuture = new CompletableFuture<>();
+        CompletableFuture<ChatMessage> dummyCompletableFuture = new CompletableFuture<>();
+
+        WebsocketClient messageProducer = new WebsocketClient(url, "/topic/" + channelId, SEND_MESSAGE_ENDPOINT + "/" + channelId);
+        WebsocketClient messageReceiver = new WebsocketClient(url, "/topic/" + channelId, null);
+        WebsocketClient dummyClient = new WebsocketClient(url, "/topic/" + dummyChannelId, null);
+
+        messageReceiver.subscribeForOneMessage(completableFuture, ChatMessage.class);
+        dummyClient.subscribeForOneMessage(dummyCompletableFuture, ChatMessage.class);
+
+        ChatMessage chatMessage = ChatMessage.builder()
+                .sender(SENDER)
+                .content(CONTENT)
+                .type(MESSAGE_TYPE)
+                .build();
+
+        //when
+        messageProducer.sendMessage(chatMessage);
+
+        //then
+        ChatMessage response = completableFuture.get(10, TimeUnit.SECONDS);
+        ChatMessage dummyResponse = dummyCompletableFuture.getNow(null);
+
+        assertNotNull(response);
+        assertNull(dummyResponse);
     }
 }
