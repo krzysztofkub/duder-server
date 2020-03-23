@@ -13,10 +13,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class MessageConsumer {
 
+    private static final Logger log = LoggerFactory.getLogger(MessageConsumer.class);
     private final MessageRepository messageRepository;
     private final MessageCache messageCache;
-
-    private static final Logger log = LoggerFactory.getLogger(MessageConsumer.class);
 
     public MessageConsumer(MessageRepository messageRepository, MessageCache messageCache) {
         this.messageRepository = messageRepository;
