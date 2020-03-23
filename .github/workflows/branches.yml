@@ -6,7 +6,7 @@ name: Branch workflow
 on:
   push:
     branches:
-      - !master
+      - '!master'
 
 jobs:
   build:
