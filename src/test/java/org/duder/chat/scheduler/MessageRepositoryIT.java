@@ -22,11 +22,10 @@ import static org.junit.Assert.assertTrue;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql("/db/mysql/test-message.sql")
 public class MessageRepositoryIT {
-    @Autowired
-    private MessageRepository messageRepository;
-
     @ClassRule
     public static GenericContainer mysqlContainer = MySQLContainerProvider.getInstance();
+    @Autowired
+    private MessageRepository messageRepository;
 
     @Test
     public void findById() {
