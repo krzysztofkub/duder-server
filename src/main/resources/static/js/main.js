@@ -56,10 +56,10 @@ var HttpClient = function() {
 
 function onConnected() {
     // Subscribe to the Public Topic
-    stompClient.subscribe('/topic/1', onMessageReceived);
+    stompClient.subscribe('/topic/public', onMessageReceived);
 
     // Tell your username to the server
-    stompClient.send("/app/sendMessage/1",
+    stompClient.send("/app/sendMessage",
         {},
         JSON.stringify({sender: username, type: 'JOIN'})
     )
@@ -84,7 +84,7 @@ function sendMessage(event) {
             type: 'CHAT'
         };
 
-        stompClient.send("/app/sendMessage/1", {}, JSON.stringify(chatMessage));
+        stompClient.send("/app/sendMessage", {}, JSON.stringify(chatMessage));
         messageInput.value = '';
     }
     event.preventDefault();
