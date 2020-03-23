@@ -36,21 +36,18 @@ import static org.junit.Assert.assertNotNull;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class WebsocketIT {
 
+    private static final String SEND_MESSAGE_ENDPOINT = "/app/sendMessage";
+    private static final String SUBSCRIBE_CHAT_ENDPOINT = "/topic/public";
+    @ClassRule
+    public static GenericContainer mysqlContainer = MySQLContainerProvider.getInstance();
     @Autowired
     private MessageCache messageCache;
     @Autowired
     private MessageRepository messageRepository;
-
     @LocalServerPort
     private int port;
     private String url;
     private CompletableFuture<ChatMessage> completableFuture;
-
-    private static final String SEND_MESSAGE_ENDPOINT = "/app/sendMessage";
-    private static final String SUBSCRIBE_CHAT_ENDPOINT = "/topic/public";
-
-    @ClassRule
-    public static GenericContainer mysqlContainer = MySQLContainerProvider.getInstance();
 
     @Before
     public void setup() {

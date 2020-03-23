@@ -24,11 +24,10 @@ import java.util.concurrent.ExecutionException;
 public class WebsocketClient {
     private final WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
     private final ObjectMapper mapper = new ObjectMapper();
-    private StompSession stompSession;
-
     private final String url;
     private final String topic;
     private final String sendEndpoint;
+    private StompSession stompSession;
 
     public WebsocketClient(String url, String topic, String sendEndpoint) {
         this.url = url;
