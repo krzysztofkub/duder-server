@@ -56,7 +56,6 @@ public class WebsocketIT {
     public void setup() {
         completableFuture = new CompletableFuture<>();
         url = "ws://localhost:" + port + "/ws";
-        messageRepository.deleteAll();
     }
 
     @Test
