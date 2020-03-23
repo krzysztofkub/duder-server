@@ -3,6 +3,7 @@ package org.duder.chat.controller;
 import org.duder.chat.model.ChatMessage;
 import org.duder.chat.scheduler.MessageCache;
 import org.duder.chat.scheduler.MessageRepository;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -27,6 +28,12 @@ public class WebsocketController {
     @SendTo("/topic/public")
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
         messageCache.add(chatMessage);
+        return chatMessage;
+    }
+
+    @MessageMapping("/sendMessage/{channelId}")
+    @SendTo("/topic/{channelId")
+    public ChatMessage sendMessage(@DestinationVariable int channelId, @Payload ChatMessage chatMessage) {
         return chatMessage;
     }
 
