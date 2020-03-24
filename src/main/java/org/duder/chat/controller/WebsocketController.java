@@ -3,9 +3,12 @@ package org.duder.chat.controller;
 import org.duder.chat.model.ChatMessage;
 import org.duder.chat.scheduler.MessageCache;
 import org.duder.chat.scheduler.MessageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,15 +21,24 @@ public class WebsocketController {
     private final MessageCache messageCache;
     private final MessageRepository messageRepository;
 
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     public WebsocketController(MessageCache messageCache, MessageRepository messageRepository) {
         this.messageCache = messageCache;
         this.messageRepository = messageRepository;
     }
 
     @MessageMapping("/sendMessage")
-    @SendTo("/topic/public")
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
+        simpMessagingTemplate.convertAndSend("/topic/public", chatMessage);
         messageCache.add(chatMessage);
+        return chatMessage;
+    }
+
+    @MessageMapping("/sendMessage/{channelId}")
+    public ChatMessage sendMessage(@DestinationVariable int channelId, @Payload ChatMessage chatMessage) {
+        simpMessagingTemplate.convertAndSend("/topic/" + channelId, chatMessage);
         return chatMessage;
     }
 
