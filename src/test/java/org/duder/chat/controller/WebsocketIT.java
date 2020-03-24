@@ -35,8 +35,6 @@ import static org.junit.Assert.*;
 public class WebsocketIT {
 
     @Autowired
-    private MessageCache messageCache;
-    @Autowired
     private MessageRepository messageRepository;
 
     @LocalServerPort
