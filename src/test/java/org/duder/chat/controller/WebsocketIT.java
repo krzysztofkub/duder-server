@@ -1,11 +1,10 @@
 package org.duder.chat.controller;
 
 
+import org.duder.chat.dao.entity.Message;
+import org.duder.chat.dao.repository.MessageRepository;
 import org.duder.chat.model.ChatMessage;
 import org.duder.chat.model.MessageType;
-import org.duder.chat.scheduler.MessageCache;
-import org.duder.chat.scheduler.MessageEntity;
-import org.duder.chat.scheduler.MessageRepository;
 import org.duder.chat.utils.MySQLContainerProvider;
 import org.duder.chat.utils.MyWebSocketClient;
 import org.junit.Before;
@@ -26,9 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -74,8 +71,8 @@ public class WebsocketIT {
         ChatMessage message = completableFuture.get(10, TimeUnit.SECONDS);
         //wait for scheduler (saving to db)
         Thread.sleep(2000);
-        List<MessageEntity> messagesFromDb = messageRepository.findAll();
-        MessageEntity messageEntity = messagesFromDb.get(0);
+        List<Message> messagesFromDb = messageRepository.findAll();
+        Message messageEntity = messagesFromDb.get(0);
 
         //then
         assertNotNull(message);

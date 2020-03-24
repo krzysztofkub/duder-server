@@ -1,13 +1,12 @@
 package org.duder.chat.controller;
 
+import org.duder.chat.dao.repository.MessageRepository;
 import org.duder.chat.model.ChatMessage;
 import org.duder.chat.scheduler.MessageCache;
-import org.duder.chat.scheduler.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,8 +50,8 @@ public class WebsocketController {
                 .map(m -> ChatMessage
                         .builder()
                         .content(m.getContent())
+                        .sender(m.getAuthor().getName())
                         .type(m.getMessageType())
-                        .sender(m.getAuthor())
                         .build())
                 .collect(Collectors.toList());
     }

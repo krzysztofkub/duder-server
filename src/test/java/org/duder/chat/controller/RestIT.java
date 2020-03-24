@@ -1,9 +1,9 @@
 package org.duder.chat.controller;
 
+import org.duder.chat.dao.entity.Message;
+import org.duder.chat.dao.repository.MessageRepository;
 import org.duder.chat.model.ChatMessage;
 import org.duder.chat.model.MessageType;
-import org.duder.chat.scheduler.MessageEntity;
-import org.duder.chat.scheduler.MessageRepository;
 import org.duder.chat.utils.MySQLContainerProvider;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -17,8 +17,6 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.GenericContainer;
-
-import java.sql.Timestamp;
 
 import static org.junit.Assert.assertEquals;
 
@@ -48,10 +46,9 @@ public class RestIT {
     @Test
     public void getChatState() {
         //given
-        MessageEntity messageEntity = MessageEntity
+        Message messageEntity = Message
                 .builder()
                 .messageType(MessageType.CHAT)
-                .author("COS")
                 .content("ASASDASD")
                 .build();
         messageRepository.saveAndFlush(messageEntity);
