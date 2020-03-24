@@ -10,6 +10,7 @@
             </PatternLayout>
         </File>
     </Appenders>
+
     <Loggers>
         <Logger name="org.duder" level="debug" additivity="false">
             <AppenderRef ref="LogToFile"/>
