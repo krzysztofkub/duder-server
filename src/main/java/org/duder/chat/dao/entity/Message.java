@@ -21,6 +21,7 @@ public class Message {
     private Timestamp timestamp;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User author;
     private String content;
 
