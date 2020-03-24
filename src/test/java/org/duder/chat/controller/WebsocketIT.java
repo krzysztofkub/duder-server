@@ -7,7 +7,7 @@ import org.duder.chat.scheduler.MessageCache;
 import org.duder.chat.scheduler.MessageEntity;
 import org.duder.chat.scheduler.MessageRepository;
 import org.duder.chat.utils.MySQLContainerProvider;
-import org.duder.chat.utils.WebsocketClient;
+import org.duder.chat.utils.MyWebSocketClient;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -59,11 +59,10 @@ public class WebsocketIT {
     }
 
     @Test
-    public void sendMessage_sendsMessagesToSubscibersAndPersistsMessageToDb() throws InterruptedException, ExecutionException, TimeoutException {
+    public void sendMessage_sendsMessagesToSubscribersAndPersistsMessageToDb_always() throws InterruptedException, ExecutionException, TimeoutException {
         //given
-        CompletableFuture<ChatMessage> completableFuture = new CompletableFuture<>();
-        WebsocketClient websocketClient = new WebsocketClient(url, SUBSCRIBE_CHAT_ENDPOINT, SEND_MESSAGE_ENDPOINT);
-        websocketClient.subscribeForOneMessage(completableFuture, ChatMessage.class);
+        final MyWebSocketClient client = new MyWebSocketClient(url, SUBSCRIBE_CHAT_ENDPOINT, SEND_MESSAGE_ENDPOINT);
+        final CompletableFuture<ChatMessage> completableFuture = client.subscribeForOneMessage();
         ChatMessage chatMessage = ChatMessage.builder()
                 .sender(SENDER)
                 .content(CONTENT)
@@ -71,15 +70,15 @@ public class WebsocketIT {
                 .build();
 
         //when
-        websocketClient.sendMessage(chatMessage);
-        ChatMessage websocketMessage = completableFuture.get(10, TimeUnit.SECONDS);
-        //wait for scheduler
+        client.sendMessage(chatMessage);
+        ChatMessage message = completableFuture.get(10, TimeUnit.SECONDS);
+        //wait for scheduler (saving to db)
         Thread.sleep(2000);
         List<MessageEntity> messagesFromDb = messageRepository.findAll();
         MessageEntity messageEntity = messagesFromDb.get(0);
 
         //then
-        assertNotNull(websocketMessage);
+        assertNotNull(message);
         assertNotNull(messageEntity);
         assertEquals(SENDER, messageEntity.getAuthor());
         assertEquals(CONTENT, messageEntity.getContent());
@@ -92,15 +91,12 @@ public class WebsocketIT {
         int channelId = 1;
         int dummyChannelId = 2;
 
-        CompletableFuture<ChatMessage> completableFuture = new CompletableFuture<>();
-        CompletableFuture<ChatMessage> dummyCompletableFuture = new CompletableFuture<>();
+        MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/topic/" + channelId, SEND_MESSAGE_ENDPOINT + "/" + channelId);
+        MyWebSocketClient messageReceiver = new MyWebSocketClient(url, "/topic/" + channelId, null);
+        MyWebSocketClient dummyClient = new MyWebSocketClient(url, "/topic/" + dummyChannelId, null);
 
-        WebsocketClient messageProducer = new WebsocketClient(url, "/topic/" + channelId, SEND_MESSAGE_ENDPOINT + "/" + channelId);
-        WebsocketClient messageReceiver = new WebsocketClient(url, "/topic/" + channelId, null);
-        WebsocketClient dummyClient = new WebsocketClient(url, "/topic/" + dummyChannelId, null);
-
-        messageReceiver.subscribeForOneMessage(completableFuture, ChatMessage.class);
-        dummyClient.subscribeForOneMessage(dummyCompletableFuture, ChatMessage.class);
+        final CompletableFuture<ChatMessage> completableFuture = messageReceiver.subscribeForOneMessage();
+        final CompletableFuture<ChatMessage> dummyCompletableFuture = dummyClient.subscribeForOneMessage();
 
         ChatMessage chatMessage = ChatMessage.builder()
                 .sender(SENDER)
