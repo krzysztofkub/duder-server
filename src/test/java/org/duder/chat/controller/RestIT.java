@@ -29,18 +29,16 @@ import static org.junit.Assert.assertEquals;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class RestIT {
 
+    @ClassRule
+    public static GenericContainer mysqlContainer = MySQLContainerProvider.getInstance();
     @LocalServerPort
     private int port;
     @Autowired
     private TestRestTemplate testRestTemplate;
     @Autowired
     private MessageRepository messageRepository;
-
     private String url;
     private String GET_CHAT_STATE_ENDPOINT = "/getChatState";
-
-    @ClassRule
-    public static GenericContainer mysqlContainer = MySQLContainerProvider.getInstance();
 
     @Before
     public void setUp() throws Exception {
