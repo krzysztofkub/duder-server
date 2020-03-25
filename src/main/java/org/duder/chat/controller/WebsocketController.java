@@ -50,7 +50,7 @@ public class WebsocketController {
                 .map(m -> ChatMessage
                         .builder()
                         .content(m.getContent())
-                        .sender(m.getAuthor().getName())
+                        .sender(m.getAuthor().getNickname())
                         .type(m.getMessageType())
                         .build())
                 .collect(Collectors.toList());

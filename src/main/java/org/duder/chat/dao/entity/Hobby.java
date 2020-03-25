@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.duder.chat.model.ChannelType;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -15,7 +14,7 @@ import java.util.Set;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Channel {
+public class Hobby {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,10 +22,9 @@ public class Channel {
 
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    private ChannelType channelType;
+    @ManyToMany(mappedBy = "hobbies")
+    private Set<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "channel")
-    Set<UserChannel> channelUsers = new HashSet<>();
-
+    @ManyToMany(mappedBy = "hobbies")
+    private Set<Event> hobbies = new HashSet<>();
 }

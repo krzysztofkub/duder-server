@@ -42,7 +42,7 @@ public class MessageConsumer {
             log.info("Received message " + message);
             log.info("There are " + messageCache.count() + " messages in queue");
 
-            final Optional<User> sender = userRepository.findByName(message.getSender());
+            final Optional<User> sender = userRepository.findByNickname(message.getSender());
             Message messageEntity = Message
                     .builder()
                     .messageType(message.getType())
