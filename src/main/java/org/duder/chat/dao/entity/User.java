@@ -40,14 +40,19 @@ public class User {
     @JoinTable(name = "user_hobby"
             , joinColumns = {@JoinColumn(name = "id_user")}
             , inverseJoinColumns = {@JoinColumn(name = "id_hobby")})
-    private List<Hobby> hobbies = new ArrayList<>();
+    private Set<Hobby> hobbies = new HashSet<>();
 
     // Channels user has access/belongs to.
     @OneToMany(mappedBy = "user")
-    private Set<UserChannel> userChannels = new HashSet<>();
+    private List<UserChannel> userChannels = new ArrayList<>();
 
     // Events user is interested or has participated in.
     @OneToMany(mappedBy = "primaryKey.user", cascade = CascadeType.ALL)
-    private Set<UserEvent> userEvents = new HashSet<>();
+    private List<UserEvent> userEvents = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(name = "user_friend"
+            , joinColumns = {@JoinColumn(name = "id_user")}
+            , inverseJoinColumns = {@JoinColumn(name = "id_friend")})
+    private Set<User> friends = new HashSet<>();
 }

@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,5 +32,6 @@ public class Event {
 
     // Users participating/interested in the event
     @OneToMany(mappedBy = "primaryKey.event", cascade = CascadeType.ALL)
-    private Set<UserEvent> eventUsers = new HashSet<>();
+    private List<UserEvent> eventUsers = new ArrayList<>();
+
 }

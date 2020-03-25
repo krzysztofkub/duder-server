@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.duder.chat.model.ChannelType;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -27,6 +27,6 @@ public class Channel {
     private ChannelType channelType;
 
     @OneToMany(mappedBy = "channel")
-    Set<UserChannel> channelUsers = new HashSet<>();
+    List<UserChannel> channelUsers = new ArrayList<>();
 
 }
