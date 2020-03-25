@@ -1,8 +1,12 @@
-package org.duder.chat.dao.entity.crossrefid;
+package org.duder.chat.dao.entity.id;
 
+import lombok.Data;
 import org.duder.chat.dao.entity.Event;
 import org.duder.chat.dao.entity.User;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,11 +15,16 @@ Cross reference id for user-event relation
 - must implement Serializable
 - must override equals and hashCode
  */
+@Embeddable
+@Data
 public class UserEventId implements Serializable {
 
     private static final long serialVersionUID = 7336041242493052291L;
 
+    @ManyToOne(cascade = CascadeType.ALL)
     private User user;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Event event;
 
     @Override

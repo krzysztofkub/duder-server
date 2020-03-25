@@ -1,4 +1,4 @@
-package org.duder.chat.dao.entity.crossrefid;
+package org.duder.chat.dao.entity.id;
 
 import org.duder.chat.dao.entity.Channel;
 import org.duder.chat.dao.entity.User;

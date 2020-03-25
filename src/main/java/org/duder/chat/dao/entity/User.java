@@ -47,7 +47,7 @@ public class User {
     private Set<UserChannel> userChannels = new HashSet<>();
 
     // Events user is interested or has participated in.
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "primaryKey.user", cascade = CascadeType.ALL)
     private Set<UserEvent> userEvents = new HashSet<>();
 
 }

@@ -1,7 +1,7 @@
 package org.duder.chat.dao.entity;
 
 import lombok.Data;
-import org.duder.chat.dao.entity.crossrefid.UserChannelId;
+import org.duder.chat.dao.entity.id.UserChannelId;
 
 import javax.persistence.*;
 

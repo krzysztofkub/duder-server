@@ -29,6 +29,6 @@ public class Event {
     private Set<Hobby> hobbies = new HashSet<>();
 
     // Users participating/interested in the event
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "primaryKey.event", cascade = CascadeType.ALL)
     private Set<UserEvent> eventUsers = new HashSet<>();
 }

@@ -1,24 +1,35 @@
 package org.duder.chat.dao.entity;
 
 import lombok.Data;
-import org.duder.chat.dao.entity.crossrefid.UserEventId;
+import org.duder.chat.dao.entity.id.UserEventId;
 
 import javax.persistence.*;
 
 @Entity
 @Data
-@IdClass(UserEventId.class) // Id class required if class consists of 2 foreign keys making primary key
+@AssociationOverrides({
+        @AssociationOverride(
+                name = "primaryKey.user",
+                joinColumns = @JoinColumn(name = "id_user")),
+        @AssociationOverride(
+                name = "primaryKey.event",
+                joinColumns = @JoinColumn(name = "id_event"))
+})
 public class UserEvent {
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "id_user")
-    private User user;
+    // Composite id key
+    @EmbeddedId
+    private UserEventId primaryKey;
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "id_event")
-    private Event event;
+    @Transient
+    public User getUser() {
+        return primaryKey.getUser();
+    }
+
+    @Transient
+    public Event getEvent() {
+        return primaryKey.getEvent();
+    }
 
     // TODO maybe even new table with these data would be better?
     private boolean isUserHost;
