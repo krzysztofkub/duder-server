@@ -21,7 +21,7 @@ public class MySQLContainerProvider {
     }
 
     private static GenericContainer createContainer() {
-        return new GenericContainer(new ImageFromDockerfile("mysql-test")
+        return new GenericContainer(new ImageFromDockerfile("mysql-duder")
                 .withDockerfileFromBuilder(dockerfileBuilder -> {
                     dockerfileBuilder.from("mysql:5.7.22")
                             .env("MYSQL_ROOT_PASSWORD", "test")
