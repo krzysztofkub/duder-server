@@ -20,7 +20,7 @@ public class User {
 
     // We will be identifying user by login first without knowing id.
     // Login is (at least should be) immutable! Hence natural id.
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     @NaturalId
     private String login;
 

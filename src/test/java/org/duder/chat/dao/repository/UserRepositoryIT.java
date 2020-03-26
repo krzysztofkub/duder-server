@@ -58,14 +58,34 @@ public class UserRepositoryIT {
 
     @Test(expected = DataIntegrityViolationException.class)
     @Rollback(false)
-    public void save_throwsException_whenSavingUserWithoutMandatoryFields() {
+    public void save_throwsException_whenSavingUserWithoutMandatoryLogin() {
+        User user = User.builder()
+                .password("password2")
+                .nickname("nickname2")
+                .build();
+        User save = userRepository.save(user);
+        assertNull(save.getId());
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    @Rollback(false)
+    public void save_throwsException_whenSavingUserWithoutMandatoryNickname() {
+        User user = User.builder()
+                .login("login2")
+                .password("password2")
+                .build();
+        User save = userRepository.save(user);
+        assertNull(save.getId());
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    @Rollback(false)
+    public void save_throwsException_whenSavingUserWithoutMandatoryPassword() {
         User user = User.builder()
                 .login("login2")
                 .nickname("nickname2")
                 .build();
-
         User save = userRepository.save(user);
-
         assertNull(save.getId());
     }
 }
