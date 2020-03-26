@@ -4,15 +4,18 @@ import org.duder.chat.dao.entity.Message;
 import org.duder.chat.dao.entity.User;
 import org.duder.chat.dao.repository.MessageRepository;
 import org.duder.chat.dao.repository.UserRepository;
+import org.duder.chat.exception.DataNotFoundException;
 import org.duder.chat.model.ChatMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.validation.ValidationException;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.DataFormatException;
 
 
 @Component
@@ -42,12 +45,13 @@ public class MessageConsumer {
             log.info("Received message " + message);
             log.info("There are " + messageCache.count() + " messages in queue");
 
-            final Optional<User> sender = userRepository.findByNickname(message.getSender());
+            String login = message.getSender();
+            final User user = userRepository.findByLogin(login).orElseThrow(() -> new DataNotFoundException("Can't find user " + login));
             Message messageEntity = Message
                     .builder()
                     .messageType(message.getType())
                     .content(message.getContent())
-                    .author(sender.get())
+                    .author(user)
                     .build();
             messageRepository.save(messageEntity);
         }

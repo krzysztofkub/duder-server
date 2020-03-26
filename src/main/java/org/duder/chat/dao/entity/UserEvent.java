@@ -1,12 +1,15 @@
 package org.duder.chat.dao.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.duder.chat.dao.entity.id.UserEventId;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AssociationOverrides({
         @AssociationOverride(
                 name = "primaryKey.user",

@@ -1,6 +1,7 @@
 package org.duder.chat.controller;
 
 import org.duder.chat.dao.entity.Message;
+import org.duder.chat.dao.entity.User;
 import org.duder.chat.dao.repository.MessageRepository;
 import org.duder.chat.model.ChatMessage;
 import org.duder.chat.model.MessageType;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.GenericContainer;
 
@@ -35,6 +37,7 @@ public class RestIT {
     private TestRestTemplate testRestTemplate;
     @Autowired
     private MessageRepository messageRepository;
+
     private String url;
     private String GET_CHAT_STATE_ENDPOINT = "/getChatState";
 
@@ -46,20 +49,12 @@ public class RestIT {
     @Test
     public void getChatState() {
         //given
-        Message messageEntity = Message
-                .builder()
-                .messageType(MessageType.CHAT)
-                .content("ASASDASD")
-                .build();
-        messageRepository.saveAndFlush(messageEntity);
+        //Data persisted by .sql file -> look on class annotation
 
         //when
         ChatMessage[] messages = testRestTemplate.getForObject(url + GET_CHAT_STATE_ENDPOINT, ChatMessage[].class);
         ChatMessage message = messages[0];
 
         assertEquals(1, messages.length);
-        assertEquals(messageEntity.getMessageType(), message.getType());
-        assertEquals(messageEntity.getAuthor(), message.getSender());
-        assertEquals(messageEntity.getContent(), message.getContent());
     }
 }

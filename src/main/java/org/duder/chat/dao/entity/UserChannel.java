@@ -1,12 +1,15 @@
 package org.duder.chat.dao.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.duder.chat.dao.entity.id.UserChannelId;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @IdClass(UserChannelId.class) // Id class required if class consists of 2 foreign keys making primary key
 public class UserChannel {
 

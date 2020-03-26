@@ -25,7 +25,7 @@ public class MySQLContainerProvider {
                 .withDockerfileFromBuilder(dockerfileBuilder -> {
                     dockerfileBuilder.from("mysql:5.7.22")
                             .env("MYSQL_ROOT_PASSWORD", "test")
-                            .env("MYSQL_DATABASE", "test")
+                            .env("MYSQL_DATABASE", "duder")
                             .env("MYSQL_USER", "test")
                             .env("MYSQL_PASSWORD", "test")
                             .add("a_schema.sql", "/docker-entrypoint-initdb.d")

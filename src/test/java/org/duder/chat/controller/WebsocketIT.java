@@ -3,8 +3,10 @@ package org.duder.chat.controller;
 
 import org.duder.chat.dao.entity.Message;
 import org.duder.chat.dao.repository.MessageRepository;
+import org.duder.chat.dao.repository.UserRepository;
 import org.duder.chat.model.ChatMessage;
 import org.duder.chat.model.MessageType;
+import org.duder.chat.utils.DataSQLValues;
 import org.duder.chat.utils.MySQLContainerProvider;
 import org.duder.chat.utils.MyWebSocketClient;
 import org.junit.Before;
@@ -15,8 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.GenericContainer;
 
 import java.util.List;
@@ -35,6 +39,8 @@ public class WebsocketIT {
 
     @Autowired
     private MessageRepository messageRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @LocalServerPort
     private int port;
@@ -43,7 +49,6 @@ public class WebsocketIT {
     private static final String SEND_MESSAGE_ENDPOINT = "/app/sendMessage";
     private static final String SUBSCRIBE_CHAT_ENDPOINT = "/topic/public";
 
-    private final String SENDER = "Sender";
     private final String CONTENT = "Content";
     private final MessageType MESSAGE_TYPE = MessageType.CHAT;
 
@@ -56,12 +61,14 @@ public class WebsocketIT {
     }
 
     @Test
+    @Rollback(false)
+    @Transactional
     public void sendMessage_sendsMessagesToSubscribersAndPersistsMessageToDb_always() throws InterruptedException, ExecutionException, TimeoutException {
         //given
         final MyWebSocketClient client = new MyWebSocketClient(url, SUBSCRIBE_CHAT_ENDPOINT, SEND_MESSAGE_ENDPOINT);
         final CompletableFuture<ChatMessage> completableFuture = client.subscribeForOneMessage();
         ChatMessage chatMessage = ChatMessage.builder()
-                .sender(SENDER)
+                .sender(DataSQLValues.getUser().getLogin())
                 .content(CONTENT)
                 .type(MESSAGE_TYPE)
                 .build();
@@ -71,13 +78,16 @@ public class WebsocketIT {
         ChatMessage message = completableFuture.get(10, TimeUnit.SECONDS);
         //wait for scheduler (saving to db)
         Thread.sleep(2000);
-        List<Message> messagesFromDb = messageRepository.findAll();
-        Message messageEntity = messagesFromDb.get(0);
+        List<Message> messagesFromDb = messageRepository.findByAuthorIdOrderByTimestampDesc(DataSQLValues.getUser().getId());
+
 
         //then
+        assertTrue(messagesFromDb.size() > 1);
+        //first message is persisted by data.sql
+        Message messageEntity = messagesFromDb.get(0);
         assertNotNull(message);
         assertNotNull(messageEntity);
-        assertEquals(SENDER, messageEntity.getAuthor());
+        assertEquals(DataSQLValues.getUser().getLogin(), messageEntity.getAuthor().getLogin());
         assertEquals(CONTENT, messageEntity.getContent());
         assertEquals(MESSAGE_TYPE, messageEntity.getMessageType());
     }
@@ -96,7 +106,7 @@ public class WebsocketIT {
         final CompletableFuture<ChatMessage> dummyCompletableFuture = dummyClient.subscribeForOneMessage();
 
         ChatMessage chatMessage = ChatMessage.builder()
-                .sender(SENDER)
+                .sender(DataSQLValues.getUser().getLogin())
                 .content(CONTENT)
                 .type(MESSAGE_TYPE)
                 .build();
