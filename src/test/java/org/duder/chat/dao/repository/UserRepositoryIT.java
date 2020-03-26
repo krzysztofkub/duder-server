@@ -56,56 +56,6 @@ public class UserRepositoryIT {
         userRepository.delete(user);
     }
 
-    @Test
-    public void whenDifferentLogin_thenUsersNotTheSame() {
-        // given
-        final String login = "dude";
-
-        // when
-        final User u1 = User.builder().login(login).build();
-        final User u2 = User.builder().login(login).build();
-        final User u3 = User.builder().login(login + "asdasd").build();
-
-        // then
-        assertEquals(u1, u2);
-        assertNotEquals(u1, u3);
-    }
-
-    @Test
-    public void givenLogin_whenSaved_thenFindByLoginOrId() {
-        // given
-        final String login = "dude";
-        final User toSave = User.builder()
-                .login(login)
-                .nickname("The Dude")
-                .password("asd")
-                .build();
-
-        // when
-        final User saved = userRepository.save(toSave);
-        final Long id = saved.getId();
-
-        // then
-        final Optional<User> foundByLogin = userRepository.findByLogin(login);
-        final User byLogin = foundByLogin.get();
-
-        final Optional<User> foundById = userRepository.findById(id);
-        final User byId = foundById.get();
-
-        assertNotNull(toSave);
-        assertNotNull(saved);
-        assertNotNull(byLogin);
-        assertNotNull(byId);
-
-        assertEquals(toSave.getLogin(), saved.getLogin());
-        assertEquals(toSave.getLogin(), byLogin.getLogin());
-
-        assertEquals(toSave.getId(), saved.getId());
-        assertEquals(toSave.getId(), byLogin.getId());
-
-        assertEquals(byLogin, byId);
-    }
-
     @Test(expected = DataIntegrityViolationException.class)
     @Rollback(false)
     public void save_throwsException_whenSavingUserWithoutMandatoryFields() {
