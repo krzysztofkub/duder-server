@@ -27,7 +27,10 @@ public class User {
     @NaturalId
     private String login;
 
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String nickname;
 
     @OneToMany(mappedBy = "author")

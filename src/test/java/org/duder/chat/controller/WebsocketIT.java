@@ -2,6 +2,7 @@ package org.duder.chat.controller;
 
 
 import org.duder.chat.dao.entity.Message;
+import org.duder.chat.dao.entity.User;
 import org.duder.chat.dao.repository.MessageRepository;
 import org.duder.chat.dao.repository.UserRepository;
 import org.duder.chat.model.ChatMessage;
