@@ -19,6 +19,8 @@ public class Channel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Name should not be null but is not necessarily unique - not a natural id
+    @Column(nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)

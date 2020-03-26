@@ -1,6 +1,5 @@
 package org.duder.chat.dao.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.duder.chat.dao.entity.id.UserEventId;
@@ -18,6 +17,7 @@ import javax.persistence.*;
                 name = "primaryKey.event",
                 joinColumns = @JoinColumn(name = "id_event"))
 })
+// TODO this is one implementation of many-to-many relation with extra columns, the other is UserChannel, review which fits our needs better and refactor later
 public class UserEvent {
 
     // Composite id key

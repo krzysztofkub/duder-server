@@ -1,6 +1,7 @@
 package org.duder.chat.dao.entity;
 
 import lombok.*;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -19,6 +20,9 @@ public class Hobby {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // It seems reasonable to have name unique here 
+    @Column(unique = true, nullable = false)
+    @NaturalId
     private String name;
 
     @ManyToMany(mappedBy = "hobbies")
