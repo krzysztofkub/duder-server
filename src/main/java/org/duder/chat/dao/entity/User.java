@@ -4,10 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -56,4 +53,18 @@ public class User {
             , joinColumns = {@JoinColumn(name = "id_user")}
             , inverseJoinColumns = {@JoinColumn(name = "id_friend")})
     private Set<User> friends = new HashSet<>();
+
+    // Equals & hash code by natural id - should be unique and not nullable
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User that = (User) o;
+        return Objects.equals(login, that.login);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(login);
+    }
 }
