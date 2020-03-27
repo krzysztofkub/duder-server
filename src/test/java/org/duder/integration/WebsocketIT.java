@@ -88,14 +88,14 @@ public class WebsocketIT {
 
 
         //then
+        assertNotNull(message);
         assertTrue(messagesFromDb.size() > 1);
         //first message is persisted by data.sql
         Message messageEntity = messagesFromDb.get(0);
-        assertNotNull(message);
         assertNotNull(messageEntity);
         assertEquals(DataSQLValues.getUser().getLogin(), messageEntity.getAuthor().getLogin());
         assertEquals(CONTENT, messageEntity.getContent());
-        assertEquals(MESSAGE_TYPE, messageEntity.getMessageTypeDto());
+        assertEquals(MESSAGE_TYPE, messageEntity.getMessageType());
     }
 
     @Test
@@ -148,23 +148,18 @@ public class WebsocketIT {
     @Rollback(false)
     public void sendMessage_toUser() throws InterruptedException, ExecutionException, TimeoutException {
         //given
-        User producerUser = User.builder()
-                .login("login2")
-                .nickname("nickname2")
-                .password("password")
-                .build();
-        userRepository.save(producerUser);
-
+        Optional<User> producerUser = userRepository.findByLogin("login2");
+        assertTrue(producerUser.isPresent());
         Optional<User> receiverUser = userRepository.findByLogin("login");
         assertTrue(receiverUser.isPresent());
 
-        MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/user/queue/reply", SEND_MESSAGE_TO_USER_ENDPOINT, producerUser);
+        MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/user/queue/reply", SEND_MESSAGE_TO_USER_ENDPOINT, producerUser.get());
         MyWebSocketClient messageReceiver = new MyWebSocketClient(url, "/user/queue/reply", null, receiverUser.get());
 
         final CompletableFuture<ChatMessageDto> completableFuture = messageReceiver.subscribeForOneMessage();
 
         ChatMessageDto chatMessageDto = ChatMessageDto.builder()
-                .sender(producerUser.getLogin())
+                .sender(producerUser.get().getLogin())
                 .content(CONTENT)
                 .type(MESSAGE_TYPE)
                 .to(receiverUser.get().getLogin())
