@@ -65,7 +65,6 @@ public class WebsocketIT {
 
     @Test
     @Rollback(false)
-    @Transactional
     public void sendMessage_sendsMessagesToSubscribersAndPersistsMessageToDb_always() throws InterruptedException, ExecutionException, TimeoutException {
         //given
         Optional<User> user = userRepository.findById(DataSQLValues.getUser().getId());
