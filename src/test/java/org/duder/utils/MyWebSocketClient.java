@@ -2,6 +2,7 @@ package org.duder.utils;
 
 import org.duder.chat.dto.ChatMessageDto;
 import org.duder.chat.dto.MessageTypeDto;
+import org.duder.user.dao.User;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,7 @@ public class MyWebSocketClient {
 
     private StompSession session;
 
-    public MyWebSocketClient(String url, String defaultTopic, String defaultSendEndpoint) {
+    public MyWebSocketClient(String url, String defaultTopic, String defaultSendEndpoint, User user) throws InterruptedException, ExecutionException, TimeoutException {
         this.defaultTopic = defaultTopic;
         this.defaultSendEndpoint = defaultSendEndpoint;
 
@@ -83,17 +84,17 @@ public class MyWebSocketClient {
 
         // TODO I assume this is needed for handshake and upgrade to stomp protocol?
         final WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
+        final StompHeaders stompHeaders = new StompHeaders();
+        if (user != null) {
+            stompHeaders.add("login", user.getLogin());
+            stompHeaders.add("usercode", user.getPassword());
+        }
 
         MyStompSessionHandler sessionHandler = new MyStompSessionHandler();
-        final ListenableFuture<StompSession> futureSession = client.connect(url, headers, sessionHandler);
+        final ListenableFuture<StompSession> futureSession = client.connect(url, headers, stompHeaders, sessionHandler);
 
         // Finally acquire stomp session
-        try {
-            session = futureSession.get(10, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            log.error("Acquiring session failed, details: " + e);
-            e.printStackTrace();
-        }
+        session = futureSession.get(10, TimeUnit.SECONDS);
     }
 
     // subscribe(...) methods return Subscription instance to enable un-subscribing

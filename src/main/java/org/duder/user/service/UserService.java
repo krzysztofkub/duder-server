@@ -6,4 +6,6 @@ import org.duder.user.exception.UserAlreadyExistsException;
 
 public interface UserService {
     User register(UserDto userDto) throws UserAlreadyExistsException;
+
+    boolean authenticateUser(String login, String password);
 }
