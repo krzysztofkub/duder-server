@@ -1,6 +1,6 @@
-package org.duder.user.dao.repository;
+package org.duder.user.repository;
 
-import org.duder.user.dao.model.User;
+import org.duder.user.dao.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

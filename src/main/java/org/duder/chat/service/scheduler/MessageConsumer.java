@@ -1,11 +1,11 @@
 package org.duder.chat.service.scheduler;
 
-import org.duder.chat.dao.model.Message;
-import org.duder.chat.dao.repository.MessageRepository;
+import org.duder.chat.dao.Message;
+import org.duder.chat.repository.MessageRepository;
 import org.duder.chat.dto.ChatMessageDto;
 import org.duder.chat.exception.DataNotFoundException;
-import org.duder.user.dao.model.User;
-import org.duder.user.dao.repository.UserRepository;
+import org.duder.user.dao.User;
+import org.duder.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

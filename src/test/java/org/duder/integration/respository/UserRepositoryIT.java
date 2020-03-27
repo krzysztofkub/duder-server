@@ -1,8 +1,8 @@
 package org.duder.integration.respository;
 
 import org.duder.utils.MySQLContainerProvider;
-import org.duder.user.dao.model.User;
-import org.duder.user.dao.repository.UserRepository;
+import org.duder.user.dao.User;
+import org.duder.user.repository.UserRepository;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;

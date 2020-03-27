@@ -1,9 +1,8 @@
 package org.duder.integration;
 
-import org.duder.chat.dao.repository.MessageRepository;
 import org.duder.chat.dto.ChatMessageDto;
-import org.duder.user.dao.model.User;
-import org.duder.user.dao.repository.UserRepository;
+import org.duder.user.dao.User;
+import org.duder.user.repository.UserRepository;
 import org.duder.user.dto.Code;
 import org.duder.user.dto.UserDto;
 import org.duder.user.rest.Response;

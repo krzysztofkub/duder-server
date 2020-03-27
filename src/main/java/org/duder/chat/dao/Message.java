@@ -1,11 +1,11 @@
-package org.duder.chat.dao.model;
+package org.duder.chat.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.duder.chat.dto.MessageTypeDto;
-import org.duder.user.dao.model.User;
+import org.duder.user.dao.User;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

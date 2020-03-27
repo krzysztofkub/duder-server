@@ -1,7 +1,7 @@
 package org.duder.integration.respository;
 
-import org.duder.chat.dao.model.Message;
-import org.duder.chat.dao.repository.MessageRepository;
+import org.duder.chat.dao.Message;
+import org.duder.chat.repository.MessageRepository;
 import org.duder.utils.MySQLContainerProvider;
 import org.junit.ClassRule;
 import org.junit.Test;

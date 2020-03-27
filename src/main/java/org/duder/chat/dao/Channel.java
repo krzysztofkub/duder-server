@@ -1,8 +1,8 @@
-package org.duder.chat.dao.model;
+package org.duder.chat.dao;
 
 import lombok.*;
 import org.duder.chat.dto.ChannelTypeDto;
-import org.duder.user.dao.model.UserChannel;
+import org.duder.user.dao.UserChannel;
 
 import javax.persistence.*;
 import java.util.ArrayList;

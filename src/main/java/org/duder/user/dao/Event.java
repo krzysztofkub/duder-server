@@ -1,4 +1,4 @@
-package org.duder.user.dao.model;
+package org.duder.user.dao;
 
 import lombok.*;
 

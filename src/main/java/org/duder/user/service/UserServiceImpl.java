@@ -1,7 +1,7 @@
 package org.duder.user.service;
 
-import org.duder.user.dao.model.User;
-import org.duder.user.dao.repository.UserRepository;
+import org.duder.user.dao.User;
+import org.duder.user.repository.UserRepository;
 import org.duder.user.dto.UserDto;
 import org.duder.user.exception.UserAlreadyExistsException;
 import org.springframework.stereotype.Component;

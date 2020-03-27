@@ -1,14 +1,14 @@
 package org.duder.integration;
 
 
-import org.duder.chat.dao.model.Message;
-import org.duder.chat.dao.repository.MessageRepository;
+import org.duder.chat.dao.Message;
+import org.duder.chat.repository.MessageRepository;
 import org.duder.chat.dto.ChatMessageDto;
 import org.duder.chat.dto.MessageTypeDto;
 import org.duder.utils.DataSQLValues;
 import org.duder.utils.MySQLContainerProvider;
 import org.duder.utils.MyWebSocketClient;
-import org.duder.user.dao.repository.UserRepository;
+import org.duder.user.repository.UserRepository;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -100,9 +100,11 @@ public class WebsocketIT {
 
         MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/topic/" + channelId, SEND_MESSAGE_ENDPOINT + "/" + channelId);
         MyWebSocketClient messageReceiver = new MyWebSocketClient(url, "/topic/" + channelId, null);
+        MyWebSocketClient messageReceiver2 = new MyWebSocketClient(url, "/topic/" + channelId, null);
         MyWebSocketClient dummyClient = new MyWebSocketClient(url, "/topic/" + dummyChannelId, null);
 
         final CompletableFuture<ChatMessageDto> completableFuture = messageReceiver.subscribeForOneMessage();
+        final CompletableFuture<ChatMessageDto> completableFuture2 = messageReceiver2.subscribeForOneMessage();
         final CompletableFuture<ChatMessageDto> dummyCompletableFuture = dummyClient.subscribeForOneMessage();
 
         ChatMessageDto chatMessageDto = ChatMessageDto.builder()
@@ -116,9 +118,11 @@ public class WebsocketIT {
 
         //then
         ChatMessageDto response = completableFuture.get(10, TimeUnit.SECONDS);
+        ChatMessageDto response2 = completableFuture2.get(10, TimeUnit.SECONDS);
         ChatMessageDto dummyResponse = dummyCompletableFuture.getNow(null);
 
         assertNotNull(response);
+        assertNotNull(response2);
         assertNull(dummyResponse);
     }
 }

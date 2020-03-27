@@ -1,6 +1,6 @@
 package org.duder.user.rest;
 
-import org.duder.user.dao.model.User;
+import org.duder.user.dao.User;
 import org.duder.user.dto.UserDto;
 import org.duder.user.service.UserService;
 import org.springframework.http.HttpStatus;

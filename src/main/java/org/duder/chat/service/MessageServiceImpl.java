@@ -1,9 +1,9 @@
 package org.duder.chat.service;
 
-import org.duder.chat.dao.repository.MessageRepository;
+import org.duder.chat.repository.MessageRepository;
 import org.duder.chat.dto.ChatMessageDto;
 import org.duder.chat.service.scheduler.MessageCache;
-import org.duder.user.dao.repository.UserRepository;
+import org.duder.user.repository.UserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 

@@ -1,9 +1,9 @@
-package org.duder.user.dao.model;
+package org.duder.user.dao;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.duder.chat.dao.model.Channel;
-import org.duder.user.dao.model.id.UserChannelId;
+import org.duder.chat.dao.Channel;
+import org.duder.user.dao.id.UserChannelId;
 
 import javax.persistence.*;
 
