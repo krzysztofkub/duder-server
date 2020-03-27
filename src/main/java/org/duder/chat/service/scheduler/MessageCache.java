@@ -1,11 +1,11 @@
 package org.duder.chat.service.scheduler;
 
-import org.duder.chat.dto.ChatMessage;
+import org.duder.chat.dto.ChatMessageDto;
 
 public interface MessageCache {
-    void add(ChatMessage chatMessage);
+    void add(ChatMessageDto chatMessageDto);
 
-    ChatMessage take();
+    ChatMessageDto take();
 
     int count();
 }

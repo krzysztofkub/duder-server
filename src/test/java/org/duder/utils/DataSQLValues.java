@@ -1,6 +1,6 @@
 package org.duder.utils;
 
-import org.duder.user.dao.model.User;
+import org.duder.user.dao.User;
 
 /*
 This class is simply holder for values from /db/mysql/data.sql

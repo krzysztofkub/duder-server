@@ -1,7 +1,7 @@
-package org.duder.user.dao.model;
+package org.duder.user.dao;
 
 import lombok.*;
-import org.duder.chat.dao.model.Message;
+import org.duder.chat.dao.Message;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;

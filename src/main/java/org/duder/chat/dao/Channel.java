@@ -1,8 +1,8 @@
-package org.duder.chat.dao.model;
+package org.duder.chat.dao;
 
 import lombok.*;
-import org.duder.chat.dto.ChannelType;
-import org.duder.user.dao.model.UserChannel;
+import org.duder.chat.dto.ChannelTypeDto;
+import org.duder.user.dao.UserChannel;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class Channel {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private ChannelType channelType;
+    private ChannelTypeDto channelType;
 
     @OneToMany(mappedBy = "channel")
     List<UserChannel> channelUsers = new ArrayList<>();

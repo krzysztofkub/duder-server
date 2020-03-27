@@ -1,8 +1,8 @@
-package org.duder.user.dao.model;
+package org.duder.user.dao;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.duder.user.dao.model.id.UserEventId;
+import org.duder.user.dao.id.UserEventId;
 
 import javax.persistence.*;
 

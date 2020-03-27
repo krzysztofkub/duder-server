@@ -1,6 +1,6 @@
 package org.duder.chat.rest;
 
-import org.duder.chat.dto.ChatMessage;
+import org.duder.chat.dto.ChatMessageDto;
 import org.duder.chat.service.MessageService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +17,7 @@ public class MessageController {
     }
 
     @GetMapping("/getChatState")
-    public List<ChatMessage> getChatState() {
+    public List<ChatMessageDto> getChatState() {
         return messageService.getPublicChannelState();
     }
 }

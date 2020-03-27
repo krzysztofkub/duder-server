@@ -1,17 +1,13 @@
 package org.duder.chat.service;
 
-import org.duder.chat.dao.repository.MessageRepository;
-import org.duder.chat.dto.ChatMessage;
-import org.duder.chat.dto.MessageType;
+import org.duder.chat.repository.MessageRepository;
+import org.duder.chat.dto.ChatMessageDto;
 import org.duder.chat.service.scheduler.MessageCache;
-import org.duder.user.dao.model.User;
-import org.duder.user.dao.repository.UserRepository;
+import org.duder.user.repository.UserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -30,27 +26,27 @@ class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public void sendMessage(ChatMessage chatMessage) {
-        simpMessagingTemplate.convertAndSend(TOPIC+ PUBLIC_ENDPOINT, chatMessage);
-        messageCache.add(chatMessage);
+    public void sendMessage(ChatMessageDto chatMessageDto) {
+        simpMessagingTemplate.convertAndSend(TOPIC+ PUBLIC_ENDPOINT, chatMessageDto);
+        messageCache.add(chatMessageDto);
     }
 
     @Override
-    public void sendChannelMessage(ChatMessage chatMessage, int channelId) {
-        simpMessagingTemplate.convertAndSend(TOPIC + channelId, chatMessage);
+    public void sendChannelMessage(ChatMessageDto chatMessageDto, int channelId) {
+        simpMessagingTemplate.convertAndSend(TOPIC + channelId, chatMessageDto);
         //TODO add message to cache and save to db
     }
 
     @Override
-    public List<ChatMessage> getPublicChannelState() {
+    public List<ChatMessageDto> getPublicChannelState() {
         return messageRepository
                 .findAll()
                 .stream()
-                .map(m -> ChatMessage
+                .map(m -> ChatMessageDto
                         .builder()
                         .content(m.getContent())
                         .sender(m.getAuthor().getNickname())
-                        .type(m.getMessageType())
+                        .type(m.getMessageTypeDto())
                         .build())
                 .collect(Collectors.toList());
     }

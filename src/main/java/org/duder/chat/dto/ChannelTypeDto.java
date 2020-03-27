@@ -1,6 +1,6 @@
 package org.duder.chat.dto;
 
-public enum ChannelType {
+public enum ChannelTypeDto {
     DM,
     GROUP_CHAT,
     EVENT_CHAT

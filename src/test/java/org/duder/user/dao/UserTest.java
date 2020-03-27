@@ -1,6 +1,5 @@
-package org.duder.user.dao.model;
+package org.duder.user.dao;
 
-import org.duder.user.dao.model.User;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
