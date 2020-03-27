@@ -80,13 +80,22 @@ public class UserRepositoryIT {
     }
 
     @Test(expected = DataIntegrityViolationException.class)
-    @Rollback(false)
     public void save_throwsException_whenSavingUserWithoutMandatoryPassword() {
         User user = User.builder()
                 .login("login2")
                 .nickname("nickname2")
                 .build();
-        User save = userRepository.save(user);
-        assertNull(save.getId());
+        userRepository.save(user);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void save_throwsException_whenUserAlreadyExists() {
+        User user = User.builder()
+                .login("login")
+                .password("password")
+                .nickname("nickname")
+                .build();
+
+        userRepository.save(user);
     }
 }

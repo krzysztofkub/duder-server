@@ -1,7 +1,7 @@
 package org.duder.utils;
 
-import org.duder.chat.dto.ChatMessage;
-import org.duder.chat.dto.MessageType;
+import org.duder.chat.dto.ChatMessageDto;
+import org.duder.chat.dto.MessageTypeDto;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,17 +27,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Web socket client for exchanging ChatMessage-es
+ * Web socket client for exchanging ChatMessageDto-es
  */
-// TODO In future this might need to be generified to handle other types, not only ChatMessage
+// TODO In future this might need to be generified to handle other types, not only ChatMessageDto
 public class MyWebSocketClient {
 
     private static final Logger log = LoggerFactory.getLogger(MyWebSocketClient.class);
 
-    private final static ChatMessage defaultChatMessage = ChatMessage.builder()
+    private final static ChatMessageDto DEFAULT_CHAT_MESSAGE_DTO = ChatMessageDto.builder()
             .sender("dude")
             .content("what's up dog?")
-            .type(MessageType.CHAT)
+            .type(MessageTypeDto.CHAT)
             .build();
 
     // If not provided this is the handler for any messages received by the client
@@ -45,7 +45,7 @@ public class MyWebSocketClient {
     private static final StompFrameHandler defaultFrameHandler = new StompFrameHandler() {
         @Override
         public Type getPayloadType(StompHeaders stompHeaders) {
-            return ChatMessage.class;
+            return ChatMessageDto.class;
         }
         @Override
         public void handleFrame(StompHeaders stompHeaders, Object o) {
@@ -77,8 +77,8 @@ public class MyWebSocketClient {
         // Wrapping in STOMP
         WebSocketStompClient client = new WebSocketStompClient(sockJsClient);
 
-        // [STOMP] Add this to make ChatMessage class automatically parsable from/to JSON
-        // Otherwise send with ChatMessage as parameter will throw UnsupportedCastException
+        // [STOMP] Add this to make ChatMessageDto class automatically parsable from/to JSON
+        // Otherwise send with ChatMessageDto as parameter will throw UnsupportedCastException
         client.setMessageConverter(new MappingJackson2MessageConverter());
 
         // TODO I assume this is needed for handshake and upgrade to stomp protocol?
@@ -110,24 +110,24 @@ public class MyWebSocketClient {
         return session.subscribe(topic, messageHandler);
     }
 
-    public CompletableFuture<ChatMessage> subscribeForOneMessage() {
+    public CompletableFuture<ChatMessageDto> subscribeForOneMessage() {
         return subscribeForOneMessage(defaultTopic);
     }
 
-    public CompletableFuture<ChatMessage> subscribeForOneMessage(String topic) {
-        final CompletableFuture<ChatMessage> futureMessage = new CompletableFuture<>();
+    public CompletableFuture<ChatMessageDto> subscribeForOneMessage(String topic) {
+        final CompletableFuture<ChatMessageDto> futureMessage = new CompletableFuture<>();
         final StompFrameHandler frameHandler = new StompFrameHandler() {
             @NotNull
             @Override
             public Type getPayloadType(@NotNull StompHeaders headers) {
-                return ChatMessage.class;
+                return ChatMessageDto.class;
             }
             @Override
             public void handleFrame(@NotNull StompHeaders headers, Object o) {
                 // TODO I am not sure but in future if we send eg. ACK messages I think o here can be null, TBA
                 log.info("Frame received: {}", o);
                 if (o != null) {
-                    final ChatMessage message = (ChatMessage) o;
+                    final ChatMessageDto message = (ChatMessageDto) o;
                     futureMessage.complete(message);
                 }
             }
@@ -138,14 +138,14 @@ public class MyWebSocketClient {
     }
 
     public void sendMessage() {
-        sendMessage(defaultChatMessage, defaultSendEndpoint);
+        sendMessage(DEFAULT_CHAT_MESSAGE_DTO, defaultSendEndpoint);
     }
 
-    public void sendMessage(ChatMessage message) {
+    public void sendMessage(ChatMessageDto message) {
         sendMessage(message, defaultSendEndpoint);
     }
 
-    public void sendMessage(ChatMessage message, String endpoint) {
+    public void sendMessage(ChatMessageDto message, String endpoint) {
         session.send(endpoint, message);
     }
 }

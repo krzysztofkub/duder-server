@@ -9,16 +9,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatMessage {
-    private MessageType type;
+public class ChatMessageDto {
+    private MessageTypeDto type;
     private String content;
     private String sender;
 
-    public MessageType getType() {
+    public MessageTypeDto getType() {
         return type;
     }
 
-    public void setType(MessageType type) {
+    public void setType(MessageTypeDto type) {
         this.type = type;
     }
 

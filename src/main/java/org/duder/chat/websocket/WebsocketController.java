@@ -1,6 +1,6 @@
 package org.duder.chat.websocket;
 
-import org.duder.chat.dto.ChatMessage;
+import org.duder.chat.dto.ChatMessageDto;
 import org.duder.chat.service.MessageService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -16,15 +16,15 @@ public class WebsocketController {
     }
 
     @MessageMapping("/sendMessage")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
-        messageService.sendMessage(chatMessage);
-        return chatMessage;
+    public ChatMessageDto sendMessage(@Payload ChatMessageDto chatMessageDto) {
+        messageService.sendMessage(chatMessageDto);
+        return chatMessageDto;
     }
 
     @MessageMapping("/sendMessage/{channelId}")
-    public ChatMessage sendMessage(@DestinationVariable int channelId, @Payload ChatMessage chatMessage) {
-        messageService.sendChannelMessage(chatMessage, channelId);
-        return chatMessage;
+    public ChatMessageDto sendMessage(@DestinationVariable int channelId, @Payload ChatMessageDto chatMessageDto) {
+        messageService.sendChannelMessage(chatMessageDto, channelId);
+        return chatMessageDto;
     }
 }
 
