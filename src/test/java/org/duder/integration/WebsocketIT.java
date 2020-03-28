@@ -47,9 +47,9 @@ public class WebsocketIT {
     private int port;
     private String url;
 
-    private static final String SEND_MESSAGE_ENDPOINT = "/app/sendMessage";
-    private static final String SEND_MESSAGE_TO_CHANNEL_ENDPOINT = "/app/sendMessageToChannel";
-    private static final String SEND_MESSAGE_TO_USER_ENDPOINT = "/app/sendMessageToUser";
+    private static final String SEND_MESSAGE_ENDPOINT = "/app/message";
+    private static final String SEND_MESSAGE_TO_CHANNEL_ENDPOINT = "/app/message/channel";
+    private static final String SEND_MESSAGE_TO_USER_ENDPOINT = "/app/message/user";
     private static final String SUBSCRIBE_CHAT_ENDPOINT = "/topic/public";
 
     private final String CONTENT = "Content";

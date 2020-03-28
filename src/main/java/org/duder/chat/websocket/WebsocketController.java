@@ -9,6 +9,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
 
@@ -24,19 +25,19 @@ public class WebsocketController {
         this.messageService = messageService;
     }
 
-    @MessageMapping("/sendMessage")
+    @MessageMapping("/message")
     public ChatMessageDto sendMessage(@Payload ChatMessageDto chatMessageDto) {
         messageService.sendMessage(chatMessageDto);
         return chatMessageDto;
     }
 
-    @MessageMapping("/sendMessageToChannel")
+    @MessageMapping("/message/channel")
     public ChatMessageDto sendMessageToChannel(@Payload ChatMessageDto chatMessageDto) {
         messageService.sendChannelMessage(chatMessageDto, Integer.valueOf(chatMessageDto.getTo()));
         return chatMessageDto;
     }
 
-    @MessageMapping("/sendMessageToUser")
+    @MessageMapping("/message/user")
     public void sendMessage(@Payload ChatMessageDto chatMessageDto, Principal user, @Header("simpSessionId") String sessionId) {
         simpMessagingTemplate.convertAndSendToUser(chatMessageDto.getTo(), "/queue/reply", chatMessageDto);
     }
