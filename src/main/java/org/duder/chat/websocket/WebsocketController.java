@@ -30,9 +30,9 @@ public class WebsocketController {
         return chatMessageDto;
     }
 
-    @MessageMapping("/sendMessage/{channelId}")
-    public ChatMessageDto sendMessage(@DestinationVariable int channelId, @Payload ChatMessageDto chatMessageDto) {
-        messageService.sendChannelMessage(chatMessageDto, channelId);
+    @MessageMapping("/sendMessageToChannel")
+    public ChatMessageDto sendMessageToChannel(@Payload ChatMessageDto chatMessageDto) {
+        messageService.sendChannelMessage(chatMessageDto, Integer.valueOf(chatMessageDto.getTo()));
         return chatMessageDto;
     }
 

@@ -48,6 +48,7 @@ public class WebsocketIT {
     private String url;
 
     private static final String SEND_MESSAGE_ENDPOINT = "/app/sendMessage";
+    private static final String SEND_MESSAGE_TO_CHANNEL_ENDPOINT = "/app/sendMessageToChannel";
     private static final String SEND_MESSAGE_TO_USER_ENDPOINT = "/app/sendMessageToUser";
     private static final String SUBSCRIBE_CHAT_ENDPOINT = "/topic/public";
 
@@ -114,7 +115,7 @@ public class WebsocketIT {
         Optional<User> user4 = userRepository.findByLogin("login3");
         assertTrue(user4.isPresent());
 
-        MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/topic/" + channelId, user.get(), SEND_MESSAGE_ENDPOINT + "/" + channelId);
+        MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/topic/" + channelId, user.get(), SEND_MESSAGE_TO_CHANNEL_ENDPOINT);
         MyWebSocketClient messageReceiver = new MyWebSocketClient(url, "/topic/" + channelId, user2.get());
         MyWebSocketClient messageReceiver2 = new MyWebSocketClient(url, "/topic/" + channelId, user3.get());
         MyWebSocketClient dummyClient = new MyWebSocketClient(url, "/topic/" + dummyChannelId, user4.get());
@@ -127,6 +128,7 @@ public class WebsocketIT {
                 .sender(DataSQLValues.getUser().getLogin())
                 .content(CONTENT)
                 .type(MESSAGE_TYPE)
+                .to(String.valueOf(channelId))
                 .build();
 
         //when
