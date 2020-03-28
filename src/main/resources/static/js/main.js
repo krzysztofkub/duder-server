@@ -26,7 +26,12 @@ function connect(event) {
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
 
-        stompClient.connect({}, onConnected, onError);
+        var headers = {
+              login: username,
+              password: document.querySelector('#password').value.trim()
+            };
+
+        stompClient.connect(headers, onConnected, onError);
     }
 
     var client = new HttpClient();
@@ -59,7 +64,7 @@ function onConnected() {
     stompClient.subscribe('/topic/public', onMessageReceived);
 
     // Tell your username to the server
-    stompClient.send("/app/sendMessage",
+    stompClient.send("/app/message",
         {},
         JSON.stringify({sender: username, type: 'JOIN'})
     )
@@ -84,7 +89,7 @@ function sendMessage(event) {
             type: 'CHAT'
         };
 
-        stompClient.send("/app/sendMessage", {}, JSON.stringify(chatMessage));
+        stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
         messageInput.value = '';
     }
     event.preventDefault();
