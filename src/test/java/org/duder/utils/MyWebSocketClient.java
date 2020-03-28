@@ -101,7 +101,7 @@ public class MyWebSocketClient {
         final StompHeaders stompHeaders = new StompHeaders();
         if (user != null) {
             stompHeaders.add("login", user.getLogin());
-            stompHeaders.add("usercode", user.getPassword());
+            stompHeaders.add("password", user.getPassword());
         }
 
         MyStompSessionHandler sessionHandler = new MyStompSessionHandler();

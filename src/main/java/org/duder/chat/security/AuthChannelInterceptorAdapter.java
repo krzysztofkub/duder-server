@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
     private static final String USERNAME_HEADER = "login";
-    private static final String PASSWORD_HEADER = "usercode";
+    private static final String PASSWORD_HEADER = "password";
     private final WebSocketAuthenticatorService webSocketAuthenticatorService;
 
     public AuthChannelInterceptorAdapter(WebSocketAuthenticatorService webSocketAuthenticatorService) {
