@@ -8,6 +8,10 @@ var messageInput = document.querySelector('#message');
 var messageArea = document.querySelector('#messageArea');
 var connectingElement = document.querySelector('.connecting');
 
+var messageToUserForm = document.querySelector('#messageToUserForm');
+var messageToUserInput = document.querySelector('#messageToUser');
+var userInput = document.querySelector('#user');
+
 var stompClient = null;
 var username = null;
 
@@ -62,6 +66,7 @@ var HttpClient = function() {
 function onConnected() {
     // Subscribe to the Public Topic
     stompClient.subscribe('/topic/public', onMessageReceived);
+    stompClient.subscribe('/user/queue/reply', onMessageReceived);
 
     // Tell your username to the server
     stompClient.send("/app/message",
@@ -91,6 +96,24 @@ function sendMessage(event) {
 
         stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
         messageInput.value = '';
+    }
+    event.preventDefault();
+}
+
+function sendMessageToUser(event) {
+    var messageContent = messageToUserInput.value.trim();
+    var user = document.querySelector('#user').value;
+
+    if(messageContent && stompClient) {
+        var chatMessage = {
+            sender: username,
+            content: messageContent,
+            to: user,
+            type: 'CHAT'
+        };
+
+        stompClient.send("/app/message/user", {}, JSON.stringify(chatMessage));
+        messageContent = '';
     }
     event.preventDefault();
 }
@@ -149,3 +172,4 @@ function getAvatarColor(messageSender) {
 
 usernameForm.addEventListener('submit', connect, true)
 messageForm.addEventListener('submit', sendMessage, true)
+messageToUserForm.addEventListener('submit', sendMessageToUser, true)
