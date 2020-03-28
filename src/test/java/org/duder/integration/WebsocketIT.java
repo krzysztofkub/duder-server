@@ -2,14 +2,14 @@ package org.duder.integration;
 
 
 import org.duder.chat.dao.Message;
-import org.duder.chat.repository.MessageRepository;
 import org.duder.chat.dto.ChatMessageDto;
 import org.duder.chat.dto.MessageTypeDto;
+import org.duder.chat.repository.MessageRepository;
 import org.duder.user.dao.User;
+import org.duder.user.repository.UserRepository;
 import org.duder.utils.DataSQLValues;
 import org.duder.utils.MySQLContainerProvider;
 import org.duder.utils.MyWebSocketClient;
-import org.duder.user.repository.UserRepository;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -21,7 +21,6 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.GenericContainer;
 
 import java.util.List;
@@ -70,7 +69,7 @@ public class WebsocketIT {
         Optional<User> user = userRepository.findById(DataSQLValues.getUser().getId());
         assertTrue(user.isPresent());
 
-        final MyWebSocketClient client = new MyWebSocketClient(url, SUBSCRIBE_CHAT_ENDPOINT, SEND_MESSAGE_ENDPOINT, user.get());
+        final MyWebSocketClient client = new MyWebSocketClient(url, SUBSCRIBE_CHAT_ENDPOINT, user.get(), SEND_MESSAGE_ENDPOINT);
         final CompletableFuture<ChatMessageDto> completableFuture = client.subscribeForOneMessage();
         ChatMessageDto chatMessageDto = ChatMessageDto.builder()
                 .sender(DataSQLValues.getUser().getLogin())
@@ -115,10 +114,10 @@ public class WebsocketIT {
         Optional<User> user4 = userRepository.findByLogin("login3");
         assertTrue(user4.isPresent());
 
-        MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/topic/" + channelId, SEND_MESSAGE_ENDPOINT + "/" + channelId, user.get());
-        MyWebSocketClient messageReceiver = new MyWebSocketClient(url, "/topic/" + channelId, null, user2.get());
-        MyWebSocketClient messageReceiver2 = new MyWebSocketClient(url, "/topic/" + channelId, null, user3.get());
-        MyWebSocketClient dummyClient = new MyWebSocketClient(url, "/topic/" + dummyChannelId, null, user4.get());
+        MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/topic/" + channelId, user.get(), SEND_MESSAGE_ENDPOINT + "/" + channelId);
+        MyWebSocketClient messageReceiver = new MyWebSocketClient(url, "/topic/" + channelId, user2.get());
+        MyWebSocketClient messageReceiver2 = new MyWebSocketClient(url, "/topic/" + channelId, user3.get());
+        MyWebSocketClient dummyClient = new MyWebSocketClient(url, "/topic/" + dummyChannelId, user4.get());
 
         final CompletableFuture<ChatMessageDto> completableFuture = messageReceiver.subscribeForOneMessage();
         final CompletableFuture<ChatMessageDto> completableFuture2 = messageReceiver2.subscribeForOneMessage();
@@ -152,8 +151,8 @@ public class WebsocketIT {
         Optional<User> receiverUser = userRepository.findByLogin("login");
         assertTrue(receiverUser.isPresent());
 
-        MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/user/queue/reply", SEND_MESSAGE_TO_USER_ENDPOINT, producerUser.get());
-        MyWebSocketClient messageReceiver = new MyWebSocketClient(url, "/user/queue/reply", null, receiverUser.get());
+        MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/user/queue/reply", producerUser.get(), SEND_MESSAGE_TO_USER_ENDPOINT);
+        MyWebSocketClient messageReceiver = new MyWebSocketClient(url, "/user/queue/reply", receiverUser.get());
 
         final CompletableFuture<ChatMessageDto> completableFuture = messageReceiver.subscribeForOneMessage();
 

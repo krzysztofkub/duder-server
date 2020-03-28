@@ -48,6 +48,7 @@ public class MyWebSocketClient {
         public Type getPayloadType(StompHeaders stompHeaders) {
             return ChatMessageDto.class;
         }
+
         @Override
         public void handleFrame(StompHeaders stompHeaders, Object o) {
             log.info("Frame received: {}", o);
@@ -59,10 +60,23 @@ public class MyWebSocketClient {
 
     private StompSession session;
 
-    public MyWebSocketClient(String url, String defaultTopic, String defaultSendEndpoint, User user) throws InterruptedException, ExecutionException, TimeoutException {
+    public MyWebSocketClient(String url, String defaultTopic, User user) throws InterruptedException, ExecutionException, TimeoutException {
+        this(url, defaultTopic, user, null);
+    }
+
+    public MyWebSocketClient(String url, User user, String defaultSendEndpoint) throws InterruptedException, ExecutionException, TimeoutException {
+        this(url, null, user, defaultSendEndpoint);
+
+    }
+
+    public MyWebSocketClient(String url, String defaultTopic, User user, String defaultSendEndpoint) throws InterruptedException, ExecutionException, TimeoutException {
         this.defaultTopic = defaultTopic;
         this.defaultSendEndpoint = defaultSendEndpoint;
+        initializeSession(url, user);
 
+    }
+
+    private void initializeSession(String url, User user) throws InterruptedException, ExecutionException, TimeoutException {
         // Stock client
         final StandardWebSocketClient standardClient = new StandardWebSocketClient();
 
@@ -123,6 +137,7 @@ public class MyWebSocketClient {
             public Type getPayloadType(@NotNull StompHeaders headers) {
                 return ChatMessageDto.class;
             }
+
             @Override
             public void handleFrame(@NotNull StompHeaders headers, Object o) {
                 // TODO I am not sure but in future if we send eg. ACK messages I think o here can be null, TBA
