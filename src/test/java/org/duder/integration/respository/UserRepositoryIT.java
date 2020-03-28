@@ -41,15 +41,17 @@ public class UserRepositoryIT {
     @Rollback(false)
     public void saveUserWithMandatoryFields_selectItByLogin() {
         //given
+        String login = "sfosjasokdjfaslkdjf";
+        String nickname = "sfosjasdfasdfsfhahdjf";
         User user = User.builder()
-                .login("login2")
-                .nickname("nickname2")
+                .login(login)
+                .nickname(nickname)
                 .password("password2")
                 .build();
 
         //when
         User save = userRepository.save(user);
-        Optional<User> login2 = userRepository.findByLogin("login2");
+        Optional<User> login2 = userRepository.findByLogin(login);
 
         //then
         assertNotNull(save.getId());

@@ -32,4 +32,9 @@ public class UserServiceImpl implements UserService {
                 .build();
         return userRepository.save(user);
     }
+
+    @Override
+    public boolean authenticateUser(String login, String password) {
+        return userRepository.findByLoginIgnoreCaseAndPasswordIgnoreCase(login, password).isPresent();
+    }
 }

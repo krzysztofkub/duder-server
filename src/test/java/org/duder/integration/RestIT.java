@@ -66,9 +66,11 @@ public class RestIT {
     @Test
     public void register_createsUser_whenPassedValidation() {
         //given
+        String login = "skfjasodfja";
+        String nickname = "asdokjas";
         UserDto userDto = UserDto.builder()
-                .login("login2")
-                .nickname("nickname2")
+                .login(login)
+                .nickname(nickname)
                 .password("password2")
                 .build();
 

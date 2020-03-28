@@ -30,7 +30,6 @@ public class Message {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "message_type")
-    private MessageTypeDto messageTypeDto;
+    private MessageTypeDto messageType;
 
 }

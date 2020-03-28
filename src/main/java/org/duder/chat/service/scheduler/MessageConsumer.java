@@ -46,7 +46,7 @@ class MessageConsumer {
             final User user = userRepository.findByLogin(login).orElseThrow(() -> new DataNotFoundException("Can't find user " + login));
             Message messageEntity = Message
                     .builder()
-                    .messageTypeDto(message.getType())
+                    .messageType(message.getType())
                     .content(message.getContent())
                     .author(user)
                     .build();

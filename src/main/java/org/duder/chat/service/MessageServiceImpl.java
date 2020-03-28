@@ -46,7 +46,7 @@ class MessageServiceImpl implements MessageService{
                         .builder()
                         .content(m.getContent())
                         .sender(m.getAuthor().getNickname())
-                        .type(m.getMessageTypeDto())
+                        .type(m.getMessageType())
                         .build())
                 .collect(Collectors.toList());
     }
