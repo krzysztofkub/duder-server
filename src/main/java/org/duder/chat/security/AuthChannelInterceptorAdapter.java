@@ -2,20 +2,15 @@ package org.duder.chat.security;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.ErrorMessage;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
@@ -41,11 +36,7 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
 
             } catch (BadCredentialsException e) {
                 accessor.addNativeHeader("code", "BAD_CREDENTIALS");
-
-                Map<String, Object> headers = new HashMap<>();
-                headers.put("stompCommand", StompCommand.ERROR);
-                headers.put("code", "BAD_CREDENTIALS");
-                return new GenericMessage<>(message.getPayload(), headers);
+                return new ErrorMessage(e, accessor.getMessageHeaders(), message);
             }
         }
         return message;
