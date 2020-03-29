@@ -5,7 +5,9 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.ErrorMessage;
 import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
@@ -28,9 +30,14 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
             final String username = accessor.getFirstNativeHeader(USERNAME_HEADER);
             final String password = accessor.getFirstNativeHeader(PASSWORD_HEADER);
 
-            final UsernamePasswordAuthenticationToken user = webSocketAuthenticatorService.getAuthenticatedOrFail(username, password);
+            try {
+                final UsernamePasswordAuthenticationToken user = webSocketAuthenticatorService.getAuthenticatedOrFail(username, password);
+                accessor.setUser(user);
 
-            accessor.setUser(user);
+            } catch (BadCredentialsException e) {
+                accessor.addNativeHeader("code", "BAD_CREDENTIALS");
+                return new ErrorMessage(e, accessor.getMessageHeaders(), message);
+            }
         }
         return message;
     }
