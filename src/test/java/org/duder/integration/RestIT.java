@@ -5,7 +5,7 @@ import org.duder.user.dao.User;
 import org.duder.user.repository.UserRepository;
 import org.duder.user.dto.Code;
 import org.duder.user.dto.UserDto;
-import org.duder.user.rest.Response;
+import org.duder.user.dto.Response;
 import org.duder.utils.MySQLContainerProvider;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -75,14 +75,14 @@ public class RestIT {
                 .build();
 
         //when
-        ResponseEntity<Void> response = testRestTemplate.postForEntity(url + REGISTER_USER_ENDPOINT, userDto, Void.class);
+        ResponseEntity<Response> response = testRestTemplate.postForEntity(url + REGISTER_USER_ENDPOINT, userDto, Response.class);
 
         //then
         Optional<User> user = userRepository.findByLogin("login2");
 
-        assertNull(response.getBody());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertTrue(user.isPresent());
+        assertEquals(Code.OK, response.getBody().getCode());
         userRepository.delete(user.get());
     }
 

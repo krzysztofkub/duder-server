@@ -1,6 +1,7 @@
 package org.duder.user.rest;
 
 import org.duder.user.dto.Code;
+import org.duder.user.dto.Response;
 import org.duder.user.exception.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

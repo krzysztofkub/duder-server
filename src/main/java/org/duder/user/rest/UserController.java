@@ -1,6 +1,8 @@
 package org.duder.user.rest;
 
 import org.duder.user.dao.User;
+import org.duder.user.dto.Code;
+import org.duder.user.dto.Response;
 import org.duder.user.dto.UserDto;
 import org.duder.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -18,7 +20,8 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void register(@RequestBody UserDto userDto) {
-        User user = userService.register(userDto);
+    public Response register(@RequestBody UserDto userDto) {
+        userService.register(userDto);
+        return new Response(Code.OK);
     }
 }
