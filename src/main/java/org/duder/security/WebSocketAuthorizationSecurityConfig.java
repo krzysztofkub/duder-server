@@ -1,4 +1,4 @@
-package org.duder.chat.security;
+package org.duder.security;
 
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;

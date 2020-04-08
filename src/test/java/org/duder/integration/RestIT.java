@@ -16,12 +16,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.GenericContainer;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -43,8 +44,9 @@ public class RestIT {
     private UserRepository userRepository;
 
     private String url;
-    private String GET_CHAT_STATE_ENDPOINT = "/getChatState";
+    private String GET_CHAT_STATE_ENDPOINT = "/api/getChatState";
     private String REGISTER_USER_ENDPOINT = "/user/register";
+    private String LOGIN = "/user/login?login=login&password=password";
 
     @Before
     public void setUp() throws Exception {
@@ -54,10 +56,13 @@ public class RestIT {
     @Test
     public void getChatState() {
         //given
-        //Data persisted by data.sql file
+        String token = testRestTemplate.getForObject(url + LOGIN, String.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
         //when
-        ChatMessageDto[] messages = testRestTemplate.getForObject(url + GET_CHAT_STATE_ENDPOINT, ChatMessageDto[].class);
+        ResponseEntity<ChatMessageDto[]> exchange = testRestTemplate.exchange(url + GET_CHAT_STATE_ENDPOINT, HttpMethod.GET, new HttpEntity<>(headers), ChatMessageDto[].class);
+        ChatMessageDto[] messages = exchange.getBody();
         ChatMessageDto message = messages[0];
 
         assertEquals(1, messages.length);
