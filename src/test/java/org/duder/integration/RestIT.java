@@ -2,10 +2,8 @@ package org.duder.integration;
 
 import org.duder.chat.dto.ChatMessageDto;
 import org.duder.user.dao.User;
-import org.duder.user.repository.UserRepository;
-import org.duder.user.dto.Code;
 import org.duder.user.dto.UserDto;
-import org.duder.user.dto.Response;
+import org.duder.user.repository.UserRepository;
 import org.duder.utils.MySQLContainerProvider;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -21,11 +19,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.GenericContainer;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(SpringRunner.class)
@@ -58,12 +55,11 @@ public class RestIT {
         //given
         String token = testRestTemplate.getForObject(url + LOGIN, String.class);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
+        headers.add("Authorization", token);
 
         //when
         ResponseEntity<ChatMessageDto[]> exchange = testRestTemplate.exchange(url + GET_CHAT_STATE_ENDPOINT, HttpMethod.GET, new HttpEntity<>(headers), ChatMessageDto[].class);
         ChatMessageDto[] messages = exchange.getBody();
-        ChatMessageDto message = messages[0];
 
         assertEquals(1, messages.length);
     }
@@ -73,21 +69,21 @@ public class RestIT {
         //given
         String login = "skfjasodfja";
         String nickname = "asdokjas";
+        String password = "password2";
         UserDto userDto = UserDto.builder()
                 .login(login)
                 .nickname(nickname)
-                .password("password2")
+                .password(password)
                 .build();
 
         //when
-        ResponseEntity<Response> response = testRestTemplate.postForEntity(url + REGISTER_USER_ENDPOINT, userDto, Response.class);
+        ResponseEntity<Void> response = testRestTemplate.postForEntity(url + REGISTER_USER_ENDPOINT, userDto, Void.class);
 
         //then
-        Optional<User> user = userRepository.findByLogin("login2");
+        Optional<User> user = userRepository.findByLogin(login);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertTrue(user.isPresent());
-        assertEquals(Code.OK, response.getBody().getCode());
         userRepository.delete(user.get());
     }
 
@@ -102,14 +98,9 @@ public class RestIT {
                 .build();
 
         //when
-        ResponseEntity<Response> responseEntity = testRestTemplate.postForEntity(url + REGISTER_USER_ENDPOINT, userDto, Response.class);
-        Response response = responseEntity.getBody();
+        ResponseEntity<Void> responseEntity = testRestTemplate.postForEntity(url + REGISTER_USER_ENDPOINT, userDto, Void.class);
 
         //then
-        assertNotNull(response);
         assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
-        assertEquals(Code.USER_EXISTS, response.getCode());
-        System.out.println(response.getMessage());
     }
-
 }
