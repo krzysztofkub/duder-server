@@ -41,24 +41,9 @@ class DefaultUserService implements UserService {
     }
 
     @Override
-    public String login(String login, String password) {
+    public Optional<UserDto> login(String login, String password) {
         Optional<User> userOpt = userRepository.findByLoginIgnoreCaseAndPasswordIgnoreCase(login, password);
-        if (userOpt.isPresent()) {
-            String token = UUID.randomUUID().toString();
-            User user = userOpt.get();
-            org.springframework.security.core.userdetails.User userDetails =
-                    new org.springframework.security.core.userdetails.User(user.getNickname(), user.getPassword(),
-                            true,
-                            true,
-                            true,
-                            true,
-                            AuthorityUtils.createAuthorityList("USER")
-                    );
-            tokenCache.put(token, userDetails);
-            return token;
-        }
-
-        return "";
+        return userOpt.map(this::preProcessLoggedUser);
     }
 
     @Override
@@ -69,5 +54,32 @@ class DefaultUserService implements UserService {
     @Override
     public boolean authenticateUser(String login, String password) {
         return userRepository.findByLoginIgnoreCaseAndPasswordIgnoreCase(login, password).isPresent();
+    }
+
+    private UserDto preProcessLoggedUser(User user) {
+        if (user == null) {
+            return null;
+        }
+        String token = UUID.randomUUID().toString();
+
+        UserDto userDto = UserDto.builder()
+                .login(user.getLogin())
+                .nickname(user.getNickname())
+                .sessionToken(token).build();
+
+        putUserToSessionCache(token, userDto);
+        return userDto;
+    }
+
+    private void putUserToSessionCache(String token, UserDto user) {
+        org.springframework.security.core.userdetails.User userDetails =
+                new org.springframework.security.core.userdetails.User(user.getNickname(), "password",
+                        true,
+                        true,
+                        true,
+                        true,
+                        AuthorityUtils.createAuthorityList("USER")
+                );
+        tokenCache.put(token, userDetails);
     }
 }

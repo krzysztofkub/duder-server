@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface UserService {
     User register(UserDto userDto) throws UserAlreadyExistsException;
 
-    String login(String username, String password);
+    Optional<UserDto> login(String username, String password);
 
     Optional<UserDetails> getUserByToken(String token);
 

@@ -53,9 +53,9 @@ public class RestIT {
     @Test
     public void getChatState() {
         //given
-        String token = testRestTemplate.getForObject(url + LOGIN, String.class);
+        UserDto userDto = testRestTemplate.getForObject(url + LOGIN, UserDto.class);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", token);
+        headers.add("Authorization", userDto.getSessionToken());
 
         //when
         ResponseEntity<ChatMessageDto[]> exchange = testRestTemplate.exchange(url + GET_CHAT_STATE_ENDPOINT, HttpMethod.GET, new HttpEntity<>(headers), ChatMessageDto[].class);

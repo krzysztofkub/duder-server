@@ -2,6 +2,7 @@ package org.duder.user.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import org.duder.user.dao.User;
 
 @Data
 @Builder
