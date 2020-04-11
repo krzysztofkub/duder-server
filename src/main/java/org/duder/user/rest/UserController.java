@@ -1,8 +1,6 @@
 package org.duder.user.rest;
 
-import org.duder.user.dao.User;
-import org.duder.user.dto.Code;
-import org.duder.user.dto.Response;
+import org.apache.commons.lang3.StringUtils;
 import org.duder.user.dto.UserDto;
 import org.duder.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -20,8 +18,17 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public Response register(@RequestBody UserDto userDto) {
+    public void register(@RequestBody UserDto userDto) {
         userService.register(userDto);
-        return new Response(Code.OK);
     }
+
+    @GetMapping("/login")
+    public String getToken(@RequestParam("login") final String login, @RequestParam("password") final String password){
+        String token= userService.login(login,password);
+        if(StringUtils.isEmpty(token)){
+            return "no token found";
+        }
+        return token;
+    }
+
 }

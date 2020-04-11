@@ -9,4 +9,5 @@ public class UserDto {
     private String login;
     private String nickname;
     private String password;
+    private String sessionToken;
 }

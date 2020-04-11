@@ -1,4 +1,4 @@
-package org.duder.chat.security;
+package org.duder.security;
 
 import org.duder.user.service.UserService;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;

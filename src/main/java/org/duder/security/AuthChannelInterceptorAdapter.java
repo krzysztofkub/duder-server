@@ -1,4 +1,4 @@
-package org.duder.chat.security;
+package org.duder.security;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;

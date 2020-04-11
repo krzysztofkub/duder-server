@@ -55,6 +55,9 @@ public class User {
             , inverseJoinColumns = {@JoinColumn(name = "id_friend")})
     private Set<User> friends = new HashSet<>();
 
+    @Transient
+    private String sessionToken;
+
     // Equals & hash code by natural id - should be unique and not nullable
     @Override
     public boolean equals(Object o) {

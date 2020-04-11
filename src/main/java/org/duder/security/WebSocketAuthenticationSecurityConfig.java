@@ -1,4 +1,4 @@
-package org.duder.chat.security;
+package org.duder.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;

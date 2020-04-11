@@ -1,5 +1,8 @@
 'use strict';
-
+var colors = [
+    '#2196F3', '#32c787', '#00BCD4', '#ff5652',
+    '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
+];
 var usernamePage = document.querySelector('#username-page');
 var chatPage = document.querySelector('#chat-page');
 var usernameForm = document.querySelector('#usernameForm');
@@ -14,16 +17,39 @@ var userInput = document.querySelector('#user');
 
 var stompClient = null;
 var username = null;
-
-var colors = [
-    '#2196F3', '#32c787', '#00BCD4', '#ff5652',
-    '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
-];
+var password = null;
+var sessionToken = null;
+var HttpClient = function() {
+    this.get = function(aUrl, aCallback, sessionToken) {
+        var anHttpRequest = new XMLHttpRequest();
+        anHttpRequest.onreadystatechange = function() {
+            if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+                aCallback(anHttpRequest.responseText);
+        }
+        anHttpRequest.open( "GET", aUrl, true);
+        if (sessionToken) {
+            anHttpRequest.setRequestHeader('Authorization', sessionToken);
+        }
+        anHttpRequest.send( null );
+    }
+}
+var client = new HttpClient();
 
 function connect(event) {
     username = document.querySelector('#name').value.trim();
+    password = document.querySelector('#password').value.trim();
 
     if(username) {
+
+        client.get('/user/login?login=' + username +'&password=' + password, function(tokenResponse) {
+                sessionToken = tokenResponse;
+                client.get('/api/getChatState', function(response) {
+                        var messages = JSON.parse(response)
+                        messages.forEach(function(message) {
+                            onMessageReceivedJson(message)
+                        }, sessionToken);
+                    }, sessionToken);
+        }, null);
         usernamePage.classList.add('hidden');
         chatPage.classList.remove('hidden');
 
@@ -31,35 +57,14 @@ function connect(event) {
         stompClient = Stomp.over(socket);
 
         var headers = {
-              login: username,
-              password: document.querySelector('#password').value.trim()
-            };
+            login: username,
+            password: password
+        };
 
         stompClient.connect(headers, onConnected, onError);
     }
 
-    var client = new HttpClient();
-    client.get('/getChatState', function(response) {
-            var messages = JSON.parse(response)
-            messages.forEach(function(message) {
-                onMessageReceivedJson(message)
-            });
-    });
-
     event.preventDefault();
-}
-
-var HttpClient = function() {
-    this.get = function(aUrl, aCallback) {
-        var anHttpRequest = new XMLHttpRequest();
-        anHttpRequest.onreadystatechange = function() {
-            if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
-                aCallback(anHttpRequest.responseText);
-        }
-
-        anHttpRequest.open( "GET", aUrl, true );
-        anHttpRequest.send( null );
-    }
 }
 
 
