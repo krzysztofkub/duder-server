@@ -2,6 +2,7 @@ package org.duder.user.rest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.duder.user.dto.UserDto;
+import org.duder.user.exception.WrongUserCredentialsException;
 import org.duder.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +24,10 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String getToken(@RequestParam("login") final String login, @RequestParam("password") final String password){
+    public String login(@RequestParam("login") final String login, @RequestParam("password") final String password){
         String token= userService.login(login,password);
         if(StringUtils.isEmpty(token)){
-            return "no token found";
+            throw new WrongUserCredentialsException("Wrong user credentials for user " + login);
         }
         return token;
     }
