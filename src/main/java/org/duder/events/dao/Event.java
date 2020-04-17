@@ -1,8 +1,12 @@
-package org.duder.user.dao;
+package org.duder.events.dao;
 
 import lombok.*;
+import org.duder.user.dao.Hobby;
+import org.duder.user.dao.UserEvent;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +28,9 @@ public class Event {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private Timestamp timestamp;
+
     @ManyToMany
     @JoinTable(name = "event_hobby"
             , joinColumns = {@JoinColumn(name = "id_event")}
@@ -33,5 +40,4 @@ public class Event {
     // Users participating/interested in the event
     @OneToMany(mappedBy = "primaryKey.event", cascade = CascadeType.ALL)
     private List<UserEvent> eventUsers = new ArrayList<>();
-
 }

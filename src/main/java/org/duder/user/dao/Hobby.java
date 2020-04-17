@@ -1,6 +1,7 @@
 package org.duder.user.dao;
 
 import lombok.*;
+import org.duder.events.dao.Event;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;

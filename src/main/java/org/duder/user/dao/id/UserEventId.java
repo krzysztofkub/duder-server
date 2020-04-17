@@ -1,7 +1,7 @@
 package org.duder.user.dao.id;
 
 import lombok.Data;
-import org.duder.user.dao.Event;
+import org.duder.events.dao.Event;
 import org.duder.user.dao.User;
 
 import javax.persistence.CascadeType;

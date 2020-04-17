@@ -41,7 +41,7 @@ public class RestIT {
     private UserRepository userRepository;
 
     private String url;
-    private String GET_CHAT_STATE_ENDPOINT = "/api/getChatState";
+    private String GET_CHAT_STATE_ENDPOINT = "/api/chat/getChatState";
     private String REGISTER_USER_ENDPOINT = "/user/register";
     private String LOGIN = "/user/login?login=login&password=password";
 

@@ -2,6 +2,7 @@ package org.duder.user.dao;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.duder.events.dao.Event;
 import org.duder.user.dao.id.UserEventId;
 
 import javax.persistence.*;
