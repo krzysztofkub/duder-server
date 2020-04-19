@@ -1,5 +1,6 @@
 package org.duder.events.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class EventDto {
     private String name;
     private Set<HobbyName> hobbies;
     private int numberOfParticipants;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp timestamp;
     private UserDto host;
 }
