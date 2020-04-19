@@ -45,7 +45,7 @@ class DefaultEventService implements EventService {
                         .name(e.getName())
                         .hobbies(e.getHobbies().stream().map(Hobby::getName).collect(Collectors.toSet()))
                         .numberOfParticipants(e.getEventUsers().size() - 1)
-                        .timestamp(e.getTimestamp())
+                        .timestamp(e.getTimestamp().getTime())
                         .host(findHost(e.getEventUsers()))
                         .build())
                 .collect(Collectors.toList());
@@ -69,7 +69,7 @@ class DefaultEventService implements EventService {
         Event event = Event.builder()
                 .name(eventDto.getName())
                 .hobbies(hobbyRepository.findAllByNameIn(eventDto.getHobbies()))
-                .timestamp(eventDto.getTimestamp())
+                .timestamp(new Timestamp(eventDto.getTimestamp()))
                 .build();
 
         UserEventId userEventId = new UserEventId();
