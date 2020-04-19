@@ -1,24 +1,24 @@
 package org.duder.user.service;
 
 import org.duder.user.dao.User;
+import org.duder.user.exception.InvalidSessionTokenException;
 import org.duder.user.repository.UserRepository;
 import org.duder.user.dto.UserDto;
 import org.duder.user.exception.UserAlreadyExistsException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 class DefaultUserService implements UserService {
     private final UserRepository userRepository;
-    private final Map<String, UserDetails> tokenCache = new HashMap<>();
+    private final Map<String, UserDetails> tokenCache = new ConcurrentHashMap<>();
 
     public DefaultUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -27,7 +27,7 @@ class DefaultUserService implements UserService {
 
     @Override
     public User register(UserDto userDto) {
-        Optional<User> byLogin = userRepository.findByLogin(userDto.getLogin());
+        Optional<User> byLogin = userRepository.findByLoginIgnoreCase(userDto.getLogin());
         byLogin.ifPresent(user -> {
             throw new UserAlreadyExistsException(user);
         });
@@ -43,12 +43,18 @@ class DefaultUserService implements UserService {
     @Override
     public Optional<UserDto> login(String login, String password) {
         Optional<User> userOpt = userRepository.findByLoginIgnoreCaseAndPasswordIgnoreCase(login, password);
-        return userOpt.map(this::preProcessLoggedUser);
+        return userOpt.map(this::processLoggedUser);
     }
 
     @Override
-    public Optional<UserDetails> getUserByToken(String token) {
+    public Optional<UserDetails> getUserDetailsByToken(String token) {
         return Optional.ofNullable(tokenCache.get(token));
+    }
+
+    @Override
+    public Optional<User> getUserByToken(String token) {
+        UserDetails userDetails = getUserDetailsByToken(token).orElseThrow(InvalidSessionTokenException::new);
+        return userRepository.findByLoginIgnoreCase(userDetails.getUsername());
     }
 
     @Override
@@ -56,7 +62,7 @@ class DefaultUserService implements UserService {
         return userRepository.findByLoginIgnoreCaseAndPasswordIgnoreCase(login, password).isPresent();
     }
 
-    private UserDto preProcessLoggedUser(User user) {
+    private UserDto processLoggedUser(User user) {
         if (user == null) {
             return null;
         }
@@ -73,7 +79,7 @@ class DefaultUserService implements UserService {
 
     private void putUserToSessionCache(String token, UserDto user) {
         org.springframework.security.core.userdetails.User userDetails =
-                new org.springframework.security.core.userdetails.User(user.getNickname(), "password",
+                new org.springframework.security.core.userdetails.User(user.getLogin(), "password",
                         true,
                         true,
                         true,

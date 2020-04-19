@@ -4,11 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.duder.user.dao.Hobby;
-import org.duder.user.dao.UserEvent;
+import org.duder.events.model.HobbyName;
+import org.duder.user.dto.UserDto;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -17,7 +16,8 @@ import java.util.Set;
 @Setter
 public class EventDto {
     private String name;
-    private Set<String> hobbies;
+    private Set<HobbyName> hobbies;
     private int numberOfParticipants;
     private Timestamp timestamp;
+    private UserDto host;
 }

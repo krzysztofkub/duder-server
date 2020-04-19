@@ -80,7 +80,7 @@ public class RestIT {
         ResponseEntity<Void> response = testRestTemplate.postForEntity(url + REGISTER_USER_ENDPOINT, userDto, Void.class);
 
         //then
-        Optional<User> user = userRepository.findByLogin(login);
+        Optional<User> user = userRepository.findByLoginIgnoreCase(login);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertTrue(user.isPresent());

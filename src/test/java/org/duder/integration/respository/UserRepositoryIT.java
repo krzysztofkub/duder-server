@@ -33,7 +33,7 @@ public class UserRepositoryIT {
 
     @Test
     public void findByLogin() {
-        Optional<User> login = userRepository.findByLogin("login");
+        Optional<User> login = userRepository.findByLoginIgnoreCase("login");
         assertTrue(login.isPresent());
     }
 
@@ -51,7 +51,7 @@ public class UserRepositoryIT {
 
         //when
         User save = userRepository.save(user);
-        Optional<User> login2 = userRepository.findByLogin(login);
+        Optional<User> login2 = userRepository.findByLoginIgnoreCase(login);
 
         //then
         assertNotNull(save.getId());

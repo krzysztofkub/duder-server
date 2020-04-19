@@ -2,10 +2,7 @@ package org.duder.events.rest;
 
 import org.duder.events.dto.EventDto;
 import org.duder.events.service.EventService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,6 +18,11 @@ class EventController {
 
     @GetMapping()
     public List<EventDto> findAll(@RequestParam int page, @RequestParam int size) {
-        return eventService.findAll(page, size);
+        return eventService.findAllUnFinished(page, size);
+    }
+
+    @PostMapping()
+    public void create(@RequestBody EventDto eventDto, @RequestHeader("Authorization") String sessionToken) {
+        eventService.create(eventDto, sessionToken);
     }
 }

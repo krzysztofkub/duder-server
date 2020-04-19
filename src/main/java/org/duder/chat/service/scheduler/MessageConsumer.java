@@ -43,7 +43,7 @@ class MessageConsumer {
             log.info("There are " + messageCache.count() + " messages in queue");
 
             String login = message.getSender();
-            final User user = userRepository.findByLogin(login).orElseThrow(() -> new DataNotFoundException("Can't find user " + login));
+            final User user = userRepository.findByLoginIgnoreCase(login).orElseThrow(() -> new DataNotFoundException("Can't find user " + login));
             Message messageEntity = Message
                     .builder()
                     .messageType(message.getType())

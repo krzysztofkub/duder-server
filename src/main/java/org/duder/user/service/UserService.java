@@ -12,7 +12,9 @@ public interface UserService {
 
     Optional<UserDto> login(String username, String password);
 
-    Optional<UserDetails> getUserByToken(String token);
+    Optional<UserDetails> getUserDetailsByToken(String token);
+
+    Optional<User> getUserByToken(String token);
 
     boolean authenticateUser(String login, String password);
 }

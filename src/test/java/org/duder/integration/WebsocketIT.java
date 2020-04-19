@@ -103,16 +103,16 @@ public class WebsocketIT {
         int channelId = 1;
         int dummyChannelId = 2;
 
-        Optional<User> user = userRepository.findByLogin("login");
+        Optional<User> user = userRepository.findByLoginIgnoreCase("login");
         assertTrue(user.isPresent());
 
-        Optional<User> user2 = userRepository.findByLogin("login2");
+        Optional<User> user2 = userRepository.findByLoginIgnoreCase("login2");
         assertTrue(user2.isPresent());
 
-        Optional<User> user3 = userRepository.findByLogin("login3");
+        Optional<User> user3 = userRepository.findByLoginIgnoreCase("login3");
         assertTrue(user3.isPresent());
 
-        Optional<User> user4 = userRepository.findByLogin("login3");
+        Optional<User> user4 = userRepository.findByLoginIgnoreCase("login3");
         assertTrue(user4.isPresent());
 
         MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/topic/" + channelId, user.get(), SEND_MESSAGE_TO_CHANNEL_ENDPOINT);
@@ -148,9 +148,9 @@ public class WebsocketIT {
     @Rollback(false)
     public void sendMessage_toUser() throws InterruptedException, ExecutionException, TimeoutException {
         //given
-        Optional<User> producerUser = userRepository.findByLogin("login2");
+        Optional<User> producerUser = userRepository.findByLoginIgnoreCase("login2");
         assertTrue(producerUser.isPresent());
-        Optional<User> receiverUser = userRepository.findByLogin("login");
+        Optional<User> receiverUser = userRepository.findByLoginIgnoreCase("login");
         assertTrue(receiverUser.isPresent());
 
         MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/user/queue/reply", producerUser.get(), SEND_MESSAGE_TO_USER_ENDPOINT);

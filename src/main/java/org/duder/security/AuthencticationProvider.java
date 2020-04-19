@@ -29,7 +29,7 @@ public class AuthencticationProvider extends AbstractUserDetailsAuthenticationPr
         return Optional
                 .ofNullable(token)
                 .map(String::valueOf)
-                .flatMap(userService::getUserByToken)
+                .flatMap(userService::getUserDetailsByToken)
                 .orElseThrow(() -> new UserNotFoundException("Cannot find user with provided token " + token));
     }
 }

@@ -1,7 +1,8 @@
-package org.duder.user.dao;
+package org.duder.events.dao;
 
 import lombok.*;
-import org.duder.events.dao.Event;
+import org.duder.events.model.HobbyName;
+import org.duder.user.dao.User;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -24,11 +25,12 @@ public class Hobby {
     // It seems reasonable to have name unique here 
     @Column(unique = true, nullable = false)
     @NaturalId
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private HobbyName name;
 
     @ManyToMany(mappedBy = "hobbies")
     private Set<User> users = new HashSet<>();
 
     @ManyToMany(mappedBy = "hobbies")
-    private Set<Event> hobbies = new HashSet<>();
+    private Set<Event> events = new HashSet<>();
 }
