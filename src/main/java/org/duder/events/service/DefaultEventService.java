@@ -1,6 +1,8 @@
 package org.duder.events.service;
 
 import com.google.common.collect.Lists;
+import lombok.Data;
+import org.duder.chat.exception.DataNotFoundException;
 import org.duder.events.dao.Event;
 import org.duder.events.dto.EventDto;
 import org.duder.events.repository.EventRepository;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.ValidationException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -41,14 +44,18 @@ class DefaultEventService implements EventService {
                 .findAllByTimestampAfterOrderByTimestamp(new Timestamp(System.currentTimeMillis()), pageRequest)
                 .getContent()
                 .stream()
-                .map(e -> EventDto.builder()
-                        .name(e.getName())
-                        .hobbies(e.getHobbies().stream().map(Hobby::getName).collect(Collectors.toSet()))
-                        .numberOfParticipants(e.getEventUsers().size() - 1)
-                        .timestamp(e.getTimestamp().getTime())
-                        .host(findHost(e.getEventUsers()))
-                        .build())
+                .map(this::mapEventToDto)
                 .collect(Collectors.toList());
+    }
+
+    private EventDto mapEventToDto(Event e) {
+        return EventDto.builder()
+                .name(e.getName())
+                .hobbies(e.getHobbies().stream().map(Hobby::getName).collect(Collectors.toSet()))
+                .numberOfParticipants(e.getEventUsers().size() - 1)
+                .timestamp(e.getTimestamp().getTime())
+                .host(findHost(e.getEventUsers()))
+                .build();
     }
 
     private UserDto findHost(List<UserEvent> eventUsers) {
@@ -63,7 +70,7 @@ class DefaultEventService implements EventService {
 
     @Override
     @Transactional
-    public void create(EventDto eventDto, String sessionToken) {
+    public Long create(EventDto eventDto, String sessionToken) {
         User user = userService.getUserByToken(sessionToken).orElseThrow(InvalidSessionTokenException::new);
 
         Event event = Event.builder()
@@ -81,6 +88,12 @@ class DefaultEventService implements EventService {
         userEvent.setUserHost(true);
 
         event.setEventUsers(Lists.newArrayList(userEvent));
-        eventRepository.save(event);
+        return eventRepository.save(event).getId();
+    }
+
+    @Override
+    public Optional<EventDto> findEvent(Long id) {
+        return eventRepository.findById(id)
+                .map(this::mapEventToDto);
     }
 }

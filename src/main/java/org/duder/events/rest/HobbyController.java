@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/hobby")
-public class HobbyController {
+class HobbyController {
     private final HobbyRepository hobbyRepository;
 
     public HobbyController(HobbyRepository hobbyRepository) {
