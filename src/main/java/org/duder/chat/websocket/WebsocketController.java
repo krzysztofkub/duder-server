@@ -2,27 +2,22 @@ package org.duder.chat.websocket;
 
 import org.duder.chat.dto.ChatMessageDto;
 import org.duder.chat.service.MessageService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
 
 @Controller
 public class WebsocketController {
     private final MessageService messageService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
-
-    public WebsocketController(MessageService messageService) {
+    public WebsocketController(MessageService messageService, SimpMessagingTemplate simpMessagingTemplate) {
         this.messageService = messageService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     @MessageMapping("/message")
@@ -33,7 +28,7 @@ public class WebsocketController {
 
     @MessageMapping("/message/channel")
     public ChatMessageDto sendMessageToChannel(@Payload ChatMessageDto chatMessageDto) {
-        messageService.sendChannelMessage(chatMessageDto, Integer.valueOf(chatMessageDto.getTo()));
+        messageService.sendChannelMessage(chatMessageDto, Integer.parseInt(chatMessageDto.getTo()));
         return chatMessageDto;
     }
 

@@ -53,8 +53,8 @@ class DefaultUserService implements UserService {
 
     @Override
     public Optional<User> getUserByToken(String token) {
-        UserDetails userDetails = getUserDetailsByToken(token).orElseThrow(InvalidSessionTokenException::new);
-        return userRepository.findByLoginIgnoreCase(userDetails.getUsername());
+        return getUserDetailsByToken(token)
+                .flatMap(userDetails -> userRepository.findByLoginIgnoreCase(userDetails.getUsername()));
     }
 
     @Override

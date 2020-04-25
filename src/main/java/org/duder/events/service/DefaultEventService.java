@@ -51,6 +51,7 @@ class DefaultEventService implements EventService {
     private EventDto mapEventToDto(Event e) {
         return EventDto.builder()
                 .name(e.getName())
+                .description(e.getDescription())
                 .hobbies(e.getHobbies().stream().map(Hobby::getName).collect(Collectors.toSet()))
                 .numberOfParticipants(e.getEventUsers().size() - 1)
                 .timestamp(e.getTimestamp().getTime())
@@ -75,6 +76,7 @@ class DefaultEventService implements EventService {
 
         Event event = Event.builder()
                 .name(eventDto.getName())
+                .description(eventDto.getDescription())
                 .hobbies(hobbyRepository.findAllByNameIn(eventDto.getHobbies()))
                 .timestamp(new Timestamp(eventDto.getTimestamp()))
                 .build();

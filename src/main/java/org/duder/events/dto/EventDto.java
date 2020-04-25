@@ -15,6 +15,7 @@ import java.util.Set;
 @Setter
 public class EventDto {
     private String name;
+    private String description;
     private Set<HobbyName> hobbies;
     private int numberOfParticipants;
     private Long timestamp;
