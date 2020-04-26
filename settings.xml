@@ -31,7 +31,7 @@
     <server>
       <id>github</id>
       <username>krzysztofkubieniec</username>
-      <password>${secrets.GPR_ACCESS_TOKEN}</password>
+      <password>${env.GPR_ACCESS_TOKEN}</password>
     </server>
   </servers>
 </settings>
