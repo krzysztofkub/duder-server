@@ -22,13 +22,8 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    - name: 'Create settings.xml'
-      run: |
-        touch ~/.m2/settings.xml
-        echo '<settings><servers><server><id>github</id><username>${{ secrets.GITHUB_USERNAME }}</username><password>${{ secrets.GPR_ACCESS_TOKEN }}</password></server></servers></settings>' > ~/.m2/settings.xml
-
     - name: Build with Maven
-      run: mvn -B package --file pom.xml failsafe:integration-test -Pfailsafe
+      run: mvn -B package --file pom.xml --settings settings.xml failsafe:integration-test -Pfailsafe
 
 #    - name: Setup GIT
 #      run: |
