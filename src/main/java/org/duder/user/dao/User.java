@@ -2,7 +2,7 @@ package org.duder.user.dao;
 
 import lombok.*;
 import org.duder.chat.dao.Message;
-import org.duder.events.dao.Hobby;
+import org.duder.event.dao.Hobby;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;

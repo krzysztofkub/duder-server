@@ -1,7 +1,7 @@
 package org.duder.chat.service;
 
+import ord.duder.dto.chat.ChatMessage;
 import org.duder.chat.repository.MessageRepository;
-import org.duder.chat.dto.ChatMessageDto;
 import org.duder.chat.service.scheduler.MessageCache;
 import org.duder.user.repository.UserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -26,23 +26,23 @@ class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public void sendMessage(ChatMessageDto chatMessageDto) {
-        simpMessagingTemplate.convertAndSend(TOPIC+ PUBLIC_ENDPOINT, chatMessageDto);
-        messageCache.add(chatMessageDto);
+    public void sendMessage(ChatMessage chatMessage) {
+        simpMessagingTemplate.convertAndSend(TOPIC+ PUBLIC_ENDPOINT, chatMessage);
+        messageCache.add(chatMessage);
     }
 
     @Override
-    public void sendChannelMessage(ChatMessageDto chatMessageDto, int channelId) {
+    public void sendChannelMessage(ChatMessage chatMessageDto, int channelId) {
         simpMessagingTemplate.convertAndSend(TOPIC + channelId, chatMessageDto);
         //TODO add message to cache and save to db
     }
 
     @Override
-    public List<ChatMessageDto> getPublicChannelState() {
+    public List<ChatMessage> getPublicChannelState() {
         return messageRepository
                 .findAll()
                 .stream()
-                .map(m -> ChatMessageDto
+                .map(m -> ChatMessage
                         .builder()
                         .content(m.getContent())
                         .sender(m.getAuthor().getNickname())

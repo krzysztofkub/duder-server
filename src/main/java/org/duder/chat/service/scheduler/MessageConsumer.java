@@ -1,8 +1,8 @@
 package org.duder.chat.service.scheduler;
 
+import ord.duder.dto.chat.ChatMessage;
 import org.duder.chat.dao.Message;
 import org.duder.chat.repository.MessageRepository;
-import org.duder.chat.dto.ChatMessageDto;
 import org.duder.chat.exception.DataNotFoundException;
 import org.duder.user.dao.User;
 import org.duder.user.repository.UserRepository;
@@ -37,7 +37,7 @@ class MessageConsumer {
     }
 
     private void persistingTask() {
-        ChatMessageDto message;
+        ChatMessage message;
         while ((message = messageCache.take()) != null) {
             log.info("Received message " + message);
             log.info("There are " + messageCache.count() + " messages in queue");

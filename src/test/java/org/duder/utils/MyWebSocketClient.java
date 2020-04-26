@@ -1,7 +1,7 @@
 package org.duder.utils;
 
-import org.duder.chat.dto.ChatMessageDto;
-import org.duder.chat.dto.MessageTypeDto;
+import ord.duder.dto.chat.ChatMessage;
+import ord.duder.dto.chat.MessageType;
 import org.duder.user.dao.User;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -35,10 +35,10 @@ public class MyWebSocketClient {
 
     private static final Logger log = LoggerFactory.getLogger(MyWebSocketClient.class);
 
-    private final static ChatMessageDto DEFAULT_CHAT_MESSAGE_DTO = ChatMessageDto.builder()
+    private final static ChatMessage DEFAULT_CHAT_MESSAGE_DTO = ChatMessage.builder()
             .sender("dude")
             .content("what's up dog?")
-            .type(MessageTypeDto.CHAT)
+            .type(MessageType.CHAT)
             .build();
 
     // If not provided this is the handler for any messages received by the client
@@ -46,7 +46,7 @@ public class MyWebSocketClient {
     private static final StompFrameHandler defaultFrameHandler = new StompFrameHandler() {
         @Override
         public Type getPayloadType(StompHeaders stompHeaders) {
-            return ChatMessageDto.class;
+            return ChatMessage.class;
         }
 
         @Override
@@ -125,17 +125,17 @@ public class MyWebSocketClient {
         return session.subscribe(topic, messageHandler);
     }
 
-    public CompletableFuture<ChatMessageDto> subscribeForOneMessage() {
+    public CompletableFuture<ChatMessage> subscribeForOneMessage() {
         return subscribeForOneMessage(defaultTopic);
     }
 
-    public CompletableFuture<ChatMessageDto> subscribeForOneMessage(String topic) {
-        final CompletableFuture<ChatMessageDto> futureMessage = new CompletableFuture<>();
+    public CompletableFuture<ChatMessage> subscribeForOneMessage(String topic) {
+        final CompletableFuture<ChatMessage> futureMessage = new CompletableFuture<>();
         final StompFrameHandler frameHandler = new StompFrameHandler() {
             @NotNull
             @Override
             public Type getPayloadType(@NotNull StompHeaders headers) {
-                return ChatMessageDto.class;
+                return ChatMessage.class;
             }
 
             @Override
@@ -143,7 +143,7 @@ public class MyWebSocketClient {
                 // TODO I am not sure but in future if we send eg. ACK messages I think o here can be null, TBA
                 log.info("Frame received: {}", o);
                 if (o != null) {
-                    final ChatMessageDto message = (ChatMessageDto) o;
+                    final ChatMessage message = (ChatMessage) o;
                     futureMessage.complete(message);
                 }
             }
@@ -157,11 +157,11 @@ public class MyWebSocketClient {
         sendMessage(DEFAULT_CHAT_MESSAGE_DTO, defaultSendEndpoint);
     }
 
-    public void sendMessage(ChatMessageDto message) {
+    public void sendMessage(ChatMessage message) {
         sendMessage(message, defaultSendEndpoint);
     }
 
-    public void sendMessage(ChatMessageDto message, String endpoint) {
+    public void sendMessage(ChatMessage message, String endpoint) {
         session.send(endpoint, message);
     }
 }

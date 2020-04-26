@@ -1,16 +1,18 @@
 package org.duder.user.service;
 
+import ord.duder.dto.user.LoggedAccount;
+import ord.duder.dto.user.LoginResponse;
+import ord.duder.dto.user.RegisterAccount;
 import org.duder.user.dao.User;
-import org.duder.user.dto.UserDto;
 import org.duder.user.exception.UserAlreadyExistsException;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
 
 public interface UserService {
-    User register(UserDto userDto) throws UserAlreadyExistsException;
+    User register(RegisterAccount account) throws UserAlreadyExistsException;
 
-    Optional<UserDto> login(String username, String password);
+    Optional<LoginResponse> login(String username, String password);
 
     Optional<UserDetails> getUserDetailsByToken(String token);
 

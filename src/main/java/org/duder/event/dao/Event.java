@@ -1,4 +1,4 @@
-package org.duder.events.dao;
+package org.duder.event.dao;
 
 import lombok.*;
 import org.duder.user.dao.UserEvent;

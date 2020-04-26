@@ -1,4 +1,4 @@
-package org.duder.events.rest;
+package org.duder.event.rest;
 
 import org.duder.chat.exception.DataNotFoundException;
 import org.springframework.http.HttpStatus;

@@ -1,9 +1,10 @@
 package org.duder.user.service;
 
+import ord.duder.dto.user.LoggedAccount;
+import ord.duder.dto.user.LoginResponse;
+import ord.duder.dto.user.RegisterAccount;
 import org.duder.user.dao.User;
-import org.duder.user.exception.InvalidSessionTokenException;
 import org.duder.user.repository.UserRepository;
-import org.duder.user.dto.UserDto;
 import org.duder.user.exception.UserAlreadyExistsException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +27,7 @@ class DefaultUserService implements UserService {
 
 
     @Override
-    public User register(UserDto userDto) {
+    public User register(RegisterAccount userDto) {
         Optional<User> byLogin = userRepository.findByLoginIgnoreCase(userDto.getLogin());
         byLogin.ifPresent(user -> {
             throw new UserAlreadyExistsException(user);
@@ -41,9 +42,17 @@ class DefaultUserService implements UserService {
     }
 
     @Override
-    public Optional<UserDto> login(String login, String password) {
-        Optional<User> userOpt = userRepository.findByLoginIgnoreCaseAndPasswordIgnoreCase(login, password);
-        return userOpt.map(this::processLoggedUser);
+    public Optional<LoginResponse> login(String login, String password) {
+        return userRepository.findByLoginIgnoreCaseAndPasswordIgnoreCase(login, password)
+                .map(this::processLoggedUser)
+                .map(this::mapToLoginResponse);
+    }
+
+    private LoginResponse mapToLoginResponse(LoggedAccount loggedAccount) {
+        return LoginResponse.builder()
+                .nickname(loggedAccount.getNickname())
+                .sessionToken(loggedAccount.getSessionToken())
+                .build();
     }
 
     @Override
@@ -62,24 +71,24 @@ class DefaultUserService implements UserService {
         return userRepository.findByLoginIgnoreCaseAndPasswordIgnoreCase(login, password).isPresent();
     }
 
-    private UserDto processLoggedUser(User user) {
+    private LoggedAccount processLoggedUser(User user) {
         if (user == null) {
             return null;
         }
         String token = UUID.randomUUID().toString();
 
-        UserDto userDto = UserDto.builder()
+        LoggedAccount loggedAccount = LoggedAccount.builder()
                 .login(user.getLogin())
                 .nickname(user.getNickname())
                 .sessionToken(token).build();
 
-        putUserToSessionCache(token, userDto);
-        return userDto;
+        putUserToSessionCache(token, loggedAccount);
+        return loggedAccount;
     }
 
-    private void putUserToSessionCache(String token, UserDto user) {
+    private void putUserToSessionCache(String token, LoggedAccount loggedAccount) {
         org.springframework.security.core.userdetails.User userDetails =
-                new org.springframework.security.core.userdetails.User(user.getLogin(), "password",
+                new org.springframework.security.core.userdetails.User(loggedAccount.getLogin(), "password",
                         true,
                         true,
                         true,

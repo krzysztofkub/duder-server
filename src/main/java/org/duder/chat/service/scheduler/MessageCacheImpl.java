@@ -1,6 +1,6 @@
 package org.duder.chat.service.scheduler;
 
-import org.duder.chat.dto.ChatMessageDto;
+import ord.duder.dto.chat.ChatMessage;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.BlockingQueue;
@@ -8,13 +8,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @Component
 class MessageCacheImpl implements MessageCache {
-    private BlockingQueue<ChatMessageDto> messages = new LinkedBlockingQueue<>();
+    private BlockingQueue<ChatMessage> messages = new LinkedBlockingQueue<>();
 
-    public void add(ChatMessageDto chatMessageDto) {
+    public void add(ChatMessage chatMessageDto) {
         messages.add(chatMessageDto);
     }
 
-    public ChatMessageDto take() {
+    public ChatMessage take() {
         return messages.poll();
     }
 

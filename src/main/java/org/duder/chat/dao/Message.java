@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.duder.chat.dto.MessageTypeDto;
+import ord.duder.dto.chat.MessageType;
 import org.duder.user.dao.User;
 
 import javax.persistence.*;
@@ -30,6 +30,6 @@ public class Message {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    private MessageTypeDto messageType;
+    private MessageType messageType;
 
 }

@@ -1,10 +1,17 @@
 package org.duder.user.rest;
 
-import org.duder.user.dto.UserDto;
+import ord.duder.dto.user.LoginResponse;
+import ord.duder.dto.user.RegisterAccount;
 import org.duder.user.exception.WrongUserCredentialsException;
 import org.duder.user.service.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
@@ -20,13 +27,13 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void register(@RequestBody UserDto userDto) {
-        userService.register(userDto);
+    public void register(@RequestBody RegisterAccount account) {
+        userService.register(account);
     }
 
     @GetMapping("/login")
-    public UserDto login(@RequestParam("login") final String login, @RequestParam("password") final String password) {
-        Optional<UserDto> user = userService.login(login, password);
+    public LoginResponse login(@RequestParam("login") final String login, @RequestParam("password") final String password) {
+        Optional<LoginResponse> user = userService.login(login, password);
         return user.orElseThrow(() -> new WrongUserCredentialsException("Wrong user credentials for user " + login));
     }
 }

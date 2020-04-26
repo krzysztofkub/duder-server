@@ -1,8 +1,8 @@
-package org.duder.events.rest;
+package org.duder.event.rest;
 
-import org.duder.events.dao.Hobby;
-import org.duder.events.model.HobbyName;
-import org.duder.events.repository.HobbyRepository;
+import ord.duder.dto.event.HobbyName;
+import org.duder.event.dao.Hobby;
+import org.duder.event.repository.HobbyRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

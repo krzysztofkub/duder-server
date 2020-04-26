@@ -1,9 +1,9 @@
 package org.duder.integration;
 
 
+import ord.duder.dto.chat.ChatMessage;
+import ord.duder.dto.chat.MessageType;
 import org.duder.chat.dao.Message;
-import org.duder.chat.dto.ChatMessageDto;
-import org.duder.chat.dto.MessageTypeDto;
 import org.duder.chat.repository.MessageRepository;
 import org.duder.user.dao.User;
 import org.duder.user.repository.UserRepository;
@@ -53,7 +53,7 @@ public class WebsocketIT {
     private static final String SUBSCRIBE_CHAT_ENDPOINT = "/topic/public";
 
     private final String CONTENT = "Content";
-    private final MessageTypeDto MESSAGE_TYPE = MessageTypeDto.CHAT;
+    private final MessageType MESSAGE_TYPE = MessageType.CHAT;
 
     @ClassRule
     public static GenericContainer mysqlContainer = MySQLContainerProvider.getInstance();
@@ -71,16 +71,16 @@ public class WebsocketIT {
         assertTrue(user.isPresent());
 
         final MyWebSocketClient client = new MyWebSocketClient(url, SUBSCRIBE_CHAT_ENDPOINT, user.get(), SEND_MESSAGE_ENDPOINT);
-        final CompletableFuture<ChatMessageDto> completableFuture = client.subscribeForOneMessage();
-        ChatMessageDto chatMessageDto = ChatMessageDto.builder()
+        final CompletableFuture<ChatMessage> completableFuture = client.subscribeForOneMessage();
+        ChatMessage chatMessage = ChatMessage.builder()
                 .sender(DataSQLValues.getUser().getLogin())
                 .content(CONTENT)
                 .type(MESSAGE_TYPE)
                 .build();
 
         //when
-        client.sendMessage(chatMessageDto);
-        ChatMessageDto message = completableFuture.get(10, TimeUnit.SECONDS);
+        client.sendMessage(chatMessage);
+        ChatMessage message = completableFuture.get(10, TimeUnit.SECONDS);
         //wait for scheduler (saving to db)
         Thread.sleep(2000);
         List<Message> messagesFromDb = messageRepository.findByAuthorIdOrderByTimestampDesc(DataSQLValues.getUser().getId());
@@ -120,11 +120,11 @@ public class WebsocketIT {
         MyWebSocketClient messageReceiver2 = new MyWebSocketClient(url, "/topic/" + channelId, user3.get());
         MyWebSocketClient dummyClient = new MyWebSocketClient(url, "/topic/" + dummyChannelId, user4.get());
 
-        final CompletableFuture<ChatMessageDto> completableFuture = messageReceiver.subscribeForOneMessage();
-        final CompletableFuture<ChatMessageDto> completableFuture2 = messageReceiver2.subscribeForOneMessage();
-        final CompletableFuture<ChatMessageDto> dummyCompletableFuture = dummyClient.subscribeForOneMessage();
+        final CompletableFuture<ChatMessage> completableFuture = messageReceiver.subscribeForOneMessage();
+        final CompletableFuture<ChatMessage> completableFuture2 = messageReceiver2.subscribeForOneMessage();
+        final CompletableFuture<ChatMessage> dummyCompletableFuture = dummyClient.subscribeForOneMessage();
 
-        ChatMessageDto chatMessageDto = ChatMessageDto.builder()
+        ChatMessage chatMessage = ChatMessage.builder()
                 .sender(DataSQLValues.getUser().getLogin())
                 .content(CONTENT)
                 .type(MESSAGE_TYPE)
@@ -132,12 +132,12 @@ public class WebsocketIT {
                 .build();
 
         //when
-        messageProducer.sendMessage(chatMessageDto);
+        messageProducer.sendMessage(chatMessage);
 
         //then
-        ChatMessageDto response = completableFuture.get(10, TimeUnit.SECONDS);
-        ChatMessageDto response2 = completableFuture2.get(10, TimeUnit.SECONDS);
-        ChatMessageDto dummyResponse = dummyCompletableFuture.getNow(null);
+        ChatMessage response = completableFuture.get(10, TimeUnit.SECONDS);
+        ChatMessage response2 = completableFuture2.get(10, TimeUnit.SECONDS);
+        ChatMessage dummyResponse = dummyCompletableFuture.getNow(null);
 
         assertNotNull(response);
         assertNotNull(response2);
@@ -156,9 +156,9 @@ public class WebsocketIT {
         MyWebSocketClient messageProducer = new MyWebSocketClient(url, "/user/queue/reply", producerUser.get(), SEND_MESSAGE_TO_USER_ENDPOINT);
         MyWebSocketClient messageReceiver = new MyWebSocketClient(url, "/user/queue/reply", receiverUser.get());
 
-        final CompletableFuture<ChatMessageDto> completableFuture = messageReceiver.subscribeForOneMessage();
+        final CompletableFuture<ChatMessage> completableFuture = messageReceiver.subscribeForOneMessage();
 
-        ChatMessageDto chatMessageDto = ChatMessageDto.builder()
+        ChatMessage chatMessageDto = ChatMessage.builder()
                 .sender(producerUser.get().getLogin())
                 .content(CONTENT)
                 .type(MESSAGE_TYPE)
@@ -169,7 +169,7 @@ public class WebsocketIT {
         messageProducer.sendMessage(chatMessageDto);
 
         //then
-        ChatMessageDto response = completableFuture.get(10, TimeUnit.SECONDS);
+        ChatMessage response = completableFuture.get(10, TimeUnit.SECONDS);
 
         assertNotNull(response);
     }

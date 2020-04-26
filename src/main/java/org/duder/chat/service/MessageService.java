@@ -1,6 +1,6 @@
 package org.duder.chat.service;
 
-import org.duder.chat.dto.ChatMessageDto;
+import ord.duder.dto.chat.ChatMessage;
 
 import java.util.List;
 
@@ -9,9 +9,9 @@ public interface MessageService {
     String TOPIC = "/topic/";
     String PUBLIC_ENDPOINT = "public";
 
-    void sendMessage(ChatMessageDto chatMessageDto);
+    void sendMessage(ChatMessage chatMessageDto);
 
-    void sendChannelMessage(ChatMessageDto chatMessageDto, int channelId);
+    void sendChannelMessage(ChatMessage chatMessageDto, int channelId);
 
-    List<ChatMessageDto> getPublicChannelState();
+    List<ChatMessage> getPublicChannelState();
 }

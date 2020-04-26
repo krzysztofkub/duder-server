@@ -1,9 +1,8 @@
-package org.duder.events.repository;
+package org.duder.event.repository;
 
-import org.duder.events.dao.Event;
+import org.duder.event.dao.Event;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.sql.Timestamp;

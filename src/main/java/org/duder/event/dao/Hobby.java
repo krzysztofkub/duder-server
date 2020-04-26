@@ -1,7 +1,7 @@
-package org.duder.events.dao;
+package org.duder.event.dao;
 
 import lombok.*;
-import org.duder.events.model.HobbyName;
+import ord.duder.dto.event.HobbyName;
 import org.duder.user.dao.User;
 import org.hibernate.annotations.NaturalId;
 

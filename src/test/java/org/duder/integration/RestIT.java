@@ -1,8 +1,9 @@
 package org.duder.integration;
 
-import org.duder.chat.dto.ChatMessageDto;
+import ord.duder.dto.chat.ChatMessage;
+import ord.duder.dto.user.LoggedAccount;
+import ord.duder.dto.user.RegisterAccount;
 import org.duder.user.dao.User;
-import org.duder.user.dto.UserDto;
 import org.duder.user.repository.UserRepository;
 import org.duder.utils.MySQLContainerProvider;
 import org.junit.Before;
@@ -53,13 +54,13 @@ public class RestIT {
     @Test
     public void getChatState() {
         //given
-        UserDto userDto = testRestTemplate.getForObject(url + LOGIN, UserDto.class);
+        LoggedAccount userDto = testRestTemplate.getForObject(url + LOGIN, LoggedAccount.class);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", userDto.getSessionToken());
 
         //when
-        ResponseEntity<ChatMessageDto[]> exchange = testRestTemplate.exchange(url + GET_CHAT_STATE_ENDPOINT, HttpMethod.GET, new HttpEntity<>(headers), ChatMessageDto[].class);
-        ChatMessageDto[] messages = exchange.getBody();
+        ResponseEntity<ChatMessage[]> exchange = testRestTemplate.exchange(url + GET_CHAT_STATE_ENDPOINT, HttpMethod.GET, new HttpEntity<>(headers), ChatMessage[].class);
+        ChatMessage[] messages = exchange.getBody();
 
         assertEquals(1, messages.length);
     }
@@ -70,7 +71,7 @@ public class RestIT {
         String login = "skfjasodfja";
         String nickname = "asdokjas";
         String password = "password2";
-        UserDto userDto = UserDto.builder()
+        RegisterAccount userDto = RegisterAccount.builder()
                 .login(login)
                 .nickname(nickname)
                 .password(password)
@@ -91,7 +92,7 @@ public class RestIT {
     @Test
     public void register_returnError_whenLoginAlreadyExists() {
         //given
-        UserDto userDto = UserDto.builder()
+        RegisterAccount userDto = RegisterAccount.builder()
                 .login("login")
                 .nickname("nickname")
                 .password("password")

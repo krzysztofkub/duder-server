@@ -1,7 +1,7 @@
 package org.duder.utils;
 
 
-import org.duder.chat.dto.ChatMessageDto;
+import ord.duder.dto.chat.ChatMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -36,16 +36,16 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public Type getPayloadType(StompHeaders headers) {
         // TODO In future I think this might be generified somehow, or maybe class could/should be deduced from the header, so far - not neede
-        return ChatMessageDto.class;
+        return ChatMessage.class;
     }
 
     @Override
     public void handleFrame(StompHeaders headers, Object o) {
         try {
-            final ChatMessageDto message = (ChatMessageDto) o;
+            final ChatMessage message = (ChatMessage) o;
             log.info("Received message: {}", message.toString());
         } catch (ClassCastException e) {
-            log.error("Received massage: {} cannot be cast to: {}", o, ChatMessageDto.class);
+            log.error("Received massage: {} cannot be cast to: {}", o, ChatMessage.class);
         }
     }
 }

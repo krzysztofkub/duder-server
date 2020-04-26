@@ -1,24 +1,21 @@
-package org.duder.events.service;
+package org.duder.event.service;
 
 import com.google.common.collect.Lists;
-import lombok.Data;
-import org.duder.chat.exception.DataNotFoundException;
-import org.duder.events.dao.Event;
-import org.duder.events.dto.EventDto;
-import org.duder.events.repository.EventRepository;
-import org.duder.events.dao.Hobby;
-import org.duder.events.repository.HobbyRepository;
+import ord.duder.dto.event.EventPreview;
+import ord.duder.dto.user.Dude;
+import org.duder.event.dao.Event;
+import org.duder.event.repository.EventRepository;
+import org.duder.event.dao.Hobby;
+import org.duder.event.repository.HobbyRepository;
 import org.duder.user.dao.User;
 import org.duder.user.dao.UserEvent;
 import org.duder.user.dao.id.UserEventId;
-import org.duder.user.dto.UserDto;
 import org.duder.user.exception.InvalidSessionTokenException;
 import org.duder.user.service.UserService;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ValidationException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -38,18 +35,18 @@ class DefaultEventService implements EventService {
     }
 
     @Override
-    public List<EventDto> findAllUnFinished(int page, int size) {
+    public List<EventPreview> findAllUnFinished(int page, int size) {
         Pageable pageRequest = PageRequest.of(page, size, Sort.by("timestamp"));
         return eventRepository
                 .findAllByTimestampAfterOrderByTimestamp(new Timestamp(System.currentTimeMillis()), pageRequest)
                 .getContent()
                 .stream()
-                .map(this::mapEventToDto)
+                .map(this::mapEventToPreview)
                 .collect(Collectors.toList());
     }
 
-    private EventDto mapEventToDto(Event e) {
-        return EventDto.builder()
+    private EventPreview mapEventToPreview(Event e) {
+        return EventPreview.builder()
                 .name(e.getName())
                 .description(e.getDescription())
                 .hobbies(e.getHobbies().stream().map(Hobby::getName).collect(Collectors.toSet()))
@@ -59,11 +56,11 @@ class DefaultEventService implements EventService {
                 .build();
     }
 
-    private UserDto findHost(List<UserEvent> eventUsers) {
+    private Dude findHost(List<UserEvent> eventUsers) {
         return eventUsers.stream()
                 .filter(UserEvent::isUserHost)
                 .map(UserEvent::getUser)
-                .map(user -> UserDto.builder()
+                .map(user -> Dude.builder()
                         .nickname(user.getNickname())
                         .build())
                 .findAny().orElse(null);
@@ -71,14 +68,14 @@ class DefaultEventService implements EventService {
 
     @Override
     @Transactional
-    public Long create(EventDto eventDto, String sessionToken) {
+    public Long create(EventPreview eventPreview, String sessionToken) {
         User user = userService.getUserByToken(sessionToken).orElseThrow(InvalidSessionTokenException::new);
 
         Event event = Event.builder()
-                .name(eventDto.getName())
-                .description(eventDto.getDescription())
-                .hobbies(hobbyRepository.findAllByNameIn(eventDto.getHobbies()))
-                .timestamp(new Timestamp(eventDto.getTimestamp()))
+                .name(eventPreview.getName())
+                .description(eventPreview.getDescription())
+                .hobbies(hobbyRepository.findAllByNameIn(eventPreview.getHobbies()))
+                .timestamp(new Timestamp(eventPreview.getTimestamp()))
                 .build();
 
         UserEventId userEventId = new UserEventId();
@@ -94,8 +91,8 @@ class DefaultEventService implements EventService {
     }
 
     @Override
-    public Optional<EventDto> findEvent(Long id) {
+    public Optional<EventPreview> findEvent(Long id) {
         return eventRepository.findById(id)
-                .map(this::mapEventToDto);
+                .map(this::mapEventToPreview);
     }
 }

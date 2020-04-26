@@ -1,15 +1,14 @@
-package org.duder.events.rest;
+package org.duder.event.rest;
 
+import ord.duder.dto.event.EventPreview;
 import org.duder.chat.exception.DataNotFoundException;
-import org.duder.events.dto.EventDto;
-import org.duder.events.service.EventService;
+import org.duder.event.service.EventService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/event")
@@ -22,13 +21,13 @@ class EventController {
     }
 
     @GetMapping()
-    public List<EventDto> findAll(@RequestParam int page, @RequestParam int size) {
+    public List<EventPreview> findAll(@RequestParam int page, @RequestParam int size) {
         return eventService.findAllUnFinished(page, size);
     }
 
     @PostMapping()
-    public ResponseEntity<Void> create(@RequestBody EventDto eventDto, @RequestHeader("Authorization") String sessionToken) {
-        Long eventId = eventService.create(eventDto, sessionToken);
+    public ResponseEntity<Void> create(@RequestBody EventPreview eventPreview, @RequestHeader("Authorization") String sessionToken) {
+        Long eventId = eventService.create(eventPreview, sessionToken);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(eventId).toUri();
@@ -36,7 +35,7 @@ class EventController {
     }
 
     @GetMapping("/{id}")
-    public EventDto getEvent(@PathVariable Long id) {
+    public EventPreview getEvent(@PathVariable Long id) {
         return eventService.findEvent(id)
                 .orElseThrow(() -> new DataNotFoundException("No event found with id " + id));
     }
