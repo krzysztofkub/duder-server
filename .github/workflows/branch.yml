@@ -22,4 +22,6 @@ jobs:
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml failsafe:integration-test failsafe:verify -Pfailsafe
+        run: mvn -B package --file pom.xml --settings settings.xml failsafe:integration-test failsafe:verify -Pfailsafe
+        env:
+          GPR_ACCESS_TOKEN: ${{secrets.GPR_ACCESS_TOKEN}}
