@@ -24,6 +24,8 @@ jobs:
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml --settings settings.xml failsafe:integration-test -Pfailsafe
+      env:
+        GPR_ACCESS_TOKEN: ${{secrets.GPR_ACCESS_TOKEN}}
 
 #    - name: Setup GIT
 #      run: |
