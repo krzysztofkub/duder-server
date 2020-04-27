@@ -1,6 +1,6 @@
 package org.duder.chat.service.scheduler;
 
-import ord.duder.dto.chat.ChatMessage;
+import org.duder.dto.chat.ChatMessage;
 import org.duder.chat.dao.Message;
 import org.duder.chat.repository.MessageRepository;
 import org.duder.chat.exception.DataNotFoundException;

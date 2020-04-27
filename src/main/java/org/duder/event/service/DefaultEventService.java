@@ -1,8 +1,8 @@
 package org.duder.event.service;
 
 import com.google.common.collect.Lists;
-import ord.duder.dto.event.EventPreview;
-import ord.duder.dto.user.Dude;
+import org.duder.dto.event.EventPreview;
+import org.duder.dto.user.Dude;
 import org.duder.event.dao.Event;
 import org.duder.event.repository.EventRepository;
 import org.duder.event.dao.Hobby;

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import ord.duder.dto.chat.MessageType;
+import org.duder.dto.chat.MessageType;
 import org.duder.user.dao.User;
 
 import javax.persistence.*;

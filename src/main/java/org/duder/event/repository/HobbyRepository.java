@@ -1,6 +1,6 @@
 package org.duder.event.repository;
 
-import ord.duder.dto.event.HobbyName;
+import org.duder.dto.event.HobbyName;
 import org.duder.event.dao.Hobby;
 import org.springframework.data.jpa.repository.JpaRepository;
 

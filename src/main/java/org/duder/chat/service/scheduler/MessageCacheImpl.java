@@ -1,6 +1,6 @@
 package org.duder.chat.service.scheduler;
 
-import ord.duder.dto.chat.ChatMessage;
+import org.duder.dto.chat.ChatMessage;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.BlockingQueue;

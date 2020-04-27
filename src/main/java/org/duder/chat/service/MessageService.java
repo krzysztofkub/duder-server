@@ -1,6 +1,6 @@
 package org.duder.chat.service;
 
-import ord.duder.dto.chat.ChatMessage;
+import org.duder.dto.chat.ChatMessage;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package org.duder.event.service;
 
 
-import ord.duder.dto.event.EventPreview;
+import org.duder.dto.event.EventPreview;
 
 import java.util.List;
 import java.util.Optional;

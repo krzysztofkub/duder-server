@@ -1,8 +1,8 @@
 package org.duder.integration;
 
-import ord.duder.dto.chat.ChatMessage;
-import ord.duder.dto.user.LoggedAccount;
-import ord.duder.dto.user.RegisterAccount;
+import org.duder.dto.chat.ChatMessage;
+import org.duder.dto.user.LoggedAccount;
+import org.duder.dto.user.RegisterAccount;
 import org.duder.user.dao.User;
 import org.duder.user.repository.UserRepository;
 import org.duder.utils.MySQLContainerProvider;

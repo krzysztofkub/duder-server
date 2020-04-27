@@ -1,7 +1,7 @@
 package org.duder.chat.dao;
 
 import lombok.*;
-import ord.duder.dto.chat.ChannelType;
+import org.duder.dto.chat.ChannelType;
 import org.duder.user.dao.UserChannel;
 
 import javax.persistence.*;

@@ -1,6 +1,6 @@
 package org.duder.chat.rest;
 
-import ord.duder.dto.chat.ChatMessage;
+import org.duder.dto.chat.ChatMessage;
 import org.duder.chat.service.MessageService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

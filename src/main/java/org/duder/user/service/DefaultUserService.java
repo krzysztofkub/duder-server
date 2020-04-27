@@ -1,8 +1,8 @@
 package org.duder.user.service;
 
-import ord.duder.dto.user.LoggedAccount;
-import ord.duder.dto.user.LoginResponse;
-import ord.duder.dto.user.RegisterAccount;
+import org.duder.dto.user.LoggedAccount;
+import org.duder.dto.user.LoginResponse;
+import org.duder.dto.user.RegisterAccount;
 import org.duder.user.dao.User;
 import org.duder.user.repository.UserRepository;
 import org.duder.user.exception.UserAlreadyExistsException;

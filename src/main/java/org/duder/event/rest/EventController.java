@@ -1,6 +1,6 @@
 package org.duder.event.rest;
 
-import ord.duder.dto.event.EventPreview;
+import org.duder.dto.event.EventPreview;
 import org.duder.chat.exception.DataNotFoundException;
 import org.duder.event.service.EventService;
 import org.springframework.http.ResponseEntity;

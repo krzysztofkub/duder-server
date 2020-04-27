@@ -1,6 +1,6 @@
 package org.duder.chat.service;
 
-import ord.duder.dto.chat.ChatMessage;
+import org.duder.dto.chat.ChatMessage;
 import org.duder.chat.repository.MessageRepository;
 import org.duder.chat.service.scheduler.MessageCache;
 import org.duder.user.repository.UserRepository;

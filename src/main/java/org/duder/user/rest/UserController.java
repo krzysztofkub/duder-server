@@ -1,7 +1,7 @@
 package org.duder.user.rest;
 
-import ord.duder.dto.user.LoginResponse;
-import ord.duder.dto.user.RegisterAccount;
+import org.duder.dto.user.LoginResponse;
+import org.duder.dto.user.RegisterAccount;
 import org.duder.user.exception.WrongUserCredentialsException;
 import org.duder.user.service.UserService;
 import org.springframework.http.HttpStatus;
