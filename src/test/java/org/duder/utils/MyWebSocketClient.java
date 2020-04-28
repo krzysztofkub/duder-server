@@ -60,23 +60,18 @@ public class MyWebSocketClient {
 
     private StompSession session;
 
-    public MyWebSocketClient(String url, String defaultTopic, User user) throws InterruptedException, ExecutionException, TimeoutException {
-        this(url, defaultTopic, user, null);
+    public MyWebSocketClient(String url, String defaultTopic, String sessionToken) throws InterruptedException, ExecutionException, TimeoutException {
+        this(url, defaultTopic, sessionToken, null);
     }
 
-    public MyWebSocketClient(String url, User user, String defaultSendEndpoint) throws InterruptedException, ExecutionException, TimeoutException {
-        this(url, null, user, defaultSendEndpoint);
-
-    }
-
-    public MyWebSocketClient(String url, String defaultTopic, User user, String defaultSendEndpoint) throws InterruptedException, ExecutionException, TimeoutException {
+    public MyWebSocketClient(String url, String defaultTopic, String sessionToken, String defaultSendEndpoint) throws InterruptedException, ExecutionException, TimeoutException {
         this.defaultTopic = defaultTopic;
         this.defaultSendEndpoint = defaultSendEndpoint;
-        initializeSession(url, user);
+        initializeSession(url, sessionToken);
 
     }
 
-    private void initializeSession(String url, User user) throws InterruptedException, ExecutionException, TimeoutException {
+    private void initializeSession(String url, String sessionToken) throws InterruptedException, ExecutionException, TimeoutException {
         // Stock client
         final StandardWebSocketClient standardClient = new StandardWebSocketClient();
 
@@ -99,9 +94,8 @@ public class MyWebSocketClient {
         // TODO I assume this is needed for handshake and upgrade to stomp protocol?
         final WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
         final StompHeaders stompHeaders = new StompHeaders();
-        if (user != null) {
-            stompHeaders.add("login", user.getLogin());
-            stompHeaders.add("password", user.getPassword());
+        if (sessionToken != null) {
+            stompHeaders.add("Authorization", sessionToken);
         }
 
         MyStompSessionHandler sessionHandler = new MyStompSessionHandler();

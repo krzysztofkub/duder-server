@@ -66,11 +66,6 @@ class DefaultUserService implements UserService {
                 .flatMap(userDetails -> userRepository.findByLoginIgnoreCase(userDetails.getUsername()));
     }
 
-    @Override
-    public boolean authenticateUser(String login, String password) {
-        return userRepository.findByLoginIgnoreCaseAndPasswordIgnoreCase(login, password).isPresent();
-    }
-
     private LoggedAccount processLoggedUser(User user) {
         if (user == null) {
             return null;

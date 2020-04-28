@@ -16,6 +16,4 @@ public interface UserService {
     Optional<UserDetails> getUserDetailsByToken(String token);
 
     Optional<User> getUserByToken(String token);
-
-    boolean authenticateUser(String login, String password);
 }

@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
-    private static final String USERNAME_HEADER = "login";
-    private static final String PASSWORD_HEADER = "password";
+    private static final String SESSION_TOKEN_HEADER = "Authorization";
     private final WebSocketAuthenticatorService webSocketAuthenticatorService;
 
     public AuthChannelInterceptorAdapter(WebSocketAuthenticatorService webSocketAuthenticatorService) {
@@ -25,11 +24,8 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
         final StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
         if (StompCommand.CONNECT == accessor.getCommand()) {
-            final String username = accessor.getFirstNativeHeader(USERNAME_HEADER);
-            final String password = accessor.getFirstNativeHeader(PASSWORD_HEADER);
-
-            final UsernamePasswordAuthenticationToken user = webSocketAuthenticatorService.getAuthenticatedOrFail(username, password);
-
+            final String token = accessor.getFirstNativeHeader(SESSION_TOKEN_HEADER);
+            final UsernamePasswordAuthenticationToken user = webSocketAuthenticatorService.getAuthenticatedOrFail(token);
             accessor.setUser(user);
         }
         return message;
