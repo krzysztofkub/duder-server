@@ -13,6 +13,8 @@ public interface UserService {
 
     Optional<LoginResponse> login(String username, String password);
 
+    Optional<LoginResponse> fbLogin(String accessToken);
+
     Optional<UserDetails> getUserDetailsByToken(String token);
 
     Optional<User> getUserByToken(String token);

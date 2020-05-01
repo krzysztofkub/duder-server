@@ -1,16 +1,17 @@
 package org.duder.user.service;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.duder.dto.user.LoggedAccount;
 import org.duder.dto.user.LoginResponse;
 import org.duder.dto.user.RegisterAccount;
 import org.duder.user.dao.User;
+import org.duder.user.dto.FacebookUserData;
 import org.duder.user.repository.UserRepository;
 import org.duder.user.exception.UserAlreadyExistsException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,10 +20,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 class DefaultUserService implements UserService {
     private final UserRepository userRepository;
+    private final FacebookService facebookService;
     private final Map<String, UserDetails> tokenCache = new ConcurrentHashMap<>();
 
-    public DefaultUserService(UserRepository userRepository) {
+    public DefaultUserService(UserRepository userRepository, FacebookService facebookService) {
         this.userRepository = userRepository;
+        this.facebookService = facebookService;
     }
 
 
@@ -41,11 +44,33 @@ class DefaultUserService implements UserService {
         return userRepository.save(user);
     }
 
+    private User register(FacebookUserData fbUserData) {
+        String password = RandomStringUtils.random(10);
+        RegisterAccount registerAccount = RegisterAccount.builder()
+                .login(fbUserData.getEmail())
+                .nickname(fbUserData.getName())
+                .password(password)
+                .build();
+        return register(registerAccount);
+    }
+
     @Override
     public Optional<LoginResponse> login(String login, String password) {
         return userRepository.findByLoginIgnoreCaseAndPasswordIgnoreCase(login, password)
                 .map(this::processLoggedUser)
                 .map(this::mapToLoginResponse);
+    }
+
+    @Override
+    public Optional<LoginResponse> fbLogin(String accessToken) {
+        FacebookUserData fbUserData = facebookService.getEmailAddress(accessToken);
+
+        Optional<User> userOpt = userRepository.findByLoginIgnoreCase(fbUserData.getEmail());
+        if (userOpt.isPresent()) {
+            return login(userOpt.get().getLogin(), userOpt.get().getPassword());
+        }
+        User user = register(fbUserData);
+        return login(user.getLogin(), user.getPassword());
     }
 
     private LoginResponse mapToLoginResponse(LoggedAccount loggedAccount) {

@@ -36,4 +36,9 @@ public class UserController {
         Optional<LoginResponse> user = userService.login(login, password);
         return user.orElseThrow(() -> new WrongUserCredentialsException("Wrong user credentials for user " + login));
     }
+
+    @GetMapping("/fb-login")
+    public LoginResponse fbLogin(@RequestParam("accessToken") final String accessToken) {
+        return userService.fbLogin(accessToken).get();
+    }
 }

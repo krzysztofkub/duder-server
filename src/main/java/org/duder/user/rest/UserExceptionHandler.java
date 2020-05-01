@@ -1,5 +1,6 @@
 package org.duder.user.rest;
 
+import org.duder.user.exception.InvalidSessionTokenException;
 import org.duder.user.exception.UserAlreadyExistsException;
 import org.duder.user.exception.WrongUserCredentialsException;
 import org.springframework.http.HttpStatus;
@@ -19,5 +20,10 @@ public class UserExceptionHandler {
     @ExceptionHandler(WrongUserCredentialsException.class)
     protected ResponseEntity<Void> handleWrongUserCredentialsException(Exception e) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+    }
+
+    @ExceptionHandler(InvalidSessionTokenException.class)
+    protected ResponseEntity<Void> handleInvalidSessionTokenException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
