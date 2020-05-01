@@ -1,5 +1,7 @@
 package org.duder.user.service;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.duder.dto.user.LoggedAccount;
 import org.duder.dto.user.LoginResponse;
@@ -21,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 class DefaultUserService implements UserService {
     private final UserRepository userRepository;
     private final FacebookService facebookService;
-    private final Map<String, UserDetails> tokenCache = new ConcurrentHashMap<>();
+    private final BiMap<String, UserDetails> tokenCache = HashBiMap.create();
 
     public DefaultUserService(UserRepository userRepository, FacebookService facebookService) {
         this.userRepository = userRepository;
@@ -115,6 +117,6 @@ class DefaultUserService implements UserService {
                         true,
                         AuthorityUtils.createAuthorityList("USER")
                 );
-        tokenCache.put(token, userDetails);
+        tokenCache.forcePut(token, userDetails);
     }
 }
