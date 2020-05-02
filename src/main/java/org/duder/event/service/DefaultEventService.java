@@ -7,6 +7,7 @@ import org.duder.event.dao.Event;
 import org.duder.event.repository.EventRepository;
 import org.duder.event.dao.Hobby;
 import org.duder.event.repository.HobbyRepository;
+import org.duder.user.dao.ParticipantType;
 import org.duder.user.dao.User;
 import org.duder.user.dao.UserEvent;
 import org.duder.user.dao.id.UserEventId;
@@ -58,12 +59,16 @@ class DefaultEventService implements EventService {
 
     private Dude findHost(List<UserEvent> eventUsers) {
         return eventUsers.stream()
-                .filter(UserEvent::isUserHost)
+                .filter(this::isUserHost)
                 .map(UserEvent::getUser)
                 .map(user -> Dude.builder()
                         .nickname(user.getNickname())
                         .build())
                 .findAny().orElse(null);
+    }
+
+    private boolean isUserHost(UserEvent userEvent) {
+        return userEvent.getParticipantType() == ParticipantType.HOST;
     }
 
     @Override
@@ -84,7 +89,7 @@ class DefaultEventService implements EventService {
 
         UserEvent userEvent = new UserEvent();
         userEvent.setPrimaryKey(userEventId);
-        userEvent.setUserHost(true);
+        userEvent.setParticipantType(ParticipantType.HOST);
 
         event.setEventUsers(Lists.newArrayList(userEvent));
         return eventRepository.save(event).getId();
