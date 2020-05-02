@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
-public class UserController {
+class UserController {
 
     private final UserService userService;
 
@@ -40,5 +40,10 @@ public class UserController {
     @GetMapping("/fb-login")
     public LoginResponse fbLogin(@RequestParam("accessToken") final String accessToken) {
         return userService.fbLogin(accessToken).get();
+    }
+
+    @GetMapping("/validate")
+    public boolean validateToken(@RequestParam("sessionToken") String sessionToken) {
+        return userService.getUserByToken(sessionToken).isPresent();
     }
 }

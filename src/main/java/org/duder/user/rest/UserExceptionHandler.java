@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
 @RestControllerAdvice
-public class UserExceptionHandler {
+class UserExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     protected ResponseEntity<Void> handleUserAlreadyExists(Exception e) {
