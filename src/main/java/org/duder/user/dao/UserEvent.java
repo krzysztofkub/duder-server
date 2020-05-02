@@ -10,6 +10,14 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@AssociationOverrides({
+        @AssociationOverride(
+                name = "primaryKey.user",
+                joinColumns = @JoinColumn(name = "id_user")),
+        @AssociationOverride(
+                name = "primaryKey.event",
+                joinColumns = @JoinColumn(name = "id_event"))
+})
 // TODO this is one implementation of many-to-many relation with extra columns, the other is UserChannel, review which fits our needs better and refactor later
 public class UserEvent {
 
