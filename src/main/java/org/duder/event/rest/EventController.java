@@ -1,6 +1,7 @@
 package org.duder.event.rest;
 
 import org.duder.chat.websocket.WebSocketEventListener;
+import org.duder.dto.event.CreateEvent;
 import org.duder.dto.event.EventPreview;
 import org.duder.chat.exception.DataNotFoundException;
 import org.duder.event.service.EventService;
@@ -32,9 +33,9 @@ class EventController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> create(@RequestBody EventPreview eventPreview, @RequestHeader("Authorization") String sessionToken) {
-        logger.info("Received create event request " + eventPreview);
-        Long eventId = eventService.create(eventPreview, sessionToken);
+    public ResponseEntity<Void> create(@RequestBody CreateEvent createEvent, @RequestHeader("Authorization") String sessionToken) {
+        logger.info("Received create event request " + createEvent);
+        Long eventId = eventService.create(createEvent, sessionToken);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(eventId).toUri();

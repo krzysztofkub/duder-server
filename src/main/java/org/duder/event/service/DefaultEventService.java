@@ -1,6 +1,7 @@
 package org.duder.event.service;
 
 import com.google.common.collect.Lists;
+import org.duder.dto.event.CreateEvent;
 import org.duder.dto.event.EventPreview;
 import org.duder.dto.user.Dude;
 import org.duder.event.dao.Event;
@@ -39,15 +40,15 @@ class DefaultEventService implements EventService {
 
     @Override
     @Transactional
-    public Long create(EventPreview eventPreview, String sessionToken) {
+    public Long create(CreateEvent createEvent, String sessionToken) {
         User user = userService.getUserByToken(sessionToken).orElseThrow(InvalidSessionTokenException::new);
 
         Event event = Event.builder()
-                .name(eventPreview.getName())
-                .description(eventPreview.getDescription())
-                .hobbies(hobbyRepository.findAllByNameIn(eventPreview.getHobbies()))
-                .timestamp(new Timestamp(eventPreview.getTimestamp()))
-                .isPrivate(eventPreview.isPrivate())
+                .name(createEvent.getName())
+                .description(createEvent.getDescription())
+                .hobbies(hobbyRepository.findAllByNameIn(createEvent.getHobbies()))
+                .timestamp(new Timestamp(createEvent.getTimestamp()))
+                .isPrivate(createEvent.isPrivate())
                 .build();
 
         UserEvent userEvent = new UserEvent();
