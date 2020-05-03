@@ -35,19 +35,16 @@ public class User {
     @OneToMany(mappedBy = "author")
     private List<Message> messages = new ArrayList<>();
 
-    // Areas of user interests.
     @ManyToMany
     @JoinTable(name = "user_hobby"
             , joinColumns = {@JoinColumn(name = "id_user")}
             , inverseJoinColumns = {@JoinColumn(name = "id_hobby")})
     private Set<Hobby> hobbies = new HashSet<>();
 
-    // Channels user has access/belongs to.
     @OneToMany(mappedBy = "user")
     private List<UserChannel> userChannels = new ArrayList<>();
 
-    // Events user is interested or has participated in.
-    @OneToMany(mappedBy = "primaryKey.user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserEvent> userEvents = new ArrayList<>();
 
     @ManyToMany

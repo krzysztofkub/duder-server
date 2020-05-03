@@ -14,8 +14,12 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -91,6 +95,15 @@ class DefaultUserService implements UserService {
     public Optional<User> getUserByToken(String token) {
         return getUserDetailsByToken(token)
                 .flatMap(userDetails -> userRepository.findByLoginIgnoreCase(userDetails.getUsername()));
+    }
+
+    @Override
+    public Set<User> getUserFriendsByToken(String token) {
+        UserDetails userDetails = tokenCache.get(token);
+        return userRepository
+                .findByLoginIgnoreCase(userDetails.getUsername())
+                .map(User::getFriends)
+                .orElse(new HashSet<>());
     }
 
     private LoggedAccount processLoggedUser(User user) {

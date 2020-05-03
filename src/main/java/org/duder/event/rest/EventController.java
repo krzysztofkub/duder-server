@@ -21,7 +21,11 @@ class EventController {
     }
 
     @GetMapping()
-    public List<EventPreview> findAll(@RequestParam int page, @RequestParam int size) {
+    public List<EventPreview> findAll(@RequestParam int page, @RequestParam int size, @RequestParam(required = false) boolean isPrivate,
+                                      @RequestHeader("Authorization") String sessionToken) {
+        if (isPrivate) {
+            return eventService.findAllUnfinishedPrivate(page, size, sessionToken);
+        }
         return eventService.findAllUnFinished(page, size);
     }
 

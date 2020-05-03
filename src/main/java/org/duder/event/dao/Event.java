@@ -37,7 +37,7 @@ public class Event {
             , inverseJoinColumns = {@JoinColumn(name = "id_hobby")})
     private Set<Hobby> hobbies = new HashSet<>();
 
-    @OneToMany(mappedBy = "primaryKey.event", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<UserEvent> eventUsers = new ArrayList<>();
 
     @Column(columnDefinition = "boolean default false", nullable = false)

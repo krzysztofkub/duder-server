@@ -18,8 +18,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -35,6 +37,32 @@ class DefaultEventService implements EventService {
         this.userService = userService;
     }
 
+    @Override
+    @Transactional
+    public Long create(EventPreview eventPreview, String sessionToken) {
+        User user = userService.getUserByToken(sessionToken).orElseThrow(InvalidSessionTokenException::new);
+
+        Event event = Event.builder()
+                .name(eventPreview.getName())
+                .description(eventPreview.getDescription())
+                .hobbies(hobbyRepository.findAllByNameIn(eventPreview.getHobbies()))
+                .timestamp(new Timestamp(eventPreview.getTimestamp()))
+                .build();
+
+        UserEvent userEvent = new UserEvent();
+        userEvent.setUser(user);
+        userEvent.setEvent(event);
+        userEvent.setParticipantType(ParticipantType.HOST);
+
+        event.setEventUsers(Lists.newArrayList(userEvent));
+        return eventRepository.save(event).getId();
+    }
+
+    @Override
+    public Optional<EventPreview> findEvent(Long id) {
+        return eventRepository.findById(id)
+                .map(this::mapEventToPreview);
+    }
     @Override
     public List<EventPreview> findAllUnFinished(int page, int size) {
         Pageable pageRequest = PageRequest.of(page, size, Sort.by("timestamp"));
@@ -72,32 +100,12 @@ class DefaultEventService implements EventService {
     }
 
     @Override
-    @Transactional
-    public Long create(EventPreview eventPreview, String sessionToken) {
-        User user = userService.getUserByToken(sessionToken).orElseThrow(InvalidSessionTokenException::new);
-
-        Event event = Event.builder()
-                .name(eventPreview.getName())
-                .description(eventPreview.getDescription())
-                .hobbies(hobbyRepository.findAllByNameIn(eventPreview.getHobbies()))
-                .timestamp(new Timestamp(eventPreview.getTimestamp()))
-                .build();
-
-        UserEventId userEventId = new UserEventId();
-        userEventId.setUser(user);
-        userEventId.setEvent(event);
-
-        UserEvent userEvent = new UserEvent();
-        userEvent.setPrimaryKey(userEventId);
-        userEvent.setParticipantType(ParticipantType.HOST);
-
-        event.setEventUsers(Lists.newArrayList(userEvent));
-        return eventRepository.save(event).getId();
-    }
-
-    @Override
-    public Optional<EventPreview> findEvent(Long id) {
-        return eventRepository.findById(id)
-                .map(this::mapEventToPreview);
+    public List<EventPreview> findAllUnfinishedPrivate(int page, int size, String sessionToken) {
+        Pageable pageRequest = PageRequest.of(page, size);
+        List<Long> friendIds = userService.getUserFriendsByToken(sessionToken).stream().map(User::getId).collect(Collectors.toList());
+        return eventRepository.findAllPrivateEventsForUser(friendIds, pageRequest)
+                .stream()
+                .map(this::mapEventToPreview)
+                .collect(Collectors.toList());
     }
 }

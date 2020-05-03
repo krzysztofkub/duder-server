@@ -7,6 +7,7 @@ import org.duder.user.exception.UserAlreadyExistsException;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserService {
     User register(RegisterAccount account) throws UserAlreadyExistsException;
@@ -18,4 +19,6 @@ public interface UserService {
     Optional<UserDetails> getUserDetailsByToken(String token);
 
     Optional<User> getUserByToken(String token);
+
+    Set<User> getUserFriendsByToken(String token);
 }
