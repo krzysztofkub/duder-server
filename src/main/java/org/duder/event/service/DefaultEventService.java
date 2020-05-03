@@ -66,15 +66,17 @@ class DefaultEventService implements EventService {
     }
     @Override
     public List<EventPreview> findAllUnfinished(int page, int size, boolean isPrivate, String sessionToken) {
-        Pageable pageRequest = PageRequest.of(page, size, Sort.by("timestamp"));
+
         List<EventPreview> events;
         if (isPrivate) {
+            Pageable pageRequest = PageRequest.of(page, size);
             List<Long> friendIds = userService.getUserFriendsByToken(sessionToken).stream().map(User::getId).collect(Collectors.toList());
             events = eventRepository.findAllPrivateEventsForUser(friendIds, pageRequest)
                     .stream()
                     .map(this::mapEventToPreview)
                     .collect(Collectors.toList());
         } else {
+            Pageable pageRequest = PageRequest.of(page, size, Sort.by("timestamp"));
             events = eventRepository
                     .findAllByTimestampAfterOrderByTimestamp(new Timestamp(System.currentTimeMillis()), pageRequest)
                     .getContent()
