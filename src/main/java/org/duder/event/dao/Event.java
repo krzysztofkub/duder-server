@@ -22,7 +22,6 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Name should not be null but is not necessarily unique - not a natural id
     @Column(nullable = false)
     private String name;
 
@@ -38,7 +37,9 @@ public class Event {
             , inverseJoinColumns = {@JoinColumn(name = "id_hobby")})
     private Set<Hobby> hobbies = new HashSet<>();
 
-    // Users participating/interested in the event
     @OneToMany(mappedBy = "primaryKey.event", cascade = CascadeType.ALL)
     private List<UserEvent> eventUsers = new ArrayList<>();
+
+    @Column(columnDefinition = "boolean default false", nullable = false)
+    private boolean isPrivate;
 }
