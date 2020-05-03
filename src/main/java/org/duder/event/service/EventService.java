@@ -11,7 +11,5 @@ public interface EventService {
 
     Optional<EventPreview> findEvent(Long id);
 
-    List<EventPreview> findAllUnFinished(int page, int size);
-
-    List<EventPreview> findAllUnfinishedPrivate(int page, int size, String sessionToken);
+    List<EventPreview> findAllUnfinished(int page, int size, boolean isPrivate, String sessionToken);
 }

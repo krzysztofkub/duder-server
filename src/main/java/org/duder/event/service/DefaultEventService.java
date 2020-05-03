@@ -47,6 +47,7 @@ class DefaultEventService implements EventService {
                 .description(eventPreview.getDescription())
                 .hobbies(hobbyRepository.findAllByNameIn(eventPreview.getHobbies()))
                 .timestamp(new Timestamp(eventPreview.getTimestamp()))
+                .isPrivate(eventPreview.isPrivate())
                 .build();
 
         UserEvent userEvent = new UserEvent();
@@ -64,14 +65,25 @@ class DefaultEventService implements EventService {
                 .map(this::mapEventToPreview);
     }
     @Override
-    public List<EventPreview> findAllUnFinished(int page, int size) {
+    public List<EventPreview> findAllUnfinished(int page, int size, boolean isPrivate, String sessionToken) {
         Pageable pageRequest = PageRequest.of(page, size, Sort.by("timestamp"));
-        return eventRepository
-                .findAllByTimestampAfterOrderByTimestamp(new Timestamp(System.currentTimeMillis()), pageRequest)
-                .getContent()
-                .stream()
-                .map(this::mapEventToPreview)
-                .collect(Collectors.toList());
+        List<EventPreview> events;
+        if (isPrivate) {
+            List<Long> friendIds = userService.getUserFriendsByToken(sessionToken).stream().map(User::getId).collect(Collectors.toList());
+            events = eventRepository.findAllPrivateEventsForUser(friendIds, pageRequest)
+                    .stream()
+                    .map(this::mapEventToPreview)
+                    .collect(Collectors.toList());
+        } else {
+            events = eventRepository
+                    .findAllByTimestampAfterOrderByTimestamp(new Timestamp(System.currentTimeMillis()), pageRequest)
+                    .getContent()
+                    .stream()
+                    .map(this::mapEventToPreview)
+                    .collect(Collectors.toList());
+        }
+
+        return events;
     }
 
     private EventPreview mapEventToPreview(Event e) {
@@ -82,6 +94,7 @@ class DefaultEventService implements EventService {
                 .numberOfParticipants(e.getEventUsers().size() - 1)
                 .timestamp(e.getTimestamp().getTime())
                 .host(findHost(e.getEventUsers()))
+                .isPrivate(e.isPrivate())
                 .build();
     }
 
@@ -97,15 +110,5 @@ class DefaultEventService implements EventService {
 
     private boolean isUserHost(UserEvent userEvent) {
         return userEvent.getParticipantType() == ParticipantType.HOST;
-    }
-
-    @Override
-    public List<EventPreview> findAllUnfinishedPrivate(int page, int size, String sessionToken) {
-        Pageable pageRequest = PageRequest.of(page, size);
-        List<Long> friendIds = userService.getUserFriendsByToken(sessionToken).stream().map(User::getId).collect(Collectors.toList());
-        return eventRepository.findAllPrivateEventsForUser(friendIds, pageRequest)
-                .stream()
-                .map(this::mapEventToPreview)
-                .collect(Collectors.toList());
     }
 }
