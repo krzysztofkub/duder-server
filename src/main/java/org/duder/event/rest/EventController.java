@@ -2,6 +2,7 @@ package org.duder.event.rest;
 
 import org.duder.chat.websocket.WebSocketEventListener;
 import org.duder.dto.event.CreateEvent;
+import org.duder.dto.event.EventLoadingMode;
 import org.duder.dto.event.EventPreview;
 import org.duder.chat.exception.DataNotFoundException;
 import org.duder.event.service.EventService;
@@ -27,9 +28,12 @@ class EventController {
     }
 
     @GetMapping()
-    public List<EventPreview> findAll(@RequestParam int page, @RequestParam int size, @RequestParam(required = false) boolean isPrivate,
+    public List<EventPreview> findAll(@RequestParam int page, @RequestParam int size, @RequestParam(required = false) EventLoadingMode mode,
                                       @RequestHeader("Authorization") String sessionToken) {
-        return eventService.findAllUnfinished(page, size, isPrivate, sessionToken);
+        if (mode == null) {
+            mode = EventLoadingMode.PUBLIC;
+        }
+        return eventService.findAllUnfinished(page, size, mode, sessionToken);
     }
 
     @PostMapping()

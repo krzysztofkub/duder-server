@@ -13,12 +13,28 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface EventRepository extends PagingAndSortingRepository<Event, Long> {
-    Page<Event> findAllByTimestampAfterOrderByTimestamp(Timestamp timestamp, Pageable pageable);
+    Page<Event> findAllByTimestampAfter(Timestamp timestamp, Pageable pageable);
 
     @Query(
             value = "SELECT ue.event FROM UserEvent ue " +
                     "LEFT OUTER JOIN ue.event e " +
-                    "LEFT OUTER JOIN ue.user u where e.isPrivate = true and ue.participantType = 'HOST' and u.id IN :users ORDER BY e.timestamp"
+                    "LEFT OUTER JOIN ue.user u " +
+                    "WHERE ue.participantType = 'HOST' " +
+                    "AND u.id = :userId " +
+                    "AND e.timestamp > :timestamp " +
+                    "ORDER BY e.timestamp"
     )
-    List<Event> findAllPrivateEventsForUser(@Param("users") List<Long> users, Pageable pageable);
+    Page<Event> findAllByUserAndTimestampAfter(Long userId, Timestamp timestamp, Pageable pageable);
+
+    @Query(
+            value = "SELECT ue.event FROM UserEvent ue " +
+                    "LEFT OUTER JOIN ue.event e " +
+                    "LEFT OUTER JOIN ue.user u " +
+                    "WHERE e.isPrivate = true " +
+                    "AND ue.participantType = 'HOST' " +
+                    "AND u.id IN :users " +
+                    "AND e.timestamp > :timestamp " +
+                    "ORDER BY e.timestamp"
+    )
+    Page<Event> findAllUnfinishedPrivateEventsForUsers(@Param("users") List<Long> users, @Param("timestamp") Timestamp timestamp, Pageable pageable);
 }
