@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -88,11 +89,15 @@ class DefaultEventService implements EventService {
     private List<EventPreview> loadPrivateEvents(int page, int size, Timestamp timestamp, String sessionToken) {
         Pageable pageRequest = PageRequest.of(page, size);
         List<Long> friendIds = userService.getUserFriendsByToken(sessionToken).stream().map(User::getId).collect(Collectors.toList());
-        return eventRepository.findAllUnfinishedPrivateEventsForUsers(friendIds, timestamp, pageRequest)
-                .getContent()
-                .stream()
-                .map(this::mapEventToPreview)
-                .collect(Collectors.toList());
+        if (friendIds.size() == 0) {
+            return new ArrayList<>();
+        } else {
+            return eventRepository.findAllUnfinishedPrivateEventsForUsers(friendIds, timestamp, pageRequest)
+                    .getContent()
+                    .stream()
+                    .map(this::mapEventToPreview)
+                    .collect(Collectors.toList());
+        }
     }
 
     private List<EventPreview> loadOwnEvents(int page, int size, Timestamp timestamp, String sessionToken) {
