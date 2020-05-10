@@ -38,7 +38,7 @@ class EventController {
 
     @PostMapping()
     public ResponseEntity<Void> create(@RequestBody CreateEvent createEvent, @RequestHeader("Authorization") String sessionToken) {
-        logger.info("Received create event request " + createEvent);
+        logger.info("Received create event request " + createEvent + " with sessionToken = " + sessionToken);
         Long eventId = eventService.create(createEvent, sessionToken);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
