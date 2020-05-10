@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface EventRepository extends PagingAndSortingRepository<Event, Long> {
-    Page<Event> findAllByTimestampAfter(Timestamp timestamp, Pageable pageable);
+    Page<Event> findAllByIsPrivateAndTimestampAfter(Boolean isPrivate, Timestamp timestamp, Pageable pageable);
 
     @Query(
             value = "SELECT ue.event FROM UserEvent ue " +

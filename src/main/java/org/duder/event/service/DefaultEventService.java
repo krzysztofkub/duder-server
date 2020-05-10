@@ -89,6 +89,7 @@ class DefaultEventService implements EventService {
     private List<EventPreview> loadPrivateEvents(int page, int size, Timestamp timestamp, String sessionToken) {
         Pageable pageRequest = PageRequest.of(page, size);
         List<Long> friendIds = userService.getUserFriendsByToken(sessionToken).stream().map(User::getId).collect(Collectors.toList());
+        userService.getUserByToken(sessionToken).ifPresent(u -> friendIds.add(u.getId()));
         if (friendIds.size() == 0) {
             return new ArrayList<>();
         } else {
@@ -113,7 +114,7 @@ class DefaultEventService implements EventService {
     private List<EventPreview> loadPublicEvents(int page, int size, Timestamp timestamp) {
         Pageable pageRequest = PageRequest.of(page, size, Sort.by("timestamp"));
         return eventRepository
-                .findAllByTimestampAfter(timestamp, pageRequest)
+                .findAllByIsPrivateAndTimestampAfter(false, timestamp, pageRequest)
                 .getContent()
                 .stream()
                 .map(this::mapEventToPreview)
