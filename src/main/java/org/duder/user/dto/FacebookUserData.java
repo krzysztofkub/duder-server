@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class FacebookUserData {
     private String name;
     private String email;
+    private String imageUrl;
 }

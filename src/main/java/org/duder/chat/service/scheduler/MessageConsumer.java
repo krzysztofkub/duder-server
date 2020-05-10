@@ -1,10 +1,10 @@
 package org.duder.chat.service.scheduler;
 
-import org.duder.dto.chat.ChatMessage;
-import org.duder.chat.dao.Message;
-import org.duder.chat.repository.MessageRepository;
 import org.duder.chat.exception.DataNotFoundException;
-import org.duder.user.dao.User;
+import org.duder.chat.model.Message;
+import org.duder.chat.repository.MessageRepository;
+import org.duder.dto.chat.ChatMessage;
+import org.duder.user.model.User;
 import org.duder.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

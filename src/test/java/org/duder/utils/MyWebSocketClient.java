@@ -2,7 +2,6 @@ package org.duder.utils;
 
 import org.duder.dto.chat.ChatMessage;
 import org.duder.dto.chat.MessageType;
-import org.duder.user.dao.User;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

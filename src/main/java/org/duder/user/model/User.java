@@ -1,12 +1,29 @@
-package org.duder.user.dao;
+package org.duder.user.model;
 
-import lombok.*;
-import org.duder.chat.dao.Message;
-import org.duder.event.dao.Hobby;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.duder.chat.model.Message;
+import org.duder.event.model.Hobby;
 import org.hibernate.annotations.NaturalId;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -53,8 +70,9 @@ public class User {
             , inverseJoinColumns = {@JoinColumn(name = "id_friend")})
     private Set<User> friends = new HashSet<>();
 
-    @Transient
     private String sessionToken;
+
+    private String imageUrl;
 
     // Equals & hash code by natural id - should be unique and not nullable
     @Override

@@ -1,11 +1,16 @@
-package org.duder.user.dao;
+package org.duder.user.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.duder.event.dao.Event;
-import org.duder.user.dao.id.UserEventId;
+import org.duder.event.model.Event;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter

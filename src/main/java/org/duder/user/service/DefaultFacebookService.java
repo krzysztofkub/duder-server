@@ -26,7 +26,7 @@ class DefaultFacebookService implements FacebookService {
     }
 
     @Override
-    public FacebookUserData getEmailAddress(String accessToken) {
+    public FacebookUserData getFacebookUserData(String accessToken) {
         FacebookUserValidationResponse fbUser = validateAccessToken(accessToken);
         String uri = UriComponentsBuilder
                 .fromHttpUrl(FACEBOOK_URL)
@@ -35,7 +35,22 @@ class DefaultFacebookService implements FacebookService {
                 .queryParam("fields", "email,name")
                 .toUriString();
 
-        return restTemplate.getForObject(uri, FacebookUserData.class);
+        FacebookUserData userData = restTemplate.getForObject(uri, FacebookUserData.class);
+
+        String profilePictureUri = UriComponentsBuilder
+                .fromHttpUrl(FACEBOOK_URL)
+                .path(fbUser.getUser_id())
+                .path("picture")
+                .queryParam("type", "large")
+                .queryParam("width", "900")
+                .queryParam("height", "900")
+                .toUriString();
+
+        String imageUrl = restTemplate.getForObject(profilePictureUri, String.class);
+        if (userData != null) {
+            userData.setImageUrl(imageUrl);
+        }
+        return userData;
     }
 
     private FacebookUserValidationResponse validateAccessToken(String accessToken) {

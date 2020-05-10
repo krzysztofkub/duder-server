@@ -1,7 +1,7 @@
-package org.duder.user.dao.id;
+package org.duder.user.model.id;
 
-import org.duder.chat.dao.Channel;
-import org.duder.user.dao.User;
+import org.duder.chat.model.Channel;
+import org.duder.user.model.User;
 
 import java.io.Serializable;
 import java.util.Objects;

@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public WebSecurityConfig(final AuthenticationProvider authenticationProvider) {
         super();
-        this.provider=authenticationProvider;
+        this.provider = authenticationProvider;
     }
 
     @Override

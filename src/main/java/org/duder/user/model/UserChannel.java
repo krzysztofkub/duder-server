@@ -1,11 +1,15 @@
-package org.duder.user.dao;
+package org.duder.user.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.duder.chat.dao.Channel;
-import org.duder.user.dao.id.UserChannelId;
+import org.duder.chat.model.Channel;
+import org.duder.user.model.id.UserChannelId;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter

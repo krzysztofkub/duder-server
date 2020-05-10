@@ -1,4 +1,4 @@
-package org.duder.user.dao;
+package org.duder.user.model;
 
 import org.junit.Test;
 

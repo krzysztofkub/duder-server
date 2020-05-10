@@ -1,8 +1,8 @@
-package org.duder.user.dao.id;
+package org.duder.user.model.id;
 
 import lombok.Data;
-import org.duder.event.dao.Event;
-import org.duder.user.dao.User;
+import org.duder.event.model.Event;
+import org.duder.user.model.User;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

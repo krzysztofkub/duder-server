@@ -3,10 +3,10 @@ package org.duder.integration;
 
 import org.duder.dto.chat.ChatMessage;
 import org.duder.dto.chat.MessageType;
-import org.duder.chat.dao.Message;
+import org.duder.chat.model.Message;
 import org.duder.chat.repository.MessageRepository;
-import org.duder.dto.user.LoggedAccount;
-import org.duder.user.dao.User;
+import org.duder.dto.user.LoginResponse;
+import org.duder.user.model.User;
 import org.duder.user.repository.UserRepository;
 import org.duder.utils.DataSQLValues;
 import org.duder.utils.MySQLContainerProvider;
@@ -37,7 +37,6 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class WebsocketIT {
 
     @Autowired
@@ -77,7 +76,7 @@ public class WebsocketIT {
         Optional<User> userOpt = userRepository.findById(DataSQLValues.getUser().getId());
         assertTrue(userOpt.isPresent());
         User user = userOpt.get();
-        LoggedAccount loginResponse = loginUser(user);
+        LoginResponse loginResponse = loginUser(user);
 
         final MyWebSocketClient client = new MyWebSocketClient(wsUrl, SUBSCRIBE_CHAT_ENDPOINT, loginResponse.getSessionToken(), SEND_MESSAGE_ENDPOINT);
         final CompletableFuture<ChatMessage> completableFuture = client.subscribeForOneMessage();
@@ -106,8 +105,8 @@ public class WebsocketIT {
         assertEquals(MESSAGE_TYPE, messageEntity.getMessageType());
     }
 
-    private LoggedAccount loginUser(User user) {
-        return testRestTemplate.getForObject(restUrl + LOGIN_ENDPOINT + "?login=" + user.getLogin() + "&password=" + user.getPassword(), LoggedAccount.class);
+    private LoginResponse loginUser(User user) {
+        return testRestTemplate.getForObject(restUrl + LOGIN_ENDPOINT + "?login=" + user.getLogin() + "&password=" + user.getPassword(), LoginResponse.class);
     }
 
     @Test

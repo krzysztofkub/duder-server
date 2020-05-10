@@ -1,6 +1,6 @@
 package org.duder.chat.repository;
 
-import org.duder.chat.dao.Message;
+import org.duder.chat.model.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package org.duder.event.rest;
 
 import org.duder.dto.event.HobbyName;
-import org.duder.event.dao.Hobby;
+import org.duder.event.model.Hobby;
 import org.duder.event.repository.HobbyRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

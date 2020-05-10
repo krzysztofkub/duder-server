@@ -2,9 +2,8 @@ package org.duder.user.service;
 
 import org.duder.dto.user.LoginResponse;
 import org.duder.dto.user.RegisterAccount;
-import org.duder.user.dao.User;
 import org.duder.user.exception.UserAlreadyExistsException;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.duder.user.model.User;
 
 import java.util.Optional;
 import java.util.Set;
@@ -16,7 +15,7 @@ public interface UserService {
 
     Optional<LoginResponse> fbLogin(String accessToken);
 
-    Optional<UserDetails> getUserDetailsByToken(String token);
+    void updateProfileImage(String url, String sessionToken);
 
     Optional<User> getUserByToken(String token);
 

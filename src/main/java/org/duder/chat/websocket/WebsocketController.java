@@ -1,7 +1,7 @@
 package org.duder.chat.websocket;
 
-import org.duder.dto.chat.ChatMessage;
 import org.duder.chat.service.MessageService;
+import org.duder.dto.chat.ChatMessage;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

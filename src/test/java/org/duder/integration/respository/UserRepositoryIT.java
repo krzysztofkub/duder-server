@@ -1,7 +1,7 @@
 package org.duder.integration.respository;
 
 import org.duder.utils.MySQLContainerProvider;
-import org.duder.user.dao.User;
+import org.duder.user.model.User;
 import org.duder.user.repository.UserRepository;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -22,7 +22,6 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UserRepositoryIT {
 
     @Autowired

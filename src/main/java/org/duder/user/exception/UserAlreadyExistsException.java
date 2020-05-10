@@ -1,9 +1,10 @@
 package org.duder.user.exception;
 
-import org.duder.user.dao.User;
+import org.duder.user.model.User;
 
-public class UserAlreadyExistsException extends RuntimeException{
+public class UserAlreadyExistsException extends RuntimeException {
     private User user;
+
     public UserAlreadyExistsException(User user) {
         super("User with login " + user.getLogin() + "already exists");
         this.user = user;

@@ -1,8 +1,8 @@
 package org.duder.chat.service;
 
-import org.duder.dto.chat.ChatMessage;
 import org.duder.chat.repository.MessageRepository;
 import org.duder.chat.service.scheduler.MessageCache;
+import org.duder.dto.chat.ChatMessage;
 import org.duder.user.repository.UserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-class MessageServiceImpl implements MessageService{
+class MessageServiceImpl implements MessageService {
 
     private final MessageCache messageCache;
     private final SimpMessagingTemplate simpMessagingTemplate;
@@ -27,7 +27,7 @@ class MessageServiceImpl implements MessageService{
 
     @Override
     public void sendMessage(ChatMessage chatMessage) {
-        simpMessagingTemplate.convertAndSend(TOPIC+ PUBLIC_ENDPOINT, chatMessage);
+        simpMessagingTemplate.convertAndSend(TOPIC + PUBLIC_ENDPOINT, chatMessage);
         messageCache.add(chatMessage);
     }
 

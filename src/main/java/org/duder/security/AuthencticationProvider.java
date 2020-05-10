@@ -5,6 +5,7 @@ import org.duder.user.service.UserService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +30,14 @@ public class AuthencticationProvider extends AbstractUserDetailsAuthenticationPr
         return Optional
                 .ofNullable(token)
                 .map(String::valueOf)
-                .flatMap(userService::getUserDetailsByToken)
+                .flatMap(userService::getUserByToken)
+                .map(user -> new org.springframework.security.core.userdetails.User(user.getNickname(), "password",
+                        true,
+                        true,
+                        true,
+                        true,
+                        AuthorityUtils.createAuthorityList("USER")
+                ))
                 .orElseThrow(() -> new UserNotFoundException("Cannot find user with provided token " + token));
     }
 }
