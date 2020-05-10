@@ -39,8 +39,7 @@ class DefaultFacebookService implements FacebookService {
 
         String profilePictureUri = UriComponentsBuilder
                 .fromHttpUrl(FACEBOOK_URL)
-                .path(fbUser.getUser_id())
-                .path("picture")
+                .pathSegment(fbUser.getUser_id(), "picture")
                 .queryParam("type", "large")
                 .queryParam("width", "900")
                 .queryParam("height", "900")
