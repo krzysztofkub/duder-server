@@ -47,7 +47,7 @@ class DefaultEventService implements EventService {
                 .description(createEvent.getDescription())
                 .hobbies(hobbyRepository.findAllByNameIn(createEvent.getHobbies()))
                 .timestamp(new Timestamp(createEvent.getTimestamp()))
-                .isPrivate(createEvent.getIsPrivate())
+                .isPrivate(createEvent.isPrivate())
                 .build();
 
         UserEvent userEvent = new UserEvent();
