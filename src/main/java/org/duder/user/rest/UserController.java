@@ -1,5 +1,6 @@
 package org.duder.user.rest;
 
+import org.duder.dto.user.Dude;
 import org.duder.dto.user.LoginResponse;
 import org.duder.dto.user.RegisterAccount;
 import org.duder.user.exception.WrongUserCredentialsException;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -49,5 +52,10 @@ class UserController {
     @GetMapping("/validate")
     public boolean validateToken(@RequestParam("sessionToken") String sessionToken) {
         return userService.getUserByToken(sessionToken).isPresent();
+    }
+
+    @GetMapping("/dudes")
+    public List<Dude> getDudes(@RequestParam int page, @RequestParam int size) {
+        return userService.getDudes(page, size);
     }
 }

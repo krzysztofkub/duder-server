@@ -1,19 +1,25 @@
 package org.duder.user.service;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.duder.dto.user.Dude;
 import org.duder.dto.user.LoginResponse;
 import org.duder.dto.user.RegisterAccount;
 import org.duder.user.dto.FacebookUserData;
 import org.duder.user.exception.UserAlreadyExistsException;
 import org.duder.user.model.User;
 import org.duder.user.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 class DefaultUserService implements UserService {
@@ -105,5 +111,21 @@ class DefaultUserService implements UserService {
         return userRepository.findBySessionToken(token)
                 .map(User::getFriends)
                 .orElse(new HashSet<>());
+    }
+
+    @Override
+    public List<Dude> getDudes(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("nickname"));
+        return userRepository.findAll(pageRequest)
+                .stream()
+                .map(this::mapToDude)
+                .collect(Collectors.toList());
+    }
+
+    private Dude mapToDude(User user) {
+        return Dude.builder()
+                .nickname(user.getNickname())
+                .imageUrl(user.getImageUrl())
+                .build();
     }
 }
