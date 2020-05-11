@@ -45,9 +45,8 @@ class DefaultFacebookService implements FacebookService {
                 .queryParam("height", "900")
                 .toUriString();
 
-        String imageUrl = restTemplate.getForObject(profilePictureUri, String.class);
         if (userData != null) {
-            userData.setImageUrl(imageUrl);
+            userData.setImageUrl(profilePictureUri);
         }
         return userData;
     }
