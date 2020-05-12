@@ -125,12 +125,8 @@ class DefaultUserService implements UserService {
         List<Dude> responseList = new ArrayList<>();
         allUsers.forEach(u -> {
             Dude dude = mapToDude(u);
-            if (friends.contains(u)) {
-                dude.setIsFriend(true);
-            }
-            if (invitations.contains(u)) {
-                dude.setIsInvitationSent(true);
-            }
+            dude.setIsFriend(friends.contains(u));
+            dude.setIsInvitationSent(invitations.contains(u));
             responseList.add(dude);
         });
         return responseList;
