@@ -8,12 +8,13 @@ import org.duder.user.dto.FacebookUserData;
 import org.duder.user.exception.UserAlreadyExistsException;
 import org.duder.user.model.User;
 import org.duder.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Pageable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -114,16 +115,30 @@ class DefaultUserService implements UserService {
     }
 
     @Override
-    public List<Dude> getDudes(int page, int size) {
+    public List<Dude> getDudes(int page, int size, String sessionToken) {
+        User user = userRepository.findBySessionToken(sessionToken).get();
+        Set<User> friends = user.getFriends();
+        Set<User> invitations = user.getFriendsInvitations();
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("nickname"));
-        return userRepository.findAll(pageRequest)
-                .stream()
-                .map(this::mapToDude)
-                .collect(Collectors.toList());
+        List<User> allUsers = userRepository.findAllByIdNot(user.getId(), pageRequest).getContent();
+
+        List<Dude> responseList = new ArrayList<>();
+        allUsers.forEach(u -> {
+            Dude dude = mapToDude(u);
+            if (friends.contains(u)) {
+                dude.setIsFriend(true);
+            }
+            if (invitations.contains(u)) {
+                dude.setIsInvitationSent(true);
+            }
+            responseList.add(dude);
+        });
+        return responseList;
     }
 
     private Dude mapToDude(User user) {
         return Dude.builder()
+                .id(user.getId())
                 .nickname(user.getNickname())
                 .imageUrl(user.getImageUrl())
                 .build();

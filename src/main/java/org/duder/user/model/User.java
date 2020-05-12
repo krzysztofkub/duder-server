@@ -70,11 +70,16 @@ public class User {
             , inverseJoinColumns = {@JoinColumn(name = "id_friend")})
     private Set<User> friends = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "user_friend_invitation"
+            , joinColumns = {@JoinColumn(name = "id_user")}
+            , inverseJoinColumns = {@JoinColumn(name = "id_friend")})
+    private Set<User> friendsInvitations = new HashSet<>();
+
     private String sessionToken;
 
     private String imageUrl;
 
-    // Equals & hash code by natural id - should be unique and not nullable
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

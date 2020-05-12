@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.duder</groupId>
             <artifactId>duder-dto</artifactId>
-            <version>20</version>
+            <version>23</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

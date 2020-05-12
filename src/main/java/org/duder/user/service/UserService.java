@@ -23,5 +23,5 @@ public interface UserService {
 
     Set<User> getUserFriendsByToken(String token);
 
-    List<Dude> getDudes(int page, int size);
+    List<Dude> getDudes(int page, int size, String sessionToken);
 }
