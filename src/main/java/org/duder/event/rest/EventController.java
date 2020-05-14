@@ -1,8 +1,6 @@
 package org.duder.event.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.catalina.mapper.Mapper;
 import org.duder.chat.exception.DataNotFoundException;
 import org.duder.chat.websocket.WebSocketEventListener;
 import org.duder.dto.event.CreateEvent;
@@ -15,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -55,12 +53,13 @@ class EventController {
     @PostMapping()
     public ResponseEntity<Void> create(
             @RequestPart String createEvent,
-            @RequestPart(value="image", required = false) final MultipartFile image,
+            @RequestPart(value = "image", required = false) final MultipartFile image,
             @RequestHeader("Authorization") String sessionToken) throws IOException {
         logger.info("Received create event request " + createEvent + " with sessionToken = " + sessionToken);
         if (image != null) {
             logger.info("Received create event image " + image.getOriginalFilename());
             byte[] bytes = image.getBytes();
+            makeDirIfNotExists();
             Path path = Paths.get("images/" + image.getOriginalFilename());
             Files.write(path, bytes);
         }
@@ -69,6 +68,16 @@ class EventController {
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(eventId).toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    private void makeDirIfNotExists() {
+        File directory = new File("images/");
+        if (!directory.exists()) {
+            if (directory.mkdir()) {
+                logger.info("Created directory images");
+            }
+        }
+
     }
 
     @GetMapping("/{id}")
