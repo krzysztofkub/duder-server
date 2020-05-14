@@ -1,5 +1,8 @@
 package org.duder.event.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.catalina.mapper.Mapper;
 import org.duder.chat.exception.DataNotFoundException;
 import org.duder.chat.websocket.WebSocketEventListener;
 import org.duder.dto.event.CreateEvent;
@@ -44,9 +47,9 @@ class EventController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> create(@RequestBody CreateEvent createEvent, @RequestHeader("Authorization") String sessionToken) {
+    public ResponseEntity<Void> create(@RequestBody String createEvent, @RequestHeader("Authorization") String sessionToken) throws JsonProcessingException {
         logger.info("Received create event request " + createEvent + " with sessionToken = " + sessionToken);
-        Long eventId = eventService.create(createEvent, sessionToken);
+        Long eventId = eventService.create(new ObjectMapper().readValue(createEvent, CreateEvent.class), sessionToken);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(eventId).toUri();
