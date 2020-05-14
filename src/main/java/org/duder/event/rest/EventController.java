@@ -24,7 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -52,11 +56,13 @@ class EventController {
     public ResponseEntity<Void> create(
             @RequestPart String createEvent,
             @RequestPart(value="image", required = false) final MultipartFile image,
-            @RequestHeader("Authorization") String sessionToken
-    ) throws JsonProcessingException {
+            @RequestHeader("Authorization") String sessionToken) throws IOException {
         logger.info("Received create event request " + createEvent + " with sessionToken = " + sessionToken);
         if (image != null) {
-            logger.info("Received create event image " + image);
+            logger.info("Received create event image " + image.getOriginalFilename());
+            byte[] bytes = image.getBytes();
+            Path path = Paths.get("images/" + image.getOriginalFilename());
+            Files.write(path, bytes);
         }
         Long eventId = eventService.create(new ObjectMapper().readValue(createEvent, CreateEvent.class), sessionToken);
         URI location = ServletUriComponentsBuilder
