@@ -1,8 +1,5 @@
 package org.duder.common;
 
-import org.duder.dto.user.Dude;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,16 +10,16 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Component
 public class ImageService extends DuderBean {
 
     public static final String imagesDir = "images/";
 
-    @PostConstruct
+    public ImageService() {
+        makeDirIfNotExists();
+    }
+
     private void makeDirIfNotExists() {
         File directory = new File(imagesDir);
         if (!directory.exists()) {
