@@ -33,20 +33,23 @@ public class ImageService extends DuderBean {
     }
 
     public boolean saveImage(MultipartFile image) {
-        byte[] bytes = new byte[0];
-        Path path = Paths.get(imagesDir + image.getOriginalFilename());
+        byte[] bytes;
         try {
             bytes = image.getBytes();
             InputStream in = new ByteArrayInputStream(bytes);
             BufferedImage bImageFromConvert = ImageIO.read(in);
+            String filename = getSimpleFileName(image.getOriginalFilename());
             ImageIO.write(bImageFromConvert, "jpeg", new File(
-                    imagesDir + image.getName() + ".jpeg"));
+                    imagesDir + filename + ".jpeg"));
         } catch (IOException e) {
             error("Image " + image.getOriginalFilename() + " can't be saved", e);
-            Logger logger = LoggerFactory.getLogger(ImageService.class);
-            logger.error("can't be saved", e);
             return false;
         }
         return true;
+    }
+
+    private String getSimpleFileName(String originalFilename) {
+        int indexOfDot = originalFilename.lastIndexOf('.');
+        return originalFilename.substring(0,indexOfDot);
     }
 }
