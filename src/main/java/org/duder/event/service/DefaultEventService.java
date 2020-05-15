@@ -1,6 +1,7 @@
 package org.duder.event.service;
 
 import com.google.common.collect.Lists;
+import org.duder.common.DuderBean;
 import org.duder.common.ImageService;
 import org.duder.dto.event.CreateEvent;
 import org.duder.dto.event.EventLoadingMode;
@@ -29,7 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-class DefaultEventService implements EventService {
+class DefaultEventService extends DuderBean implements EventService {
 
     private final EventRepository eventRepository;
     private final HobbyRepository hobbyRepository;
@@ -51,8 +52,6 @@ class DefaultEventService implements EventService {
     public Long create(CreateEvent createEvent, MultipartFile image, String sessionToken) {
         User user = userService.getUserByToken(sessionToken).orElseThrow(InvalidSessionTokenException::new);
 
-        imageService.saveImage(image);
-
         Event event = Event.builder()
                 .name(createEvent.getName())
                 .description(createEvent.getDescription())
@@ -60,6 +59,13 @@ class DefaultEventService implements EventService {
                 .timestamp(new Timestamp(createEvent.getTimestamp()))
                 .isPrivate(createEvent.getIsPrivate())
                 .build();
+        debug("Created event " + event);
+
+        Optional<String> imageName = imageService.saveImage(image, event, event.getId());
+        imageName.ifPresent(i -> {
+            event.setImageUrl(i);
+            debug("Saved image for event");
+        });
 
         UserEvent userEvent = new UserEvent();
         userEvent.setUser(user);

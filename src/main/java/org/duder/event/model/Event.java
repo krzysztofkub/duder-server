@@ -55,4 +55,7 @@ public class Event {
 
     @Column(columnDefinition = "boolean default false", nullable = false)
     private boolean isPrivate;
+
+    @Column
+    private String imageUrl;
 }

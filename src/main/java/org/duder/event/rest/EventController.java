@@ -56,11 +56,12 @@ class EventController extends DuderBean {
     public ResponseEntity<Void> create(
             @RequestPart CreateEvent createEvent,
             @RequestPart(value = "image", required = false) final MultipartFile image,
-            @RequestHeader("Authorization") String sessionToken) throws IOException {
+            @RequestHeader("Authorization") String sessionToken) {
         info("Received create event request " + createEvent + " with sessionToken = " + sessionToken);
         if (image != null) {
-            info("Received create event image " + image.getOriginalFilename());
+            info("Received image with event request");
         }
+
         Long eventId = eventService.create(createEvent, image, sessionToken);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
