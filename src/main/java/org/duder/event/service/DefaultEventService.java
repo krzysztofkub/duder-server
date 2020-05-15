@@ -147,6 +147,7 @@ class DefaultEventService extends DuderBean implements EventService {
                 .timestamp(e.getTimestamp().getTime())
                 .host(findHost(e.getEventUsers()))
                 .isPrivate(e.isPrivate())
+                .imageUrl(e.getImageUrl())
                 .build();
     }
 
