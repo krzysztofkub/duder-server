@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.support.ServletContextResource;
 import org.apache.commons.io.IOUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @RestController
 public class ImageController {
@@ -21,9 +24,7 @@ public class ImageController {
         )
         public @ResponseBody
         byte[] getImageWithMediaType() throws IOException {
-            InputStream in = getClass()
-                    .getResourceAsStream("images/pexels-photo-1040626.jpeg");
-            return IOUtils.toByteArray(in);
+            return Files.readAllBytes(Paths.get("images/pexels-photo-1040626.jpeg"));
         }
 
 }
