@@ -1,6 +1,8 @@
 package org.duder.common;
 
 import org.duder.dto.user.Dude;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,6 +43,8 @@ public class ImageService extends DuderBean {
                     imagesDir + image.getName() + ".jpeg"));
         } catch (IOException e) {
             error("Image " + image.getOriginalFilename() + " can't be saved", e);
+            Logger logger = LoggerFactory.getLogger(ImageService.class);
+            logger.error("can't be saved", e);
             return false;
         }
         return true;
