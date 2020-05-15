@@ -35,13 +35,13 @@ public class ImageService extends DuderBean {
             return Optional.empty();
         }
         byte[] bytes;
-        String imageName = entity.getClass().getSimpleName() + entityId;
+        String imageName = entity.getClass().getSimpleName() + entityId + ".jpeg";
         try {
             bytes = image.getBytes();
             InputStream in = new ByteArrayInputStream(bytes);
             BufferedImage bufferedImage = ImageIO.read(in);
             ImageIO.write(bufferedImage, "jpeg", new File(
-                    IMAGES_DIR + imageName + ".jpeg"));
+                    IMAGES_DIR + imageName));
         } catch (IOException e) {
             error("Image " + image.getOriginalFilename() + " can't be saved", e);
             return Optional.empty();
