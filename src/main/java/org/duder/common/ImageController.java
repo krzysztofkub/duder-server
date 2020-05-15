@@ -20,13 +20,12 @@ import java.nio.file.Paths;
 public class ImageController extends DuderBean{
 
         @GetMapping(
-                value = "/get-image-with-media-type"
+                value = "/get-image-with-media-type",
+                produces = MediaType.IMAGE_JPEG_VALUE
         )
-        public void getImageWithMediaType(HttpServletResponse response) throws IOException {
-                byte[] bytes = Files.readAllBytes(Paths.get("images/pexels-photo-1040626.jpeg"));
-                InputStream inputStream = new ByteArrayInputStream(bytes);
-                StreamUtils.copy(inputStream, response.getOutputStream());
-                response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        @ResponseBody
+        public byte[] getImageWithMediaType(HttpServletResponse response) throws IOException {
+                return Files.readAllBytes(Paths.get("images/pexels-photo-1040626.jpeg"));
         }
 
 }
