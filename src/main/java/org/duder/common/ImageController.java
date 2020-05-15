@@ -19,10 +19,6 @@ import java.nio.file.Paths;
 @RestController
 public class ImageController extends DuderBean{
 
-        @GetMapping(
-                value = "/get-image-with-media-type",
-                produces = MediaType.IMAGE_JPEG_VALUE
-        )
         @ResponseBody
         public HttpEntity<Void> getImageWithMediaType(HttpServletResponse response) throws IOException {
                 byte[] bytes = Files.readAllBytes(Paths.get("images/pexels-photo-1040626.jpeg"));
