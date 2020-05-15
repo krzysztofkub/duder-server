@@ -61,19 +61,20 @@ class DefaultEventService extends DuderBean implements EventService {
                 .build();
         debug("Created event " + event);
 
-        Optional<String> imageName = imageService.saveImage(image, event, event.getId());
-        imageName.ifPresent(i -> {
-            event.setImageUrl(i);
-            debug("Saved image for event");
-        });
-
         UserEvent userEvent = new UserEvent();
         userEvent.setUser(user);
         userEvent.setEvent(event);
         userEvent.setParticipantType(ParticipantType.HOST);
 
         event.setEventUsers(Lists.newArrayList(userEvent));
-        return eventRepository.save(event).getId();
+        Long id = eventRepository.save(event).getId();
+
+        Optional<String> imageUrl = imageService.saveImage(image, event, id);
+        imageUrl.ifPresent(url -> {
+            event.setImageUrl(url);
+            debug("Saved image for event");
+        });
+        return id;
     }
 
     @Override
