@@ -31,6 +31,9 @@ public class ImageService extends DuderBean {
     }
 
     public Optional<String> saveImage(MultipartFile image, Object entity, Long entityId) {
+        if (image == null) {
+            return Optional.empty();
+        }
         byte[] bytes;
         String imageName = entity.getClass().getSimpleName() + entityId;
         try {
