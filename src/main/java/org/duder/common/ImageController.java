@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 
 import static org.duder.common.ImageService.IMAGES_DIR;
 
-@RestController("/api/image")
+@RestController("/image")
 public class ImageController extends DuderBean {
 
     @GetMapping(

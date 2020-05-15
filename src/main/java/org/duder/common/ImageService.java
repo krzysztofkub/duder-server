@@ -49,7 +49,7 @@ public class ImageService extends DuderBean {
 
         String imageUrl = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .path("api/image/{imageId}")
+                .path("image/{imageId}")
                 .buildAndExpand(imageName)
                 .toUriString();
 
