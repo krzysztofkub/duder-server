@@ -5,7 +5,7 @@ import org.duder.dto.user.LoginResponse;
 import org.duder.dto.user.RegisterAccount;
 import org.duder.user.model.User;
 import org.duder.user.repository.UserRepository;
-import org.duder.utils.MySQLContainerProvider;
+import org.duder.common.MySQLContainerProvider;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;

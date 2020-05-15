@@ -1,4 +1,4 @@
-package org.duder.utils;
+package org.duder.common;
 
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.model.ExposedPort;

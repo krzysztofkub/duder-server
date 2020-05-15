@@ -1,6 +1,7 @@
 package org.duder.event.service;
 
 import com.google.common.collect.Lists;
+import org.duder.common.ImageService;
 import org.duder.dto.event.CreateEvent;
 import org.duder.dto.event.EventLoadingMode;
 import org.duder.dto.event.EventPreview;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -32,17 +34,24 @@ class DefaultEventService implements EventService {
     private final EventRepository eventRepository;
     private final HobbyRepository hobbyRepository;
     private final UserService userService;
+    private final ImageService imageService;
 
-    DefaultEventService(EventRepository eventRepository, HobbyRepository hobbyRepository, UserService userService) {
+    DefaultEventService(EventRepository eventRepository,
+                        HobbyRepository hobbyRepository,
+                        UserService userService,
+                        ImageService imageService) {
         this.eventRepository = eventRepository;
         this.hobbyRepository = hobbyRepository;
         this.userService = userService;
+        this.imageService = imageService;
     }
 
     @Override
     @Transactional
-    public Long create(CreateEvent createEvent, String sessionToken) {
+    public Long create(CreateEvent createEvent, MultipartFile image, String sessionToken) {
         User user = userService.getUserByToken(sessionToken).orElseThrow(InvalidSessionTokenException::new);
+
+        imageService.saveImage(image);
 
         Event event = Event.builder()
                 .name(createEvent.getName())

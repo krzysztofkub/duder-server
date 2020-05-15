@@ -3,9 +3,11 @@ package org.duder.event.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.duder.chat.exception.DataNotFoundException;
 import org.duder.chat.websocket.WebSocketEventListener;
+import org.duder.common.DuderBean;
 import org.duder.dto.event.CreateEvent;
 import org.duder.dto.event.EventLoadingMode;
 import org.duder.dto.event.EventPreview;
+import org.duder.dto.user.Dude;
 import org.duder.event.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +33,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/event")
-class EventController {
+class EventController extends DuderBean {
 
     private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
 
@@ -52,32 +54,18 @@ class EventController {
 
     @PostMapping()
     public ResponseEntity<Void> create(
-            @RequestPart String createEvent,
+            @RequestPart CreateEvent createEvent,
             @RequestPart(value = "image", required = false) final MultipartFile image,
             @RequestHeader("Authorization") String sessionToken) throws IOException {
-        logger.info("Received create event request " + createEvent + " with sessionToken = " + sessionToken);
+        info("Received create event request " + createEvent + " with sessionToken = " + sessionToken);
         if (image != null) {
-            logger.info("Received create event image " + image.getOriginalFilename());
-            byte[] bytes = image.getBytes();
-            makeDirIfNotExists();
-            Path path = Paths.get("images/" + image.getOriginalFilename());
-            Files.write(path, bytes);
+            info("Received create event image " + image.getOriginalFilename());
         }
-        Long eventId = eventService.create(new ObjectMapper().readValue(createEvent, CreateEvent.class), sessionToken);
+        Long eventId = eventService.create(createEvent, image, sessionToken);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(eventId).toUri();
         return ResponseEntity.created(location).build();
-    }
-
-    private void makeDirIfNotExists() {
-        File directory = new File("images/");
-        if (!directory.exists()) {
-            if (directory.mkdir()) {
-                logger.info("Created directory images");
-            }
-        }
-
     }
 
     @GetMapping("/{id}")

@@ -1,4 +1,4 @@
-package org.duder.utils;
+package org.duder.common;
 
 import org.duder.user.model.User;
 

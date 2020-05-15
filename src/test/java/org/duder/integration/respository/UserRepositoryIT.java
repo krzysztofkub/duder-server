@@ -1,13 +1,12 @@
 package org.duder.integration.respository;
 
-import org.duder.utils.MySQLContainerProvider;
+import org.duder.common.MySQLContainerProvider;
 import org.duder.user.model.User;
 import org.duder.user.repository.UserRepository;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.Rollback;
