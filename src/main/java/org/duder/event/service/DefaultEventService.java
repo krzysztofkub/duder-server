@@ -58,6 +58,7 @@ class DefaultEventService extends DuderBean implements EventService {
                 .hobbies(hobbyRepository.findAllByNameIn(createEvent.getHobbies()))
                 .timestamp(new Timestamp(createEvent.getTimestamp()))
                 .isPrivate(createEvent.getIsPrivate())
+                .created(new Timestamp(System.currentTimeMillis()))
                 .build();
         debug("Created event " + event);
 
