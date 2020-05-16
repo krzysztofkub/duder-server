@@ -59,6 +59,6 @@ public class Event {
     @Column
     private String imageUrl;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "datetime default now()", nullable = false)
     private Timestamp created;
 }
