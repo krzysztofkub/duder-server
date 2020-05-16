@@ -158,6 +158,7 @@ class DefaultEventService extends DuderBean implements EventService {
                 .map(UserEvent::getUser)
                 .map(user -> Dude.builder()
                         .nickname(user.getNickname())
+                        .imageUrl(user.getImageUrl())
                         .build())
                 .findAny().orElse(null);
     }

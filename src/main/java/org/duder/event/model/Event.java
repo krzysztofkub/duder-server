@@ -58,4 +58,7 @@ public class Event {
 
     @Column
     private String imageUrl;
+
+    @Column(nullable = false)
+    private Timestamp created;
 }
