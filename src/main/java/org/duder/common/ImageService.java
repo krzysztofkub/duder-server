@@ -1,5 +1,6 @@
 package org.duder.common;
 
+import org.imgscalr.Scalr;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -40,6 +41,7 @@ public class ImageService extends DuderBean {
             bytes = image.getBytes();
             InputStream in = new ByteArrayInputStream(bytes);
             BufferedImage bufferedImage = ImageIO.read(in);
+            bufferedImage = Scalr.resize(bufferedImage, Scalr.Method.QUALITY, 800, 600);
             ImageIO.write(bufferedImage, "jpeg", new File(
                     IMAGES_DIR + imageName));
         } catch (IOException e) {
