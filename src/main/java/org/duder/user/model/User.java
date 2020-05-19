@@ -70,11 +70,17 @@ public class User {
             , inverseJoinColumns = {@JoinColumn(name = "id_friend")})
     private Set<User> friends = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(name = "user_friend_invitation"
-            , joinColumns = {@JoinColumn(name = "id_user")}
-            , inverseJoinColumns = {@JoinColumn(name = "id_friend")})
-    private Set<User> friendsInvitations = new HashSet<>();
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Set<UserFriendInvitation> sentInvitations = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "friend",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Set<UserFriendInvitation> receivedInvitations = new HashSet<>();
 
     private String sessionToken;
 

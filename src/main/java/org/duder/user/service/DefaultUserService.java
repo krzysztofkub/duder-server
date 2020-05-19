@@ -7,6 +7,7 @@ import org.duder.dto.user.RegisterAccount;
 import org.duder.user.dto.FacebookUserData;
 import org.duder.user.exception.UserAlreadyExistsException;
 import org.duder.user.model.User;
+import org.duder.user.model.UserFriendInvitation;
 import org.duder.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -118,7 +119,7 @@ class DefaultUserService implements UserService {
     public List<Dude> getDudes(int page, int size, String sessionToken) {
         User user = userRepository.findBySessionToken(sessionToken).get();
         Set<User> friends = user.getFriends();
-        Set<User> invitations = user.getFriendsInvitations();
+        Set<UserFriendInvitation> invitations = user.getSentInvitations();
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("nickname"));
         List<User> allUsers = userRepository.findAllByIdNot(user.getId(), pageRequest).getContent();
 
