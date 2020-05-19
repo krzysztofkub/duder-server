@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,9 +22,9 @@ import javax.persistence.UniqueConstraint;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-//@Table(
-//        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "friend_id"})}
-//)
+@Table(
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "friend_id"})}
+)
 public class UserFriendInvitation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,5 +38,6 @@ public class UserFriendInvitation {
     @JoinColumn(name = "friend_id")
     private User friend;
 
+    @Column(columnDefinition = "boolean default false")
     private Boolean declined;
 }

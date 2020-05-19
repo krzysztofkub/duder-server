@@ -74,13 +74,13 @@ public class User {
             mappedBy = "user",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private Set<UserFriendInvitation> sentInvitations = new HashSet<>();
+    private Set<UserFriendInvitation> receivedInvitations = new HashSet<>();
 
     @OneToMany(
             mappedBy = "friend",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private Set<UserFriendInvitation> receivedInvitations = new HashSet<>();
+    private Set<UserFriendInvitation> sentInvitations = new HashSet<>();
 
     private String sessionToken;
 
