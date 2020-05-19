@@ -23,7 +23,7 @@ import javax.persistence.UniqueConstraint;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "friend_id"})}
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"sender_id", "receiver_id"})}
 )
 public class UserFriendInvitation {
     @Id
@@ -31,12 +31,12 @@ public class UserFriendInvitation {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
     @ManyToOne
-    @JoinColumn(name = "friend_id")
-    private User friend;
+    @JoinColumn(name = "receiver_id")
+    private User receiver;
 
     @Column(columnDefinition = "boolean default false")
     private Boolean declined;

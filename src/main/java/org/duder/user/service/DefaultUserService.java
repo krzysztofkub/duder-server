@@ -119,7 +119,9 @@ class DefaultUserService implements UserService {
     public List<Dude> getDudes(int page, int size, String sessionToken) {
         User user = userRepository.findBySessionToken(sessionToken).get();
         Set<User> friends = user.getFriends();
-        Set<UserFriendInvitation> invitations = user.getSentInvitations();
+        Set<User> invitatedUsers = user.getSentInvitations().stream()
+                .map(UserFriendInvitation::getReceiver)
+                .collect(Collectors.toSet());
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("nickname"));
         List<User> allUsers = userRepository.findAllByIdNot(user.getId(), pageRequest).getContent();
 
@@ -127,7 +129,7 @@ class DefaultUserService implements UserService {
         allUsers.forEach(u -> {
             Dude dude = mapToDude(u);
             dude.setIsFriend(friends.contains(u));
-            dude.setIsInvitationSent(invitations.contains(u));
+            dude.setIsInvitationSent(invitatedUsers.contains(u));
             responseList.add(dude);
         });
         return responseList;
