@@ -11,17 +11,10 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface UserService {
-    User register(RegisterAccount account) throws UserAlreadyExistsException;
-
-    Optional<LoginResponse> login(String username, String password);
-
-    Optional<LoginResponse> fbLogin(String accessToken);
-
-    void updateProfileImage(String url, String sessionToken);
 
     Optional<User> getUserByToken(String token);
 
     Set<User> getUserFriendsByToken(String token);
 
-    List<Dude> getDudes(int page, int size, String sessionToken);
+    List<Dude> getDudes(int page, int size);
 }

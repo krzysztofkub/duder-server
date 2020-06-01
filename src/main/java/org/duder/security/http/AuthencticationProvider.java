@@ -1,4 +1,4 @@
-package org.duder.security;
+package org.duder.security.http;
 
 import org.duder.security.exception.UserNotFoundException;
 import org.duder.user.service.UserService;

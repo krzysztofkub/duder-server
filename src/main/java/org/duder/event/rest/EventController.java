@@ -44,12 +44,11 @@ class EventController extends DuderBean {
     }
 
     @GetMapping()
-    public List<EventPreview> findAll(@RequestParam int page, @RequestParam int size, @RequestParam(required = false) EventLoadingMode mode,
-                                      @RequestHeader("Authorization") String sessionToken) {
+    public List<EventPreview> findAll(@RequestParam int page, @RequestParam int size, @RequestParam(required = false) EventLoadingMode mode) {
         if (mode == null) {
             mode = EventLoadingMode.PUBLIC;
         }
-        return eventService.findAllUnfinished(page, size, mode, sessionToken);
+        return eventService.findAllUnfinished(page, size, mode);
     }
 
     @PostMapping()
@@ -62,7 +61,7 @@ class EventController extends DuderBean {
             info("Received image with event request");
         }
 
-        Long eventId = eventService.create(createEvent, image, sessionToken);
+        Long eventId = eventService.create(createEvent, image);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(eventId).toUri();

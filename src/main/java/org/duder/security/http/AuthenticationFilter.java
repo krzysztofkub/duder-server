@@ -1,4 +1,4 @@
-package org.duder.security;
+package org.duder.security.http;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,7 +18,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    protected AuthenticationFilter(RequestMatcher requiresAuth) {
+    public AuthenticationFilter(RequestMatcher requiresAuth) {
         super(requiresAuth);
     }
 

@@ -25,7 +25,7 @@ import javax.persistence.UniqueConstraint;
 @Table(
         uniqueConstraints = {@UniqueConstraint(columnNames = {"sender_id", "receiver_id"})}
 )
-public class UserFriendInvitation {
+public class FriendInvitation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

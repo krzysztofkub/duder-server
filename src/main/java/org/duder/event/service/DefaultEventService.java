@@ -15,6 +15,7 @@ import org.duder.user.exception.InvalidSessionTokenException;
 import org.duder.user.model.ParticipantType;
 import org.duder.user.model.User;
 import org.duder.user.model.UserEvent;
+import org.duder.user.service.LoggedDuderBean;
 import org.duder.user.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-class DefaultEventService extends DuderBean implements EventService {
+class DefaultEventService extends LoggedDuderBean implements EventService {
 
     private final EventRepository eventRepository;
     private final HobbyRepository hobbyRepository;
@@ -49,8 +50,8 @@ class DefaultEventService extends DuderBean implements EventService {
 
     @Override
     @Transactional
-    public Long create(CreateEvent createEvent, MultipartFile image, String sessionToken) {
-        User user = userService.getUserByToken(sessionToken).orElseThrow(InvalidSessionTokenException::new);
+    public Long create(CreateEvent createEvent, MultipartFile image) {
+        User user = userService.getUserByToken(getSessionToken()).orElseThrow(InvalidSessionTokenException::new);
 
         Event event = Event.builder()
                 .name(createEvent.getName())
@@ -85,16 +86,16 @@ class DefaultEventService extends DuderBean implements EventService {
     }
 
     @Override
-    public List<EventPreview> findAllUnfinished(int page, int size, EventLoadingMode eventLoadingMode, String sessionToken) {
+    public List<EventPreview> findAllUnfinished(int page, int size, EventLoadingMode eventLoadingMode) {
         List<EventPreview> events;
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         switch (eventLoadingMode) {
             case PRIVATE:
-                events = loadPrivateEvents(page, size, timestamp, sessionToken);
+                events = loadPrivateEvents(page, size, timestamp, getSessionToken());
                 break;
             case OWN:
-                events = loadOwnEvents(page, size, timestamp, sessionToken);
+                events = loadOwnEvents(page, size, timestamp, getSessionToken());
                 break;
             case PUBLIC:
             default:
