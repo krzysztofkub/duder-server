@@ -2,6 +2,7 @@ package org.duder.user.service;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.duder.chat.exception.DataNotFoundException;
+import org.duder.dto.user.InvitationResponse;
 import org.duder.user.model.FriendInvitation;
 import org.duder.user.model.User;
 import org.duder.user.repository.FriendInvitationRepository;
@@ -25,7 +26,7 @@ class DefaultFriendInvitationService extends LoggedDuderBean implements FriendIn
     }
 
     @Override
-    public void processInvitation(Long receiverId) {
+    public InvitationResponse processInvitation(Long receiverId) {
         Pair<User, User> senderAndReceiver = getSenderAndReceiver(receiverId);
         User user = senderAndReceiver.getLeft();
         User receiver = senderAndReceiver.getRight();
@@ -36,7 +37,10 @@ class DefaultFriendInvitationService extends LoggedDuderBean implements FriendIn
 
         if (!addedFriend) {
             createInvitation(user, receiver);
+            return InvitationResponse.INVITATION_SENT;
         }
+
+        return InvitationResponse.FRIEND_ADDED;
     }
 
     private Pair<User, User> getSenderAndReceiver(Long receiverId) {

@@ -1,6 +1,7 @@
 package org.duder.user.rest;
 
 import org.duder.dto.user.Dude;
+import org.duder.dto.user.InvitationResponse;
 import org.duder.user.service.FriendInvitationService;
 import org.duder.user.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +31,8 @@ class DudeController {
     }
 
     @PostMapping("/invite/{receiverId}")
-    public void invite(@PathVariable Long receiverId) {
-        friendInvitationService.processInvitation(receiverId);
+    public InvitationResponse invite(@PathVariable Long receiverId) {
+        return friendInvitationService.processInvitation(receiverId);
     }
 
     @PostMapping("/decline/{senderId}")
