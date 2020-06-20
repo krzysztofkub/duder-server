@@ -1,13 +1,11 @@
 package org.duder.event.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.duder.chat.exception.DataNotFoundException;
 import org.duder.chat.websocket.WebSocketEventListener;
 import org.duder.common.DuderBean;
 import org.duder.dto.event.CreateEvent;
 import org.duder.dto.event.EventLoadingMode;
 import org.duder.dto.event.EventPreview;
-import org.duder.dto.user.Dude;
 import org.duder.event.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @RestController

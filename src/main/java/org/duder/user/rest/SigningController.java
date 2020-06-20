@@ -3,6 +3,7 @@ package org.duder.user.rest;
 import org.duder.dto.user.LoginResponse;
 import org.duder.dto.user.RegisterAccount;
 import org.duder.user.exception.WrongUserCredentialsException;
+import org.duder.user.service.SessionService;
 import org.duder.user.service.SigningService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 class SigningController {
 
     private final SigningService signingService;
+    private final SessionService sessionService;
 
-    SigningController(SigningService signingService) {
+    SigningController(SigningService signingService, SessionService sessionService) {
         this.signingService = signingService;
+        this.sessionService = sessionService;
     }
 
     @PostMapping("/register")
@@ -37,5 +40,10 @@ class SigningController {
     @GetMapping("/fb-login")
     public LoginResponse fbLogin(@RequestParam("accessToken") final String accessToken) {
         return signingService.fbLogin(accessToken).get();
+    }
+
+    @GetMapping("/validate")
+    public boolean validateToken(@RequestParam("sessionToken") String sessionToken) {
+        return sessionService.getUserByToken(sessionToken).isPresent();
     }
 }

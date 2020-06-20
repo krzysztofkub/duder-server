@@ -1,6 +1,5 @@
 package org.duder.security.websocket;
 
-import org.duder.security.websocket.WebSocketAuthenticatorService;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;

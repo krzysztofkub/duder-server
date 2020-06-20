@@ -2,7 +2,7 @@ package org.duder.security.websocket;
 
 import org.duder.security.SessionHolder;
 import org.duder.user.model.User;
-import org.duder.user.service.UserService;
+import org.duder.user.service.SessionService;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,11 +15,11 @@ import java.util.Optional;
 
 @Component
 public class WebSocketAuthenticatorService {
-    private final UserService userService;
+    private final SessionService sessionService;
     private final SessionHolder tokenHolder;
 
-    public WebSocketAuthenticatorService(UserService userService, SessionHolder tokenHolder) {
-        this.userService = userService;
+    public WebSocketAuthenticatorService(SessionService sessionService, SessionHolder tokenHolder) {
+        this.sessionService = sessionService;
         this.tokenHolder = tokenHolder;
     }
 
@@ -37,7 +37,7 @@ public class WebSocketAuthenticatorService {
     }
 
     private Optional<User> getValidatedUser(String token) {
-        Optional<User> userByToken = userService.getUserByToken(token);
+        Optional<User> userByToken = sessionService.getUserByToken(token);
         if (!userByToken.isPresent()) {
             throw new BadCredentialsException("Not existing session token " + token);
         }

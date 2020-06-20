@@ -2,7 +2,7 @@ package org.duder.user.service;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.duder.chat.exception.DataNotFoundException;
-import org.duder.dto.user.InvitationResponse;
+import org.duder.dto.user.FriendshipStatus;
 import org.duder.user.model.FriendInvitation;
 import org.duder.user.model.User;
 import org.duder.user.repository.FriendInvitationRepository;
@@ -13,20 +13,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Component
-class DefaultFriendInvitationService extends LoggedDuderAwareBean implements FriendInvitationService {
+class DefaultFriendshipService extends LoggedDuderAwareBean implements FriendshipService {
 
+    private final SessionService sessionService;
     private final FriendInvitationRepository friendInvitationRepository;
-    private final UserService userService;
     private final UserRepository userRepository;
 
-    public DefaultFriendInvitationService(FriendInvitationRepository friendInvitationRepository, UserService userService, UserRepository userRepository) {
+    public DefaultFriendshipService(FriendInvitationRepository friendInvitationRepository, SessionService sessionService, UserRepository userRepository) {
         this.friendInvitationRepository = friendInvitationRepository;
-        this.userService = userService;
+        this.sessionService = sessionService;
         this.userRepository = userRepository;
     }
 
     @Override
-    public InvitationResponse processInvitation(Long receiverId) {
+    public FriendshipStatus processInvitation(Long receiverId) {
         Pair<User, User> senderAndReceiver = getSenderAndReceiver(receiverId);
         User user = senderAndReceiver.getLeft();
         User receiver = senderAndReceiver.getRight();
@@ -37,14 +37,14 @@ class DefaultFriendInvitationService extends LoggedDuderAwareBean implements Fri
 
         if (!addedFriend) {
             createInvitation(user, receiver);
-            return InvitationResponse.INVITATION_SENT;
+            return FriendshipStatus.INVITATION_SENT;
         }
 
-        return InvitationResponse.FRIEND_ADDED;
+        return FriendshipStatus.FRIENDS;
     }
 
     private Pair<User, User> getSenderAndReceiver(Long receiverId) {
-        User user = userService.getUserByToken(getSessionToken()).get();
+        User user = sessionService.getUserByToken(getSessionToken()).get();
         User receiver = userRepository.findById(receiverId)
                 .orElseThrow(() -> new DataNotFoundException("Missing user with id " + receiverId));
         return Pair.of(user, receiver);
@@ -96,5 +96,41 @@ class DefaultFriendInvitationService extends LoggedDuderAwareBean implements Fri
                 .findBySenderAndReceiver(sender, user)
                 .orElseThrow(() -> new RuntimeException("Missing invitation to decline"));
         invitation.setDeclined(true);
+    }
+
+    @Override
+    public Optional<FriendshipStatus> deduceFriendshipStatus(User user, Long userId) {
+        FriendshipStatus friendshipStatus = null;
+        if (areFriends(user, userId)) {
+            friendshipStatus = FriendshipStatus.FRIENDS;
+        }
+        if (wasInvitationSent(user, userId)) {
+            friendshipStatus = FriendshipStatus.INVITATION_SENT;
+        }
+        if (receivedInvitation(user, userId)) {
+            friendshipStatus = FriendshipStatus.INVITATION_RECEIVED;
+        }
+        return Optional.ofNullable(friendshipStatus);
+    }
+
+    private boolean areFriends(User user, Long userId) {
+        return user.getFriends().stream()
+                .map(User::getId)
+                .anyMatch(id -> id.equals(userId));
+    }
+
+    private boolean wasInvitationSent(User user, Long userId) {
+        return user.getSentInvitations().stream()
+                .map(FriendInvitation::getReceiver)
+                .map(User::getId)
+                .anyMatch(id -> id.equals(userId));
+    }
+
+    private boolean receivedInvitation(User user, Long userId) {
+        return user.getReceivedInvitations().stream()
+                .map(FriendInvitation::getSender)
+                .map(User::getId)
+                .anyMatch(id -> id.equals(userId));
+
     }
 }

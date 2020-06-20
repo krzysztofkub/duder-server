@@ -1,16 +1,16 @@
 package org.duder.integration;
 
 
-import org.duder.dto.chat.ChatMessage;
-import org.duder.dto.chat.MessageType;
 import org.duder.chat.model.Message;
 import org.duder.chat.repository.MessageRepository;
-import org.duder.dto.user.LoginResponse;
-import org.duder.user.model.User;
-import org.duder.user.repository.UserRepository;
 import org.duder.common.DataSQLValues;
 import org.duder.common.MySQLContainerProvider;
 import org.duder.common.MyWebSocketClient;
+import org.duder.dto.chat.ChatMessage;
+import org.duder.dto.chat.MessageType;
+import org.duder.dto.user.LoginResponse;
+import org.duder.user.model.User;
+import org.duder.user.repository.UserRepository;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -31,7 +31,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

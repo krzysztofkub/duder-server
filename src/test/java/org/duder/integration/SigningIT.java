@@ -1,23 +1,13 @@
 package org.duder.integration;
 
-import org.duder.dto.chat.ChatMessage;
-import org.duder.dto.user.LoginResponse;
 import org.duder.dto.user.RegisterAccount;
 import org.duder.user.model.User;
 import org.duder.user.repository.UserRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
