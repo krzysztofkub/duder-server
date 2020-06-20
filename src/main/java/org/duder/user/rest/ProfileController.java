@@ -16,7 +16,7 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    @PostMapping("/profile-pic")
+    @PostMapping("/image")
     public void profilePicture(@RequestBody String url) {
         profileService.updateProfilePicture(url);
     }

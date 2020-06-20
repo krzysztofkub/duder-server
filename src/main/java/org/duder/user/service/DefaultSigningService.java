@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
-class DefaultSigningService extends LoggedDuderBean implements SigningService {
+class DefaultSigningService extends LoggedDuderAwareBean implements SigningService {
     private final FacebookService facebookService;
     private final UserRepository userRepository;
     private final ProfileService profileService;

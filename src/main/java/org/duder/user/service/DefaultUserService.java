@@ -1,6 +1,8 @@
 package org.duder.user.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.duder.dto.user.Dude;
+import org.duder.user.exception.InvalidSessionTokenException;
 import org.duder.user.model.FriendInvitation;
 import org.duder.user.model.User;
 import org.duder.user.repository.UserRepository;
@@ -16,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-class DefaultUserService extends LoggedDuderBean implements UserService {
+class DefaultUserService extends LoggedDuderAwareBean implements UserService {
     private final UserRepository userRepository;
 
     public DefaultUserService(UserRepository userRepository) {
@@ -25,6 +27,9 @@ class DefaultUserService extends LoggedDuderBean implements UserService {
 
     @Override
     public Optional<User> getUserByToken(String token) {
+        if (StringUtils.isEmpty(token)) {
+            throw new InvalidSessionTokenException("token is empty");
+        }
         return userRepository.findBySessionToken(token);
     }
 

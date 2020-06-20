@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-class DefaultProfileService extends LoggedDuderBean implements ProfileService {
+class DefaultProfileService extends LoggedDuderAwareBean implements ProfileService {
 
     private final UserRepository userRepository;
 

@@ -1,7 +1,6 @@
 package org.duder.event.service;
 
 import com.google.common.collect.Lists;
-import org.duder.common.DuderBean;
 import org.duder.common.ImageService;
 import org.duder.dto.event.CreateEvent;
 import org.duder.dto.event.EventLoadingMode;
@@ -15,7 +14,7 @@ import org.duder.user.exception.InvalidSessionTokenException;
 import org.duder.user.model.ParticipantType;
 import org.duder.user.model.User;
 import org.duder.user.model.UserEvent;
-import org.duder.user.service.LoggedDuderBean;
+import org.duder.user.service.LoggedDuderAwareBean;
 import org.duder.user.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-class DefaultEventService extends LoggedDuderBean implements EventService {
+class DefaultEventService extends LoggedDuderAwareBean implements EventService {
 
     private final EventRepository eventRepository;
     private final HobbyRepository hobbyRepository;

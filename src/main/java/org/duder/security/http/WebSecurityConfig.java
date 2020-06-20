@@ -1,4 +1,4 @@
-package org.duder.security.websocket;
+package org.duder.security.http;
 
 import org.duder.security.http.AuthenticationFilter;
 import org.springframework.context.annotation.Bean;

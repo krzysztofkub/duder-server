@@ -1,6 +1,8 @@
 package org.duder.security.http;
 
+import org.duder.security.SessionHolder;
 import org.duder.security.exception.UserNotFoundException;
+import org.duder.user.model.User;
 import org.duder.user.service.UserService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -14,9 +16,11 @@ import java.util.Optional;
 @Component
 public class AuthencticationProvider extends AbstractUserDetailsAuthenticationProvider {
     private final UserService userService;
+    private final SessionHolder sessionHolder;
 
-    public AuthencticationProvider(UserService userService) {
+    public AuthencticationProvider(UserService userService, SessionHolder sessionHolder) {
         this.userService = userService;
+        this.sessionHolder = sessionHolder;
     }
 
     @Override
@@ -30,7 +34,7 @@ public class AuthencticationProvider extends AbstractUserDetailsAuthenticationPr
         return Optional
                 .ofNullable(token)
                 .map(String::valueOf)
-                .flatMap(userService::getUserByToken)
+                .flatMap(this::processUser)
                 .map(user -> new org.springframework.security.core.userdetails.User(user.getNickname(), "password",
                         true,
                         true,
@@ -39,5 +43,11 @@ public class AuthencticationProvider extends AbstractUserDetailsAuthenticationPr
                         AuthorityUtils.createAuthorityList("USER")
                 ))
                 .orElseThrow(() -> new UserNotFoundException("Cannot find user with provided token " + token));
+    }
+
+    private Optional<User> processUser(String token) {
+        Optional<User> userByToken = userService.getUserByToken(token);
+        userByToken.ifPresent(u -> sessionHolder.user = userByToken.get());
+        return userByToken;
     }
 }

@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Component
-class DefaultFriendInvitationService extends LoggedDuderBean implements FriendInvitationService {
+class DefaultFriendInvitationService extends LoggedDuderAwareBean implements FriendInvitationService {
 
     private final FriendInvitationRepository friendInvitationRepository;
     private final UserService userService;

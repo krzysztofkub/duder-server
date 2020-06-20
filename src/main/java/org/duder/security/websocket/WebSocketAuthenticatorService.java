@@ -29,8 +29,6 @@ public class WebSocketAuthenticatorService {
         }
         Optional<User> userByToken = getValidatedUser(token);
 
-        tokenHolder.sessionToken = token;
-
         return new UsernamePasswordAuthenticationToken(
                 userByToken.get().getLogin(),
                 null,

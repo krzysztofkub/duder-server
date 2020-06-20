@@ -9,6 +9,5 @@ import org.springframework.web.context.annotation.RequestScope;
 public class SessionHolder {
     //TODO USE SPRING SECURITY SESSION HOLDER
     // https://www.baeldung.com/get-user-in-spring-security
-    public String sessionToken;
     public User user;
 }
