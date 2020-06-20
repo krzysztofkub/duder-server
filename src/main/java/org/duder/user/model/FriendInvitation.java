@@ -38,6 +38,6 @@ public class FriendInvitation {
     @JoinColumn(name = "receiver_id")
     private User receiver;
 
-    @Column(columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default false", nullable = false)
     private Boolean declined;
 }
