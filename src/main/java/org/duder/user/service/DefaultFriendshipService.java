@@ -85,6 +85,8 @@ class DefaultFriendshipService extends LoggedDuderAwareBean implements Friendshi
     private void addUserFriend(User sender, User receiver) {
         sender.getFriends().add(receiver);
         receiver.getFriends().add(sender);
+        userRepository.saveAndFlush(sender);
+        userRepository.saveAndFlush(receiver);
     }
 
     @Override
