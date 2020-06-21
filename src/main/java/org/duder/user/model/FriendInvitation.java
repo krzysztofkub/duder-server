@@ -39,5 +39,5 @@ public class FriendInvitation {
     private User receiver;
 
     @Column(columnDefinition = "boolean default false", nullable = false)
-    private Boolean declined = false;
+    private Boolean declined;
 }

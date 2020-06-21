@@ -55,6 +55,7 @@ class DefaultFriendshipService extends LoggedDuderAwareBean implements Friendshi
                 FriendInvitation.builder()
                         .sender(sender)
                         .receiver(receiver)
+                        .declined(false)
                         .build();
         friendInvitationRepository.saveAndFlush(invitation);
     }
