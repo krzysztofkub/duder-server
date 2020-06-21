@@ -104,17 +104,16 @@ class DefaultFriendshipService extends LoggedDuderAwareBean implements Friendshi
 
     @Override
     public Optional<FriendshipStatus> deduceFriendshipStatus(User user, Long userId) {
-        FriendshipStatus friendshipStatus = null;
         if (areFriends(user, userId)) {
-            friendshipStatus = FriendshipStatus.FRIENDS;
+            return Optional.of(FriendshipStatus.FRIENDS);
         }
         if (wasInvitationSent(user, userId)) {
-            friendshipStatus = FriendshipStatus.INVITATION_SENT;
+            return Optional.of(FriendshipStatus.INVITATION_SENT);
         }
         if (receivedInvitation(user, userId)) {
-            friendshipStatus = FriendshipStatus.INVITATION_RECEIVED;
+            return Optional.of(FriendshipStatus.INVITATION_RECEIVED);
         }
-        return Optional.ofNullable(friendshipStatus);
+        return Optional.empty();
     }
 
     private boolean areFriends(User user, Long userId) {
