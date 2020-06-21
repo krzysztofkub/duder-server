@@ -26,6 +26,7 @@ class DefaultFriendshipService extends LoggedDuderAwareBean implements Friendshi
     }
 
     @Override
+    @Transactional
     public FriendshipStatus processInvitation(Long receiverId) {
         Pair<User, User> senderAndReceiver = getSenderAndReceiver(receiverId);
         User user = senderAndReceiver.getLeft();
