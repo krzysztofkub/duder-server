@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,7 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-@DynamicInsert
+@Entity
 @Getter
 @Setter
 @Builder
@@ -39,5 +39,5 @@ public class FriendInvitation {
     private User receiver;
 
     @Column(columnDefinition = "boolean default false", nullable = false)
-    private Boolean declined;
+    private Boolean declined = false;
 }
