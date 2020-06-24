@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>duder-chat</name>
-    <description>Spring Boot WebSocket Duder Chat</description>
+    <description>Duder</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -165,7 +165,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>org.duder.WebsocketApplication</mainClass>
+                    <mainClass>org.duder.DuderApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
