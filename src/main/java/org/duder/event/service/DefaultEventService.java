@@ -5,6 +5,7 @@ import org.duder.common.ImageService;
 import org.duder.dto.event.CreateEvent;
 import org.duder.dto.event.EventLoadingMode;
 import org.duder.dto.event.EventPreview;
+import org.duder.dto.event.HobbyName;
 import org.duder.dto.event.ParticipantType;
 import org.duder.dto.user.Dude;
 import org.duder.event.model.Event;
@@ -27,6 +28,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,23 +36,20 @@ class DefaultEventService extends LoggedDuderAwareBean implements EventService {
 
     private final EventRepository eventRepository;
     private final HobbyRepository hobbyRepository;
-    private final SessionService sessionService;
     private final ImageService imageService;
 
     DefaultEventService(EventRepository eventRepository,
                         HobbyRepository hobbyRepository,
-                        SessionService sessionService,
                         ImageService imageService) {
         this.eventRepository = eventRepository;
         this.hobbyRepository = hobbyRepository;
-        this.sessionService = sessionService;
         this.imageService = imageService;
     }
 
     @Override
     @Transactional
     public Long create(CreateEvent createEvent, MultipartFile image) {
-        User user = sessionService.getUserByToken(getSessionToken()).orElseThrow(InvalidSessionTokenException::new);
+        User user = getUser();
 
         Event event = Event.builder()
                 .name(createEvent.getName())
@@ -81,7 +80,7 @@ class DefaultEventService extends LoggedDuderAwareBean implements EventService {
     @Override
     public Optional<EventPreview> findEvent(Long id) {
         return eventRepository.findById(id)
-                .map(this::mapEventToPreview);
+                .map(this::createEventPreview);
     }
 
     @Override
@@ -91,10 +90,10 @@ class DefaultEventService extends LoggedDuderAwareBean implements EventService {
 
         switch (eventLoadingMode) {
             case PRIVATE:
-                events = loadPrivateEvents(page, size, timestamp, getSessionToken());
+                events = loadPrivateEvents(page, size, timestamp);
                 break;
             case OWN:
-                events = loadOwnEvents(page, size, timestamp, getSessionToken());
+                events = loadOwnEvents(page, size, timestamp);
                 break;
             case PUBLIC:
             default:
@@ -105,33 +104,31 @@ class DefaultEventService extends LoggedDuderAwareBean implements EventService {
         return events;
     }
 
-    private List<EventPreview> loadPrivateEvents(int page, int size, Timestamp timestamp, String sessionToken) {
+    private List<EventPreview> loadPrivateEvents(int page, int size, Timestamp timestamp) {
         Pageable pageRequest = PageRequest.of(page, size);
-        User user = sessionService.getUserByToken(sessionToken).orElse(new User());
+        User user = getUser();
         List<Long> friendIds = user.getFriends()
                 .stream()
                 .map(User::getId)
                 .collect(Collectors.toList());
-        sessionService.getUserByToken(sessionToken)
-                .ifPresent(u -> friendIds.add(u.getId()));
         if (friendIds.size() == 0) {
             return new ArrayList<>();
         } else {
             return eventRepository.findAllUnfinishedPrivateEventsForUsers(friendIds, timestamp, pageRequest)
                     .getContent()
                     .stream()
-                    .map(this::mapEventToPreview)
+                    .map(this::createEventPreview)
                     .collect(Collectors.toList());
         }
     }
 
-    private List<EventPreview> loadOwnEvents(int page, int size, Timestamp timestamp, String sessionToken) {
-        Long userId = sessionService.getUserByToken(sessionToken).orElseThrow(InvalidSessionTokenException::new).getId();
+    private List<EventPreview> loadOwnEvents(int page, int size, Timestamp timestamp) {
+        Long userId = getUser().getId();
         Pageable pageRequest = PageRequest.of(page, size);
         return eventRepository.findAllByUserAndTimestampAfter(userId, timestamp, pageRequest)
                 .getContent()
                 .stream()
-                .map(this::mapEventToPreview)
+                .map(this::createEventPreview)
                 .collect(Collectors.toList());
     }
 
@@ -141,21 +138,34 @@ class DefaultEventService extends LoggedDuderAwareBean implements EventService {
                 .findAllByIsPrivateAndTimestampAfter(false, timestamp, pageRequest)
                 .getContent()
                 .stream()
-                .map(this::mapEventToPreview)
+                .map(this::createEventPreview)
                 .collect(Collectors.toList());
     }
 
-    private EventPreview mapEventToPreview(Event e) {
+    private EventPreview createEventPreview(Event e) {
+        ParticipantType participantType = getParticipantType(e.getEventUsers()).orElse(null);
+        Dude host = findHost(e.getEventUsers());
+        Set<HobbyName> hobbies = e.getHobbies().stream()
+                .map(Hobby::getName)
+                .collect(Collectors.toSet());
         return EventPreview.builder()
                 .name(e.getName())
                 .description(e.getDescription())
-                .hobbies(e.getHobbies().stream().map(Hobby::getName).collect(Collectors.toSet()))
+                .hobbies(hobbies)
                 .numberOfParticipants(e.getEventUsers().size() - 1)
                 .timestamp(e.getTimestamp().getTime())
-                .host(findHost(e.getEventUsers()))
+                .host(host)
                 .isPrivate(e.isPrivate())
+                .participantType(participantType)
                 .imageUrl(e.getImageUrl())
                 .build();
+    }
+
+    private Optional<ParticipantType> getParticipantType(List<UserEvent> eventUsers) {
+        return eventUsers.stream()
+                .filter(userEvent -> userEvent.getUser().equals(getUser()))
+                .findFirst()
+                .map(UserEvent::getParticipantType);
     }
 
     private Dude findHost(List<UserEvent> eventUsers) {

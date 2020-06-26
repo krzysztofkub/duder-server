@@ -2,6 +2,7 @@ package org.duder.user.service;
 
 import org.duder.common.DuderBean;
 import org.duder.security.SessionHolder;
+import org.duder.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class LoggedDuderAwareBean extends DuderBean {
@@ -13,7 +14,7 @@ public abstract class LoggedDuderAwareBean extends DuderBean {
         this.sessionTokenHolder = sessionTokenHolder;
     }
 
-    protected String getSessionToken() {
-        return sessionTokenHolder.user.getSessionToken();
+    protected User getUser() {
+        return sessionTokenHolder.user;
     }
 }
