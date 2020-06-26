@@ -2,6 +2,7 @@ package org.duder.user.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.duder.dto.event.ParticipantType;
 import org.duder.event.model.Event;
 
 import javax.persistence.Entity;
