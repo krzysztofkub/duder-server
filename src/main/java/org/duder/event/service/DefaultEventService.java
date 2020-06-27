@@ -163,7 +163,7 @@ class DefaultEventService extends LoggedDuderAwareBean implements EventService {
 
     private Optional<ParticipantType> getParticipantType(List<UserEvent> eventUsers) {
         return eventUsers.stream()
-                .filter(userEvent -> userEvent.getUser().equals(getUser()))
+                .filter(userEvent -> userEvent.getUser().getSessionToken().equals(getSessionToken()))
                 .findFirst()
                 .map(UserEvent::getParticipantType);
     }

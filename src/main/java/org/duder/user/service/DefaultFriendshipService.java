@@ -15,6 +15,7 @@ import java.util.Optional;
 @Component
 class DefaultFriendshipService extends LoggedDuderAwareBean implements FriendshipService {
 
+    private final SessionService sessionService;
     private final FriendInvitationRepository friendInvitationRepository;
     private final UserRepository userRepository;
 
