@@ -5,13 +5,8 @@ import org.duder.security.SessionHolder;
 import org.duder.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 public abstract class LoggedDuderAwareBean extends DuderBean {
 
-    @PersistenceContext
-    private EntityManager entityManager;
     private SessionHolder sessionTokenHolder;
 
     @Autowired
@@ -20,7 +15,6 @@ public abstract class LoggedDuderAwareBean extends DuderBean {
     }
 
     protected User getUser() {
-        entityManager.merge(sessionTokenHolder.user);
         return sessionTokenHolder.user;
     }
 }
