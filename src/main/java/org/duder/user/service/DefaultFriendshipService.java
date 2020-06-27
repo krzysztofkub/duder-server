@@ -7,6 +7,7 @@ import org.duder.user.model.FriendInvitation;
 import org.duder.user.model.User;
 import org.duder.user.repository.FriendInvitationRepository;
 import org.duder.user.repository.UserRepository;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -102,6 +103,7 @@ class DefaultFriendshipService extends LoggedDuderAwareBean implements Friendshi
 
     @Override
     public Optional<FriendshipStatus> deduceFriendshipStatus(User user, Long userId) {
+        Hibernate.initialize(user.getFriends());
         if (areFriends(user, userId)) {
             return Optional.of(FriendshipStatus.FRIENDS);
         }
