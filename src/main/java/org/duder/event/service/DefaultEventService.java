@@ -36,20 +36,23 @@ class DefaultEventService extends LoggedDuderAwareBean implements EventService {
 
     private final EventRepository eventRepository;
     private final HobbyRepository hobbyRepository;
+    private final SessionService sessionService;
     private final ImageService imageService;
 
     DefaultEventService(EventRepository eventRepository,
                         HobbyRepository hobbyRepository,
+                        SessionService sessionService,
                         ImageService imageService) {
         this.eventRepository = eventRepository;
         this.hobbyRepository = hobbyRepository;
+        this.sessionService = sessionService;
         this.imageService = imageService;
     }
 
     @Override
     @Transactional
     public Long create(CreateEvent createEvent, MultipartFile image) {
-        User user = getUser();
+        User user = sessionService.getUserByToken(getSessionToken()).orElseThrow(InvalidSessionTokenException::new);
 
         Event event = Event.builder()
                 .name(createEvent.getName())
@@ -90,10 +93,10 @@ class DefaultEventService extends LoggedDuderAwareBean implements EventService {
 
         switch (eventLoadingMode) {
             case PRIVATE:
-                events = loadPrivateEvents(page, size, timestamp);
+                events = loadPrivateEvents(page, size, timestamp, getSessionToken());
                 break;
             case OWN:
-                events = loadOwnEvents(page, size, timestamp);
+                events = loadOwnEvents(page, size, timestamp, getSessionToken());
                 break;
             case PUBLIC:
             default:
@@ -104,13 +107,15 @@ class DefaultEventService extends LoggedDuderAwareBean implements EventService {
         return events;
     }
 
-    private List<EventPreview> loadPrivateEvents(int page, int size, Timestamp timestamp) {
+    private List<EventPreview> loadPrivateEvents(int page, int size, Timestamp timestamp, String sessionToken) {
         Pageable pageRequest = PageRequest.of(page, size);
-        User user = getUser();
+        User user = sessionService.getUserByToken(sessionToken).orElse(new User());
         List<Long> friendIds = user.getFriends()
                 .stream()
                 .map(User::getId)
                 .collect(Collectors.toList());
+        sessionService.getUserByToken(sessionToken)
+                .ifPresent(u -> friendIds.add(u.getId()));
         if (friendIds.size() == 0) {
             return new ArrayList<>();
         } else {
@@ -122,8 +127,8 @@ class DefaultEventService extends LoggedDuderAwareBean implements EventService {
         }
     }
 
-    private List<EventPreview> loadOwnEvents(int page, int size, Timestamp timestamp) {
-        Long userId = getUser().getId();
+    private List<EventPreview> loadOwnEvents(int page, int size, Timestamp timestamp, String sessionToken) {
+        Long userId = sessionService.getUserByToken(sessionToken).orElseThrow(InvalidSessionTokenException::new).getId();
         Pageable pageRequest = PageRequest.of(page, size);
         return eventRepository.findAllByUserAndTimestampAfter(userId, timestamp, pageRequest)
                 .getContent()

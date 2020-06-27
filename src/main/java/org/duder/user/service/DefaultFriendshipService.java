@@ -19,8 +19,9 @@ class DefaultFriendshipService extends LoggedDuderAwareBean implements Friendshi
     private final FriendInvitationRepository friendInvitationRepository;
     private final UserRepository userRepository;
 
-    public DefaultFriendshipService(FriendInvitationRepository friendInvitationRepository, UserRepository userRepository) {
+    public DefaultFriendshipService(FriendInvitationRepository friendInvitationRepository, SessionService sessionService, UserRepository userRepository) {
         this.friendInvitationRepository = friendInvitationRepository;
+        this.sessionService = sessionService;
         this.userRepository = userRepository;
     }
 
@@ -44,7 +45,7 @@ class DefaultFriendshipService extends LoggedDuderAwareBean implements Friendshi
     }
 
     private Pair<User, User> getSenderAndReceiver(Long receiverId) {
-        User user = getUser();
+        User user = sessionService.getUserByToken(getSessionToken()).get();
         User receiver = userRepository.findById(receiverId)
                 .orElseThrow(() -> new DataNotFoundException("Missing user with id " + receiverId));
         return Pair.of(user, receiver);

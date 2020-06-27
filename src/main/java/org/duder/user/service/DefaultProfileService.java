@@ -25,6 +25,7 @@ class DefaultProfileService extends LoggedDuderAwareBean implements ProfileServi
     @Override
     @Transactional
     public void updateProfilePicture(String url) {
-        updateUserProfilePicture(url, getUser());
+        userRepository.findBySessionToken(getSessionToken())
+                .ifPresent(user -> updateUserProfilePicture(url, user));
     }
 }

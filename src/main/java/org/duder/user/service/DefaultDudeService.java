@@ -24,7 +24,7 @@ class DefaultDudeService extends LoggedDuderAwareBean implements DudeService {
 
     @Override
     public List<Dude> getDudes(int page, int size) {
-        User user = getUser();
+        User user = userRepository.findBySessionToken(getSessionToken()).get();
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("nickname"));
         List<User> allUsers = userRepository.findAllByIdNot(user.getId(), pageRequest).getContent();
