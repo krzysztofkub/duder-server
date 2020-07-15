@@ -1,1 +1,1 @@
-## Spring Boot WebSocket Chat Application
+## Duder server side
